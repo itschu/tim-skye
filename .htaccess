@@ -1,0 +1,157 @@
+# Deny access to sensitive files and directories
+
+RewriteEngine On
+
+# Block sensitive directories (actions is NOT blocked - needed for form submissions)
+
+RewriteRule ^(includes|logs|locale|database)/ - [F,L]
+
+# Allow cron entrypoint
+
+RewriteRule ^cron/process-investments\.php$ - [L]
+RewriteRule ^cron/cleanup-logs\.php$ - [L]
+RewriteRule ^cron/fetch-exchange-rates\.php$ - [L]
+
+# Deny other cron PHP files
+
+RewriteRule ^cron/.*\.php$ - [F,L]
+
+# ============================================
+
+# TRAILING SLASH HANDLING
+
+# ============================================
+
+# Remove trailing slash from non-directory requests (prevent /admin/dashboard/ issues)
+
+# If the request ends with a slash and is NOT an existing directory, remove the slash
+
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^(.+)/$ /$1 [R=301,L]
+
+# ============================================
+
+# PRETTY URLS - Remove .php extension
+
+# ============================================
+
+# Redirect /user/dashboard.php to /user/dashboard (remove .php extension) - ONLY for direct access
+
+RewriteCond %{THE_REQUEST} ^[A-Z]{3,}\s/user/(.+)\.php[\s?] [NC]
+RewriteRule ^user/(.+)\.php$ /user/$1 [R=301,L]
+
+# Redirect /admin/dashboard.php to /admin/dashboard (remove .php extension) - ONLY for direct access
+
+RewriteCond %{THE_REQUEST} ^[A-Z]{3,}\s/admin/(.+)\.php[\s?] [NC]
+RewriteRule ^admin/(.+)\.php$ /admin/$1 [R=301,L]
+
+# Redirect root level .php files to extensionless (login, register, etc.) - ONLY for direct access
+
+RewriteCond %{THE_REQUEST} ^[A-Z]{3,}\s/(login|register|logout|reset-password|about|contact|terms|privacy|disclaimer|404|500)\.php[\s?] [NC]
+RewriteRule ^(.+)\.php$ /$1 [R=301,L]
+
+# ============================================
+
+# INTERNAL REWRITES (no external redirect)
+
+# ============================================
+
+# Internally rewrite /actions/switch-language to /actions/switch-language.php
+
+RewriteCond %{REQUEST_URI} ^/actions/ [NC]
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteCond %{DOCUMENT_ROOT}/actions/$1.php -f
+RewriteRule ^actions/(.+?)$ /actions/$1.php [L]
+
+# Internally rewrite /user/dashboard to /user/dashboard.php (if .php file exists)
+
+RewriteCond %{REQUEST_URI} ^/user/ [NC]
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteCond %{DOCUMENT_ROOT}/user/$1.php -f
+RewriteRule ^user/(.+?)$ /user/$1.php [L]
+
+# Internally rewrite /admin/dashboard to /admin/dashboard.php (if .php file exists)
+
+RewriteCond %{REQUEST_URI} ^/admin/ [NC]
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteCond %{DOCUMENT_ROOT}/admin/$1.php -f
+RewriteRule ^admin/(.+?)$ /admin/$1.php [L]
+
+# Internally rewrite root level extensionless to .php (if file exists)
+
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteCond %{DOCUMENT_ROOT}/$1.php -f
+RewriteRule ^(login|register|logout|reset-password|about|contact|terms|privacy|disclaimer|404|500)$ /$1.php [L]
+
+# ============================================
+
+# LEGACY REDIRECTS (for backwards compatibility)
+
+# ============================================
+
+# Redirect old user page URLs to new /user/ location without .php
+
+RewriteCond %{THE_REQUEST} ^[A-Z]{3,}\s/(dashboard|invest|my-investments|transactions|deposit|withdraw|profile|referrals|view-kyc|view-proof)\.php[\s?] [NC]
+RewriteRule ^(.+)\.php$ /user/$1 [R=301,L]
+
+# Redirect old user page URLs (without extension) to new /user/ location
+
+RewriteCond %{REQUEST_URI} ^/(dashboard|invest|my-investments|transactions|deposit|withdraw|profile|referrals|view-kyc|view-proof)$ [NC]
+RewriteRule ^(.*)$ /user/$1 [R=301,L]
+
+# ============================================
+
+# ERROR HANDLING - Error Documents
+
+# ============================================
+
+# Custom error pages
+
+ErrorDocument 404 /404.php
+ErrorDocument 500 /500.php
+
+# ============================================
+
+# PRETTY URLS - Error Pages
+
+# ============================================
+
+# Redirect direct .php access to extensionless version
+
+RewriteCond %{THE_REQUEST} ^[A-Z]{3,}\s/(404|500)\.php[\s?] [NC]
+RewriteRule ^(404|500)\.php$ /$1 [R=301,L]
+
+# Internally rewrite extensionless to .php
+
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteCond %{DOCUMENT_ROOT}/$1.php -f
+RewriteRule ^(404|500)$ /$1.php [L]
+
+# ============================================
+
+# FALLBACK ERROR HANDLING
+
+# ============================================
+
+# If we've reached here and the file/directory doesn't exist, show 404
+
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^ - [R=404,L]
+
+# Deny access to .env file
+
+<Files ".env">
+Require all denied
+</Files>
+
+# Disable directory listing
+
+Options -Indexes
+
+

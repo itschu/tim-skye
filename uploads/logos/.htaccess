@@ -1,0 +1,22 @@
+# Prevent PHP execution
+<IfModule mod_php5.c>
+    php_flag engine off
+</IfModule>
+<IfModule mod_php7.c>
+    php_flag engine off
+</IfModule>
+<IfModule mod_php8.c>
+    php_flag engine off
+</IfModule>
+
+# Allow only image and PDF files
+<FilesMatch "\.(?i:jpg|jpeg|png|gif|bmp|webp|pdf|svg)$">
+    Order Allow,Deny
+    Allow from all
+</FilesMatch>
+
+# Deny all other files
+<FilesMatch "\.(?i:php|php3|php4|php5|phtml|pl|py|jsp|asp|sh|cgi|exe|dll)$">
+    Order Deny,Allow
+    Deny from all
+</FilesMatch>

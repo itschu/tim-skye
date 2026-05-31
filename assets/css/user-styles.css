@@ -1,0 +1,5769 @@
+:root {
+	--bg-body: #f1f5f9;
+	--sidebar-bg: #0f172a;
+	--sidebar-width: 280px;
+	--primary: #4f46e5;
+	--primary-dark: #4338ca;
+	--accent: #06b6d4;
+	--card-bg: #ffffff;
+	--glass-border: 1px solid rgba(255, 255, 255, 0.5);
+	--shadow-card: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+	--gradient-card: linear-gradient(135deg, #4f46e5 0%, #3b82f6 100%);
+	--border-color: #e2e8f0;
+	--text-muted: #64748b;
+	--text-main: #1e293b;
+	--bottom-nav-height: 65px;
+	--ticker-height: 40px;
+	--header-height: 74px;
+}
+
+/* Responsive Base Font Size */
+html {
+	font-size: 16px;
+}
+
+@media (max-width: 768px) {
+	html {
+		font-size: 14px;
+	}
+}
+
+body {
+	font-family: 'Plus Jakarta Sans', sans-serif;
+	background-color: var(--bg-body);
+	color: #334155;
+	overflow-x: hidden;
+	display: flex;
+	flex-direction: column;
+	min-height: 100dvh;
+}
+
+/* --- Animations --- */
+[x-cloak] {
+	display: none !important;
+}
+
+.fade-in {
+	animation: fadeIn 0.5s ease-in-out;
+}
+
+@keyframes fadeIn {
+	from {
+		opacity: 0;
+		transform: translateY(10px);
+	}
+	to {
+		opacity: 1;
+		transform: translateY(0);
+	}
+}
+
+/* --- Sidebar Logic --- */
+.sidebar {
+	width: var(--sidebar-width);
+	background: var(--sidebar-bg);
+	height: 100dvh;
+	position: fixed;
+	top: 0;
+	left: 0;
+	z-index: 1050;
+	transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+	padding-top: 1.5rem;
+	overflow-y: auto;
+}
+
+.nav-link {
+	color: #94a3b8;
+	padding: 0.8rem 1.5rem;
+	display: flex;
+	align-items: center;
+	gap: 12px;
+	font-weight: 500;
+	font-size: 0.95rem;
+	border-left: 3px solid transparent;
+	transition: all 0.2s;
+}
+
+.nav-link:hover,
+.nav-link.active {
+	color: #fff;
+	background: rgba(255, 255, 255, 0.03);
+	border-left-color: var(--accent);
+}
+
+.nav-link i {
+	width: 24px;
+	text-align: center;
+}
+
+/* Close button for mobile sidebar */
+.sidebar-close-btn {
+	background: rgba(255, 255, 255, 0.1);
+	border: none;
+	color: white;
+	width: 32px;
+	height: 32px;
+	border-radius: 50%;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	cursor: pointer;
+	transition: 0.2s;
+}
+
+.sidebar-close-btn:hover {
+	background: rgba(255, 255, 255, 0.2);
+}
+
+/* --- Sidebar Mobile Overlay --- */
+.sidebar-overlay {
+	position: fixed;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	background: rgba(0, 0, 0, 0.5);
+	backdrop-filter: blur(2px);
+	z-index: 1040;
+	opacity: 0;
+	visibility: hidden;
+	transition:
+		opacity 0.3s ease,
+		visibility 0.3s ease;
+}
+
+.sidebar-overlay.active {
+	opacity: 1;
+	visibility: visible;
+}
+
+/* --- Professional Language Switcher --- */
+.language-switcher {
+	position: relative;
+}
+
+.language-switcher-btn {
+	width: 100%;
+	display: flex;
+	align-items: center;
+	gap: 10px;
+	padding: 10px 14px;
+	background: rgba(255, 255, 255, 0.05);
+	border: 1px solid rgba(255, 255, 255, 0.1);
+	border-radius: 10px;
+	color: #e2e8f0;
+	font-size: 0.9rem;
+	font-weight: 500;
+	cursor: pointer;
+	transition: all 0.2s ease;
+}
+
+.language-switcher-btn:hover {
+	background: rgba(255, 255, 255, 0.1);
+	border-color: rgba(255, 255, 255, 0.2);
+}
+
+.language-icon {
+	width: 28px;
+	height: 28px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+	border-radius: 6px;
+	color: white;
+	font-size: 0.8rem;
+}
+
+.language-label {
+	flex: 1;
+	text-align: left;
+}
+
+.language-chevron {
+	font-size: 0.75rem;
+	color: #94a3b8;
+	transition: transform 0.2s ease;
+}
+
+.language-chevron.rotate {
+	transform: rotate(180deg);
+}
+
+.language-dropdown {
+	position: absolute;
+	bottom: 100%;
+	left: 0;
+	right: 0;
+	margin-bottom: 8px;
+	background: #1e293b;
+	border: 1px solid rgba(255, 255, 255, 0.1);
+	border-radius: 10px;
+	padding: 6px;
+	box-shadow: 0 -10px 40px rgba(0, 0, 0, 0.4);
+	z-index: 1100;
+	max-height: 200px;
+	overflow-y: auto;
+}
+
+.language-option {
+	width: 100%;
+	display: flex;
+	align-items: center;
+	gap: 10px;
+	padding: 10px 12px;
+	background: transparent;
+	border: none;
+	border-radius: 6px;
+	color: #cbd5e1;
+	font-size: 0.9rem;
+	text-align: left;
+	cursor: pointer;
+	transition: all 0.15s ease;
+}
+
+.language-option:hover {
+	background: rgba(255, 255, 255, 0.05);
+	color: #fff;
+}
+
+.language-option.active {
+	background: rgba(79, 70, 229, 0.15);
+	color: #fff;
+}
+
+.language-check {
+	width: 20px;
+	font-size: 0.75rem;
+	color: var(--accent);
+}
+
+/* Language dropdown scrollbar */
+.language-dropdown::-webkit-scrollbar {
+	width: 4px;
+}
+
+.language-dropdown::-webkit-scrollbar-track {
+	background: transparent;
+}
+
+.language-dropdown::-webkit-scrollbar-thumb {
+	background: rgba(255, 255, 255, 0.2);
+	border-radius: 2px;
+}
+
+/* --- Mobile Bottom Nav --- */
+.bottom-nav {
+	position: fixed;
+	bottom: 0;
+	left: 0;
+	width: 100%;
+	height: var(--bottom-nav-height);
+	background: rgba(255, 255, 255, 0.95);
+	backdrop-filter: blur(10px);
+	border-top: 1px solid rgba(0, 0, 0, 0.05);
+	display: flex;
+	justify-content: space-around;
+	align-items: center;
+	z-index: 1040;
+	box-shadow: 0 -5px 20px rgba(0, 0, 0, 0.03);
+}
+
+.nav-item-mobile {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	color: #94a3b8;
+	font-size: 0.7rem;
+	font-weight: 600;
+	text-decoration: none;
+	width: 60px;
+	transition: 0.2s;
+}
+
+.nav-item-mobile i {
+	font-size: 1.3rem;
+	margin-bottom: 4px;
+}
+
+.nav-item-mobile.active {
+	color: var(--primary);
+	transform: translateY(-2px);
+}
+
+/* --- Main Content Layout --- */
+.main-content {
+	margin-left: var(--sidebar-width);
+	transition: margin 0.3s ease;
+	flex: 1;
+	display: flex;
+	flex-direction: column;
+}
+
+.sidebar-width-left-margin {
+	margin-left: var(--sidebar-width);
+}
+
+/* Responsive Ticker */
+.ticker-wrap {
+	width: 100%;
+	overflow: hidden;
+	background: #1e293b;
+	color: white;
+	white-space: nowrap;
+	padding: 8px 0;
+	font-size: 0.85rem;
+}
+
+.ticker {
+	display: inline-block;
+	/* Reverted to faster default to avoid very slow scrolling */
+	animation: ticker 60s linear infinite;
+	will-change: transform;
+}
+
+.ticker-item {
+	display: inline-block;
+	padding: 0 1.5rem;
+	white-space: nowrap;
+}
+
+@keyframes ticker {
+	0% {
+		transform: translateX(0);
+	}
+	100% {
+		transform: translateX(-50%);
+	}
+}
+
+/* --- Wallet Card (Responsive Typography) --- */
+.wallet-card {
+	background: var(--gradient-card);
+	color: white;
+	border-radius: 1.5rem;
+	padding: 2rem;
+	position: relative;
+	overflow: hidden;
+	box-shadow: 0 15px 30px -10px rgba(79, 70, 229, 0.5);
+}
+
+/* Fluid font size for balance */
+.wallet-balance-text {
+	font-size: clamp(1.8rem, 4vw, 3rem);
+	line-height: 1.1;
+}
+
+.wallet-card::before,
+.wallet-card::after {
+	content: '';
+	position: absolute;
+	border-radius: 50%;
+	pointer-events: none;
+	background: rgba(255, 255, 255, 0.1);
+}
+
+.wallet-card::before {
+	top: -50%;
+	right: -20%;
+	width: 300px;
+	height: 300px;
+}
+
+.wallet-card::after {
+	bottom: -50%;
+	left: -10%;
+	width: 200px;
+	height: 200px;
+}
+
+/* --- Standard Cards --- */
+.card-custom {
+	background: var(--card-bg);
+	border: var(--glass-border);
+	border-radius: 1.25rem;
+	box-shadow: var(--shadow-card);
+	padding: 1.5rem;
+	height: 100%;
+	transition: transform 0.2s;
+}
+
+.card-custom:hover {
+	transform: translateY(-3px);
+}
+
+.progress-thin {
+	height: 6px;
+	border-radius: 3px;
+	background: #e2e8f0;
+}
+
+/* --- Portfolio Components --- */
+.portfolio-summary-card {
+	background: var(--gradient-card);
+	color: white;
+	border-radius: 1.25rem;
+	padding: 2rem;
+	position: relative;
+	overflow: hidden;
+}
+
+.portfolio-summary-card::before {
+	content: '';
+	position: absolute;
+	top: -50%;
+	right: -20%;
+	width: 300px;
+	height: 300px;
+	background: rgba(255, 255, 255, 0.1);
+	border-radius: 50%;
+	pointer-events: none;
+}
+
+.status-badge {
+	font-size: 0.75rem;
+	padding: 0.35em 0.8em;
+	border-radius: 50rem;
+	font-weight: 700;
+}
+
+.status-active {
+	background: #dcfce7;
+	color: #166534;
+}
+
+.status-completed {
+	background: #e0e7ff;
+	color: #3730a3;
+}
+
+/* --- New Layout: Investment Cards --- */
+.card-plan {
+	background: white;
+	border-radius: 1.5rem;
+	padding: 2rem;
+	position: relative;
+	box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05);
+	border: 1px solid #f1f5f9;
+	transition: all 0.3s ease;
+	min-width: 280px;
+}
+
+.card-plan:hover {
+	transform: translateY(-5px);
+	box-shadow: 0 20px 30px -10px rgba(79, 70, 229, 0.1);
+	border-color: #e0e7ff;
+}
+
+/* Highlight the Popular Plan */
+.card-plan.popular {
+	background: linear-gradient(180deg, #ffffff 0%, #f8fafc 100%);
+	border: 2px solid var(--primary);
+	transform: scale(1.02);
+	z-index: 2;
+}
+
+.card-plan.popular:hover {
+	transform: scale(1.05);
+}
+
+/* Mobile Horizontal Scroll Snap */
+.plans-scroll-container {
+	display: grid;
+	grid-template-columns: repeat(3, 1fr);
+	gap: 1.5rem;
+}
+
+@media (max-width: 991px) {
+	.plans-scroll-container {
+		display: flex;
+		overflow-x: auto;
+		scroll-snap-type: x mandatory;
+		padding-bottom: 2rem;
+		margin-right: -1.5rem;
+		padding-right: 1.5rem;
+	}
+
+	.card-plan {
+		scroll-snap-align: center;
+		min-width: 85vw;
+	}
+
+	.card-plan.popular {
+		transform: none;
+		border-width: 1px;
+	}
+
+	/* Hide sidebar off-screen by default on mobile/tablet */
+	.sidebar {
+		transform: translateX(-100%);
+		box-shadow: none;
+	}
+
+	/* Slide in and add shadow when active */
+	.sidebar.active {
+		transform: translateX(0);
+		box-shadow: 5px 0 25px rgba(0, 0, 0, 0.2);
+	}
+
+	/* Remove margin from main content */
+	.main-content {
+		margin-left: 0;
+	}
+
+	/* Padding for bottom nav on mobile */
+	body {
+		padding-bottom: var(--bottom-nav-height);
+	}
+}
+
+.roi-badge {
+	display: inline-flex;
+	align-items: center;
+	gap: 6px;
+	padding: 6px 12px;
+	border-radius: 20px;
+	font-size: 0.8rem;
+	font-weight: 700;
+}
+
+/* Glass-morphic top navbar (desktop & tablet) */
+.glass-navbar {
+	position: sticky;
+	top: var(--ticker-height);
+	z-index: 1035;
+	backdrop-filter: blur(10px) saturate(120%);
+	-webkit-backdrop-filter: blur(10px) saturate(120%);
+	background: rgba(255, 255, 255, 0.65);
+	border: 1px solid rgba(255, 255, 255, 0.6);
+	box-shadow: 0 6px 18px rgba(15, 23, 42, 0.06);
+	height: var(--header-height);
+	align-items: center;
+	gap: 1rem;
+}
+
+.glass-navbar .page-title {
+	font-size: 1.05rem;
+}
+
+/* --- Sticky Header Styles --- */
+
+/* The header wrapper needs to be sticky */
+.sticky-header-wrapper {
+	position: sticky;
+	top: 0;
+	z-index: 1035;
+}
+
+/* Desktop header */
+.sticky-header {
+	position: fixed;
+	top: 0;
+	left: var(--sidebar-width);
+	right: 0;
+	z-index: 1035;
+	transition:
+		transform 0.3s ease,
+		box-shadow 0.3s ease;
+}
+
+/* Mobile header */
+.sticky-header-mobile {
+	position: fixed;
+	top: 0;
+	left: 0;
+	right: 0;
+	z-index: 1035;
+	transition:
+		transform 0.3s ease,
+		box-shadow 0.3s ease;
+}
+
+/* When header is stuck (scrolled past ticker) */
+.sticky-header.is-stuck,
+.sticky-header-mobile.is-stuck {
+	transform: translateY(0);
+	box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+}
+
+/* Initial state - hidden above viewport */
+.sticky-header:not(.is-stuck),
+.sticky-header-mobile:not(.is-stuck) {
+	transform: translateY(-100%);
+}
+
+@media (max-width: 991px) {
+	.sticky-header {
+		left: 0;
+	}
+}
+
+@media (max-width: 767px) {
+	.glass-navbar {
+		display: none !important;
+	}
+}
+
+/* Fix for sticky header - ensure body doesn't interfere */
+.main-content {
+	position: relative;
+}
+
+/* Add padding to content when header is fixed */
+.content-spacer {
+	height: 74px;
+}
+
+/* --- Background opacity utilities --- */
+.bg-opacity-10 {
+	background-color: rgba(var(--bs-bg-opacity-rgb), 0.1) !important;
+}
+
+.bg-success.bg-opacity-10 {
+	background-color: rgba(16, 185, 129, 0.1) !important;
+}
+
+.bg-warning.bg-opacity-10 {
+	background-color: rgba(245, 158, 11, 0.1) !important;
+}
+
+.bg-primary.bg-opacity-10 {
+	background-color: rgba(79, 70, 229, 0.1) !important;
+}
+
+.bg-info.bg-opacity-10 {
+	background-color: rgba(6, 182, 212, 0.1) !important;
+}
+
+.bg-danger.bg-opacity-10 {
+	background-color: rgba(239, 68, 68, 0.1) !important;
+}
+
+/* --- Text colors --- */
+.text-success {
+	color: #10b981 !important;
+}
+
+.text-warning {
+	color: #f59e0b !important;
+}
+
+.text-info {
+	color: #06b6d4 !important;
+}
+
+/* --- Badge styles --- */
+.badge.bg-opacity-10 {
+	background-color: rgba(79, 70, 229, 0.1) !important;
+	color: var(--primary);
+}
+
+/* --- Font utilities --- */
+.font-monospace {
+	font-family: SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace !important;
+}
+
+.x-small {
+	font-size: 0.75rem !important;
+}
+
+/* --- Border dashed utility --- */
+.border-dashed {
+	border-style: dashed !important;
+}
+
+/* --- Investment card specific --- */
+.investment-card {
+	border-top-width: 4px !important;
+	border-top-style: solid;
+}
+
+/* --- Quick action buttons in wallet card --- */
+.wallet-card .btn-light {
+	background: rgba(255, 255, 255, 0.95);
+	border: none;
+}
+
+.wallet-card .btn-outline-light {
+	border-color: rgba(255, 255, 255, 0.5);
+	color: white;
+}
+
+.wallet-card .btn-outline-light:hover {
+	background: rgba(255, 255, 255, 0.15);
+}
+
+/* --- Activity list item --- */
+.activity-item {
+	transition: background-color 0.2s;
+}
+
+.activity-item:hover {
+	background-color: rgba(0, 0, 0, 0.01);
+}
+
+/* --- Invest Page Specific Styles --- */
+
+/* Plan cards grid layout */
+.plans-scroll-container {
+	display: grid;
+	grid-template-columns: repeat(3, 1fr);
+	gap: 1.5rem;
+}
+
+@media (max-width: 991px) {
+	.plans-scroll-container {
+		display: flex;
+		overflow-x: auto;
+		scroll-snap-type: x mandatory;
+		padding-bottom: 2rem;
+		margin-right: -1rem;
+		padding-right: 1rem;
+	}
+
+	.plans-scroll-container .card-plan {
+		scroll-snap-align: center;
+		min-width: 85vw;
+		flex-shrink: 0;
+	}
+
+	.plans-scroll-container .card-plan.popular {
+		transform: none;
+	}
+}
+
+/* ROI Badge */
+.roi-badge {
+	display: inline-flex;
+	align-items: center;
+	gap: 6px;
+	padding: 6px 12px;
+	border-radius: 20px;
+	font-size: 0.8rem;
+	font-weight: 700;
+	background: #f1f5f9;
+}
+
+/* Plan Card Styles */
+.card-plan {
+	background: white;
+	border-radius: 1.5rem;
+	padding: 2rem;
+	position: relative;
+	box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05);
+	border: 1px solid #f1f5f9;
+	transition: all 0.3s ease;
+	cursor: pointer;
+}
+
+.card-plan:hover {
+	transform: translateY(-5px);
+	box-shadow: 0 20px 30px -10px rgba(79, 70, 229, 0.1);
+	border-color: #e0e7ff;
+}
+
+/* Popular plan highlight */
+.card-plan.popular {
+	background: linear-gradient(180deg, #ffffff 0%, #f8fafc 100%);
+	border: 2px solid var(--primary);
+	transform: scale(1.02);
+	z-index: 2;
+}
+
+.card-plan.popular:hover {
+	transform: scale(1.05);
+}
+
+@media (max-width: 991px) {
+	.card-plan.popular {
+		transform: none;
+		border-width: 2px;
+	}
+}
+
+/* Selected plan state */
+.card-plan.border-primary {
+	border-color: var(--primary) !important;
+	border-width: 2px !important;
+}
+
+/* --- WITHDRAWAL PAGE STYLES --- */
+
+/* Balance Card (Gradient Theme) */
+.balance-card {
+	background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+	color: white;
+	border-radius: 1rem;
+	padding: 1.5rem;
+	margin-bottom: 1.5rem;
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.2);
+}
+
+/* Summary Card (Gradient Theme) */
+.summary-card {
+	background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+	color: white;
+	border: none;
+	border-radius: 1rem;
+	height: fit-content;
+}
+
+/* Method Selection */
+.method-radio-group {
+	display: grid;
+	grid-template-columns: repeat(2, 1fr);
+	gap: 0.75rem;
+}
+
+@media (min-width: 992px) {
+	.method-radio-group {
+		grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+	}
+}
+
+.method-radio {
+	cursor: pointer;
+	border: 2px solid #f1f5f9;
+	border-radius: 1rem;
+	padding: 1rem;
+	text-align: center;
+	transition: all 0.2s;
+	background: white;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	height: 100%;
+}
+
+.method-radio:hover {
+	border-color: #cbd5e1;
+	background: #f8fafc;
+}
+
+.method-radio.active {
+	border-color: var(--primary);
+	background: white;
+	box-shadow: 0 4px 12px rgba(79, 70, 229, 0.1);
+}
+
+.method-radio i {
+	margin-bottom: 0.5rem;
+	font-size: 1.5rem;
+}
+
+/* Warning Box */
+.warning-box {
+	background: #fff7ed;
+	border: 1px dashed #fdba74;
+	border-radius: 0.75rem;
+	padding: 1rem;
+	color: #c2410c;
+	font-size: 0.85rem;
+	display: flex;
+	gap: 0.75rem;
+	align-items: flex-start;
+}
+
+/* Card Glass Style */
+.card-glass {
+	background: white;
+	border: 1px solid rgba(255, 255, 255, 0.5);
+	border-radius: 1.25rem;
+	box-shadow:
+		0 4px 6px -1px rgba(0, 0, 0, 0.05),
+		0 2px 4px -1px rgba(0, 0, 0, 0.03);
+	overflow: hidden;
+}
+
+/* Form Label Uppercase */
+.form-label-upper {
+	font-size: 0.85rem;
+	font-weight: 700;
+	color: var(--text-muted);
+	margin-bottom: 0.5rem;
+	text-transform: uppercase;
+	letter-spacing: 0.5px;
+}
+
+/* Form Label (Standard) */
+.form-label {
+	font-size: 0.85rem;
+	font-weight: 700;
+	color: var(--text-muted);
+	margin-bottom: 0.5rem;
+	text-transform: uppercase;
+	letter-spacing: 0.5px;
+}
+
+/* Button White */
+.btn-white {
+	background: white;
+	border: none;
+	color: var(--primary);
+}
+
+.btn-white:hover:not(:disabled) {
+	background: #f8fafc;
+	transform: translateY(-1px);
+}
+
+/* Text White Utilities */
+.text-white-50 {
+	color: rgba(255, 255, 255, 0.5) !important;
+}
+
+.bg-white-10 {
+	background-color: rgba(255, 255, 255, 0.1) !important;
+}
+
+/* ============================================
+   AUTH PAGES - LOGIN & REGISTER
+   ============================================ */
+
+/* --- Auth Container (Split Layout) --- */
+.auth-container {
+	min-height: 100dvh;
+	display: flex;
+	flex-direction: column;
+}
+
+/* --- Brand Side (Left/Top) --- */
+.auth-split-brand {
+	background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+	position: relative;
+	overflow: hidden;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+	padding: 2rem;
+	color: white;
+	transition: all 0.3s ease;
+}
+
+/* --- Form Side (Right/Bottom) --- */
+.auth-split-form {
+	background: white;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+	padding: 2rem;
+	flex-grow: 1;
+	position: relative;
+}
+
+/* DESKTOP STYLES (lg and up) */
+@media (min-width: 992px) {
+	.auth-container {
+		flex-direction: row;
+	}
+	.auth-split-brand {
+		width: 50%;
+		height: 100dvh;
+		align-items: flex-start;
+		justify-content: space-between;
+		padding: 4rem;
+	}
+	.auth-split-form {
+		width: 50%;
+		height: 100dvh;
+		overflow-y: auto;
+	}
+}
+
+/* MOBILE STYLES (Default/Small) */
+@media (max-width: 991px) {
+	.auth-split-brand {
+		width: 100%;
+		height: 30dvh;
+		min-height: 200px;
+		align-items: center;
+	}
+	.auth-split-form {
+		width: 100%;
+		min-height: 70dvh;
+		border-top-left-radius: 2rem;
+		border-top-right-radius: 2rem;
+		margin-top: -2rem;
+		z-index: 10;
+		box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.05);
+		padding-top: 3rem;
+	}
+}
+
+/* --- Material Input Design --- */
+.input-group-material {
+	position: relative;
+	margin-bottom: 1.5rem;
+}
+
+.input-group-material .form-control {
+	background: transparent;
+	border: 1px solid #cbd5e1;
+	border-radius: 0.75rem;
+	padding: 1rem 1rem;
+	font-size: 1rem;
+	color: #1e293b;
+	height: 3.5rem;
+	box-shadow: none !important;
+	transition: border-color 0.2s;
+}
+
+.input-group-material .form-control:focus {
+	border-color: var(--primary);
+	border-width: 2px;
+	padding: 1rem 1rem calc(1rem - 1px);
+}
+
+.input-group-material label {
+	position: absolute;
+	top: 50%;
+	left: 1rem;
+	transform: translateY(-50%);
+	background-color: white;
+	padding: 0 0.4rem;
+	color: #64748b;
+	font-size: 1rem;
+	pointer-events: none;
+	transition: all 0.2s ease-out;
+	border-radius: 4px;
+}
+
+/* Active State */
+.input-group-material .form-control:focus ~ label,
+.input-group-material .form-control:not(:placeholder-shown) ~ label {
+	top: 0;
+	left: 0.8rem;
+	font-size: 0.8rem;
+	color: var(--primary);
+	font-weight: 600;
+	z-index: 5;
+}
+
+/* Error State */
+.input-group-material .form-control.is-invalid {
+	border-color: #ef4444;
+}
+
+.input-group-material .form-control.is-invalid ~ label {
+	color: #ef4444;
+}
+
+/* --- Decorative Elements --- */
+.circle-deco {
+	position: absolute;
+	border-radius: 50%;
+	background: rgba(255, 255, 255, 0.1);
+	backdrop-filter: blur(10px);
+}
+
+.glass-card-deco {
+	background: rgba(255, 255, 255, 0.1);
+	backdrop-filter: blur(10px);
+	border: 1px solid rgba(255, 255, 255, 0.2);
+	border-radius: 1.5rem;
+	padding: 2.5rem;
+	max-width: 500px;
+}
+
+.auth-card {
+	width: 100%;
+	max-width: 400px;
+}
+
+/* --- Legacy Auth Styles (for backwards compatibility) --- */
+.auth-wrapper {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	min-height: 100dvh;
+	padding: 2rem 1rem;
+	background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+}
+
+.auth-box {
+	background: white;
+	border-radius: 1.5rem;
+	padding: 2.5rem;
+	width: 100%;
+	max-width: 420px;
+	box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+}
+
+.auth-logo {
+	text-align: center;
+	margin-bottom: 2rem;
+}
+
+.auth-logo h1 {
+	color: var(--primary);
+	font-weight: 800;
+	font-size: 1.75rem;
+	margin: 0;
+}
+
+.form-select,
+.form-control {
+	padding: 10px 15px;
+}
+
+.form-control-lg {
+	padding-left: 30px !important;
+}
+
+/* =========================================
+   DARK MODE STYLES
+========================================= */
+
+/* 1. CSS Custom Properties Override for Dark Mode */
+body.dark-mode {
+	--bg-body: #0f172a; /* Slate 900 */
+	--bg-sidebar: #020617; /* Slate 950 */
+	--card-bg: #1e293b; /* Slate 800 */
+	--text-main: #f8fafc; /* Slate 50 */
+	--text-muted: #94a3b8; /* Slate 400 */
+	--border-color: #334155; /* Slate 700 */
+	--input-bg: #0f172a;
+}
+
+/* 2. Base Dark Mode Overrides */
+body.dark-mode {
+	background-color: var(--bg-body);
+	color: var(--text-main);
+}
+
+body.dark-mode .sidebar {
+	background-color: var(--bg-sidebar) !important;
+	border-right: 1px solid var(--border-color);
+}
+
+/* Bootstrap & Generic Overrides */
+body.dark-mode .bg-white {
+	background-color: var(--card-bg) !important;
+}
+
+body.dark-mode .bg-light {
+	background-color: #0f172a !important;
+}
+
+body.dark-mode .text-dark {
+	color: var(--text-main) !important;
+}
+
+body.dark-mode .text-muted {
+	color: var(--text-muted) !important;
+}
+
+/* Generic Borders (Use !important to override Bootstrap utility classes) */
+body.dark-mode .border,
+body.dark-mode .border-top,
+body.dark-mode .border-bottom,
+body.dark-mode .border-end,
+body.dark-mode .border-start {
+	border-color: var(--border-color) !important;
+}
+
+/* 3. Colored Border Restoration Rules */
+/* We must explicitly re-declare these to win over the generic rule above */
+body.dark-mode .border-primary {
+	border-color: #6366f1 !important;
+} /* Indigo 500 */
+
+body.dark-mode .border-info {
+	border-color: #0ea5e9 !important;
+} /* Sky 500 */
+
+body.dark-mode .border-success {
+	border-color: #22c55e !important;
+} /* Green 500 */
+
+body.dark-mode .border-warning {
+	border-color: #eab308 !important;
+} /* Yellow 500 */
+
+body.dark-mode .border-danger {
+	border-color: #ef4444 !important;
+} /* Red 500 */
+
+/* Fix Dashed Border (New Investment Card) */
+body.dark-mode .border-dashed {
+	border-color: var(--text-muted) !important;
+	opacity: 0.3;
+}
+
+/* 4. Component-Specific Dark Mode Styles */
+body.dark-mode .card-custom,
+body.dark-mode .wallet-card {
+	background-color: var(--card-bg);
+	border-color: var(--border-color);
+	box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.3);
+}
+
+body.dark-mode .glass-navbar {
+	background: rgba(15, 23, 42, 0.85) !important;
+	border-bottom: 1px solid var(--border-color);
+}
+
+body.dark-mode .sticky-header-mobile {
+	background-color: var(--bg-sidebar) !important;
+	border-color: var(--border-color) !important;
+}
+
+body.dark-mode .form-select,
+body.dark-mode .form-control {
+	background-color: var(--input-bg);
+	border-color: var(--border-color);
+	color: var(--text-main);
+}
+
+body.dark-mode .btn-white {
+	background-color: var(--card-bg);
+	border-color: var(--border-color);
+	color: var(--text-main);
+}
+
+/* Deposit/Withdraw submit button - active state in dark mode (solid white) */
+body.dark-mode .btn-white:not(:disabled),
+body.dark-mode .btn-white:not(:disabled).text-primary,
+body.dark-mode .summary-card .btn-white:not(:disabled),
+body.dark-mode .summary-card .btn-white:not(:disabled).text-primary {
+	background-color: var(--card-bg) !important;
+	border-color: var(--border-color) !important;
+	color: var(--text-main) !important;
+	box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3) !important;
+	opacity: 1 !important;
+}
+
+body.dark-mode .btn-white:not(:disabled) *,
+body.dark-mode .btn-white:not(:disabled).text-primary *,
+body.dark-mode .summary-card .btn-white:not(:disabled) *,
+body.dark-mode .summary-card .btn-white:not(:disabled).text-primary * {
+	color: inherit !important;
+}
+
+body.dark-mode .btn-white:disabled {
+	background-color: var(--bg-sidebar) !important;
+	color: var(--text-muted) !important;
+	border-color: var(--border-color) !important;
+	opacity: 0.5 !important;
+}
+
+/* Deposit page uses btn-light - style it like btn-white in dark mode */
+body.dark-mode .btn-light:not(:disabled),
+body.dark-mode .btn-light:not(:disabled).text-primary,
+body.dark-mode .summary-card .btn-light:not(:disabled),
+body.dark-mode .summary-card .btn-light:not(:disabled).text-primary {
+	background: white !important;
+	color: #1e1b4b !important;
+	border-color: transparent !important;
+	box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3) !important;
+	opacity: 1 !important;
+}
+
+body.dark-mode .btn-light:not(:disabled) *,
+body.dark-mode .btn-light:not(:disabled).text-primary *,
+body.dark-mode .summary-card .btn-light:not(:disabled) *,
+body.dark-mode .summary-card .btn-light:not(:disabled).text-primary * {
+	color: inherit !important;
+}
+
+body.dark-mode .btn-light:not(:disabled):hover,
+body.dark-mode .btn-light:not(:disabled).text-primary:hover {
+	background: #f8fafc !important;
+	transform: translateY(-1px);
+	box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4) !important;
+}
+
+body.dark-mode .btn-light:disabled {
+	background-color: var(--bg-sidebar) !important;
+	color: var(--text-muted) !important;
+	border-color: var(--border-color) !important;
+	opacity: 0.5 !important;
+}
+
+body.dark-mode footer {
+	background: rgba(2, 6, 23, 0.95) !important;
+	border-top-color: var(--border-color) !important;
+}
+
+body.dark-mode .apexcharts-text {
+	fill: var(--text-muted) !important;
+}
+
+/* 5. Page-Specific Component Styles */
+
+/* --- Transactions Page Components --- */
+body.dark-mode .filter-btn {
+	background-color: var(--card-bg);
+	border-color: var(--border-color);
+	color: var(--text-muted);
+}
+
+body.dark-mode .filter-btn:hover {
+	background-color: var(--border-color);
+	color: var(--text-main);
+}
+
+body.dark-mode .filter-btn.active {
+	background-color: rgba(79, 70, 229, 0.2);
+	border-color: var(--primary);
+	color: var(--primary);
+}
+
+body.dark-mode .transaction-row {
+	background-color: var(--card-bg);
+	border-color: var(--border-color);
+}
+
+body.dark-mode .transaction-row:hover {
+	background-color: rgba(255, 255, 255, 0.02);
+}
+
+body.dark-mode .icon-circle {
+	background-color: rgba(255, 255, 255, 0.05);
+	border-color: var(--border-color);
+}
+
+body.dark-mode .badge-soft {
+	background-color: rgba(255, 255, 255, 0.05);
+	color: var(--text-muted);
+}
+
+body.dark-mode .page-link {
+	background-color: var(--card-bg);
+	border-color: var(--border-color);
+	color: var(--text-main);
+}
+
+body.dark-mode .page-link:hover {
+	background-color: var(--border-color);
+	color: var(--text-main);
+}
+
+body.dark-mode .page-item.active .page-link {
+	background-color: var(--primary);
+	border-color: var(--primary);
+	color: white;
+}
+
+body.dark-mode .page-item.disabled .page-link {
+	background-color: var(--bg-body);
+	color: var(--text-muted);
+}
+
+/* --- My-Investments Page Components --- */
+body.dark-mode .tabs-line {
+	border-color: var(--border-color);
+}
+
+body.dark-mode .tab-btn {
+	color: var(--text-muted);
+}
+
+body.dark-mode .tab-btn:hover {
+	color: var(--text-main);
+}
+
+body.dark-mode .tab-btn.active {
+	color: var(--primary);
+	border-bottom-color: var(--primary);
+}
+
+body.dark-mode .table {
+	color: var(--text-main);
+	border-color: var(--border-color);
+}
+
+body.dark-mode .table thead th {
+	background-color: var(--bg-sidebar);
+	border-color: var(--border-color);
+	color: var(--text-muted);
+}
+
+body.dark-mode .table tbody td {
+	border-color: var(--border-color);
+}
+
+body.dark-mode .table tbody tr:hover {
+	background-color: rgba(255, 255, 255, 0.02);
+}
+
+body.dark-mode .modal-content {
+	background-color: var(--card-bg);
+	border-color: var(--border-color);
+	color: var(--text-main);
+}
+
+body.dark-mode .modal-header {
+	border-bottom-color: var(--border-color);
+}
+
+body.dark-mode .modal-footer {
+	border-top-color: var(--border-color);
+}
+
+body.dark-mode .modal-header .btn-close {
+	filter: invert(1) grayscale(100%) brightness(200%);
+}
+
+/* --- Profile Page Components --- */
+body.dark-mode .profile-cover {
+	/* Maintain gradient (already dark) */
+	background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+}
+
+body.dark-mode .profile-avatar {
+	border-color: var(--card-bg);
+}
+
+body.dark-mode .settings-nav .btn-nav {
+	background-color: transparent;
+	color: var(--text-muted);
+	border-color: var(--border-color);
+}
+
+body.dark-mode .settings-nav .btn-nav:hover {
+	background-color: rgba(255, 255, 255, 0.02);
+	color: var(--text-main);
+}
+
+body.dark-mode .settings-nav .btn-nav.active {
+	background-color: rgba(79, 70, 229, 0.1);
+	color: var(--primary);
+	border-color: var(--primary);
+}
+
+body.dark-mode .upload-zone {
+	background-color: var(--bg-body);
+	border-color: var(--border-color);
+	color: var(--text-muted);
+}
+
+body.dark-mode .upload-zone:hover {
+	border-color: var(--primary);
+	background-color: rgba(79, 70, 229, 0.05);
+}
+
+body.dark-mode .list-group-item {
+	background-color: var(--card-bg);
+	border-color: var(--border-color);
+	color: var(--text-main);
+}
+
+/* 6. Bottom Navigation Dark Mode */
+body.dark-mode .bottom-nav {
+	background: rgba(2, 6, 23, 0.95);
+	border-top-color: var(--border-color);
+}
+
+body.dark-mode .nav-item-mobile {
+	color: var(--text-muted);
+}
+
+body.dark-mode .nav-item-mobile.active {
+	color: var(--primary);
+}
+
+/* 7. Empty State Dark Mode */
+body.dark-mode .empty-state {
+	background-color: transparent;
+}
+
+body.dark-mode .empty-state .bg-light {
+	background-color: rgba(255, 255, 255, 0.03) !important;
+}
+
+body.dark-mode .empty-state i {
+	opacity: 0.7;
+}
+
+body.dark-mode .empty-state .text-muted {
+	color: var(--text-muted) !important;
+}
+
+/* 8. Activity Item Dark Mode */
+body.dark-mode .activity-item:hover {
+	background-color: rgba(255, 255, 255, 0.02);
+}
+
+/* Card Plan Dark Mode */
+body.dark-mode .card-plan {
+	background-color: var(--card-bg);
+	border-color: var(--border-color);
+}
+
+body.dark-mode .card-plan:hover {
+	border-color: var(--primary);
+}
+
+body.dark-mode .card-plan.popular {
+	background: linear-gradient(180deg, #1e293b 0%, #0f172a 100%);
+	border-color: var(--primary);
+}
+
+body.dark-mode .roi-badge {
+	background-color: rgba(255, 255, 255, 0.05);
+	color: var(--text-main);
+}
+
+/* Method Radio Dark Mode */
+body.dark-mode .method-radio {
+	background-color: var(--card-bg);
+	border-color: var(--border-color);
+}
+
+body.dark-mode .method-radio:hover {
+	background-color: var(--bg-body);
+	border-color: var(--text-muted);
+}
+
+body.dark-mode .method-radio.active {
+	background-color: var(--card-bg);
+	border-color: var(--primary);
+}
+
+/* Warning Box Dark Mode */
+body.dark-mode .warning-box {
+	background-color: rgba(245, 158, 11, 0.1);
+	border-color: rgba(245, 158, 11, 0.3);
+	color: #fbbf24;
+}
+
+/* Card Glass Dark Mode */
+body.dark-mode .card-glass {
+	background-color: var(--card-bg);
+	border-color: var(--border-color);
+}
+
+/* Input Group Material Dark Mode */
+body.dark-mode .input-group-material .form-control {
+	background-color: var(--input-bg);
+	border-color: var(--border-color);
+	color: var(--text-main);
+}
+
+body.dark-mode .input-group-material label {
+	background-color: var(--card-bg);
+	color: var(--text-muted);
+}
+
+/* Status Badges Dark Mode */
+body.dark-mode .status-active {
+	background-color: rgba(34, 197, 94, 0.15);
+	color: #4ade80;
+}
+
+body.dark-mode .status-completed {
+	background-color: rgba(99, 102, 241, 0.15);
+	color: #818cf8;
+}
+
+/* Form Label Dark Mode */
+body.dark-mode .form-label,
+body.dark-mode .form-label-upper {
+	color: var(--text-muted);
+}
+
+/* Language Dropdown Dark Mode Override */
+body.dark-mode .language-dropdown {
+	background: var(--card-bg);
+	border-color: var(--border-color);
+}
+
+body.dark-mode .language-option {
+	color: var(--text-muted);
+}
+
+body.dark-mode .language-option:hover {
+	background: rgba(255, 255, 255, 0.05);
+	color: var(--text-main);
+}
+
+body.dark-mode .language-option.active {
+	background: rgba(79, 70, 229, 0.15);
+	color: var(--text-main);
+}
+
+/* Progress Bar Dark Mode */
+body.dark-mode .progress-thin {
+	background-color: var(--border-color);
+}
+
+/* Table Responsive Dark Mode */
+body.dark-mode .table-responsive {
+	border-color: var(--border-color);
+}
+
+/* Dropdown Menu Dark Mode */
+body.dark-mode .dropdown-menu {
+	background-color: var(--card-bg);
+	border-color: var(--border-color);
+	box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.5);
+}
+
+body.dark-mode .dropdown-item {
+	color: var(--text-main);
+}
+
+body.dark-mode .dropdown-item:hover {
+	background-color: rgba(255, 255, 255, 0.05);
+	color: var(--text-main);
+}
+
+body.dark-mode .dropdown-divider {
+	border-top-color: var(--border-color);
+}
+
+/* Alert Dark Mode */
+body.dark-mode .alert {
+	border-color: var(--border-color);
+}
+
+body.dark-mode .alert-success {
+	background-color: rgba(34, 197, 94, 0.1);
+	color: #4ade80;
+}
+
+body.dark-mode .alert-danger {
+	background-color: rgba(239, 68, 68, 0.1);
+	color: #f87171;
+}
+
+body.dark-mode .alert-warning {
+	background-color: rgba(245, 158, 11, 0.1);
+	color: #fbbf24;
+}
+
+body.dark-mode .alert-info {
+	background-color: rgba(99, 102, 241, 0.1);
+	color: #818cf8;
+}
+
+/* Close Button Dark Mode */
+body.dark-mode .btn-close {
+	filter: invert(1) grayscale(100%) brightness(200%);
+}
+
+/* =========================================
+   SYSTEM THEME MODE - OS PREFERENCE DETECTION
+   ========================================= */
+
+/**
+ * System Theme Mode uses JavaScript to dynamically add/remove the 'dark-mode' class
+ * based on the user's OS preference (matchMedia). This allows us to reuse all existing
+ * body.dark-mode rules without duplication.
+ * 
+ * The CSS media query below only sets CSS custom properties for the brief moment
+ * before JavaScript loads, ensuring no flash of unstyled content.
+ */
+
+/* System Theme - Set CSS variables before JS loads (prevents FOUC) */
+@media (prefers-color-scheme: dark) {
+	body.system-theme {
+		--bg-body: #0f172a;
+		--bg-sidebar: #020617;
+		--card-bg: #1e293b;
+		--text-main: #f8fafc;
+		--text-muted: #94a3b8;
+		--border-color: #334155;
+		--input-bg: #0f172a;
+		background-color: var(--bg-body);
+		color: var(--text-main);
+	}
+}
+
+/* When JS adds dark-mode class to system-theme body, all body.dark-mode rules apply */
+body.system-theme.dark-mode {
+	/* Inherits all body.dark-mode rules - no duplication needed */
+}
+
+/* =========================================
+   ADDITIONAL DARK MODE STYLES FOR USER PAGES
+   ========================================= */
+
+/* --- Deposit Page Components --- */
+body.dark-mode .method-card {
+	background-color: var(--card-bg);
+	border-color: var(--border-color);
+	color: var(--text-main);
+}
+
+body.dark-mode .method-card:hover {
+	background-color: rgba(255, 255, 255, 0.02);
+	border-color: var(--text-muted);
+}
+
+body.dark-mode .method-card.active {
+	background-color: rgba(79, 70, 229, 0.05);
+	border-color: var(--primary);
+}
+
+body.dark-mode .method-card .text-dark {
+	color: var(--text-main) !important;
+}
+
+body.dark-mode .copy-input-group {
+	background-color: rgba(255, 255, 255, 0.1);
+	border-color: rgba(255, 255, 255, 0.2);
+}
+
+body.dark-mode .copy-input-group .copy-input {
+	color: white;
+}
+
+body.dark-mode .qr-placeholder {
+	background-color: white;
+	border-color: var(--border-color);
+}
+
+/* Fee calculation box */
+body.dark-mode .bg-light.rounded-3.p-3 {
+	background-color: rgba(255, 255, 255, 0.05) !important;
+}
+
+/* --- Withdraw Page Components --- */
+body.dark-mode .summary-card {
+	background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+}
+
+body.dark-mode .balance-card {
+	background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+}
+
+/* --- Referrals Page Components --- */
+body.dark-mode .stat-card {
+	background-color: var(--card-bg);
+	border-color: var(--border-color);
+}
+
+body.dark-mode .stat-card:hover {
+	background-color: rgba(255, 255, 255, 0.02);
+}
+
+body.dark-mode .copy-input-group {
+	background-color: var(--bg-body);
+	border-color: var(--border-color);
+}
+
+body.dark-mode .copy-input-group .copy-input {
+	color: var(--text-main);
+}
+
+body.dark-mode .nav-pills-custom .nav-link {
+	color: var(--text-muted);
+}
+
+body.dark-mode .nav-pills-custom .nav-link:hover {
+	color: var(--text-main);
+}
+
+body.dark-mode .nav-pills-custom .nav-link.active {
+	background-color: rgba(79, 70, 229, 0.15);
+	color: var(--primary);
+}
+
+body.dark-mode .referral-item:hover {
+	background-color: rgba(255, 255, 255, 0.02);
+}
+
+body.dark-mode .step-circle {
+	background: rgba(255, 255, 255, 0.2);
+	border-color: rgba(255, 255, 255, 0.3);
+	color: white;
+}
+
+/* --- My-Investments Page Components --- */
+body.dark-mode .tabs-line {
+	border-color: var(--border-color);
+}
+
+body.dark-mode .tab-btn {
+	color: var(--text-muted);
+}
+
+body.dark-mode .tab-btn:hover {
+	color: var(--text-main);
+}
+
+body.dark-mode .tab-btn.active {
+	color: var(--primary);
+	border-bottom-color: var(--primary);
+}
+
+/* Portfolio overview right side (chart area) */
+body.dark-mode .col-lg-4.p-4[style*='background: #f8fafc'] {
+	background-color: var(--bg-sidebar) !important;
+	border-color: var(--border-color) !important;
+}
+
+/* --- Table Styling (All Pages) --- */
+body.dark-mode .table thead.bg-light th {
+	background-color: var(--bg-sidebar) !important;
+	color: var(--text-muted);
+	border-color: var(--border-color);
+}
+
+body.dark-mode .table tbody td {
+	color: var(--text-main);
+	border-color: var(--border-color);
+}
+
+body.dark-mode .table tbody tr:hover {
+	background-color: rgba(255, 255, 255, 0.02);
+}
+
+body.dark-mode .table-hover tbody tr:hover {
+	background-color: rgba(255, 255, 255, 0.02);
+}
+
+/* Card footer (pagination area) */
+body.dark-mode .card-footer.bg-white {
+	background-color: var(--card-bg) !important;
+	border-color: var(--border-color);
+}
+
+/* --- Card Headers --- */
+body.dark-mode .card-header.bg-transparent {
+	border-color: var(--border-color);
+}
+
+body.dark-mode .card-header h5,
+body.dark-mode .card-header h6 {
+	color: var(--text-main);
+}
+
+/* --- Form Styling --- */
+body.dark-mode .form-text {
+	color: var(--text-muted);
+}
+
+body.dark-mode .form-check-input {
+	background-color: var(--input-bg);
+	border-color: var(--border-color);
+}
+
+body.dark-mode .form-check-input:checked {
+	background-color: var(--primary);
+	border-color: var(--primary);
+}
+
+/* --- Modal Styling --- */
+body.dark-mode .modal-content {
+	background-color: var(--card-bg);
+	border-color: var(--border-color);
+	color: var(--text-main);
+}
+
+body.dark-mode .modal-header {
+	border-bottom-color: var(--border-color);
+}
+
+body.dark-mode .modal-footer {
+	border-top-color: var(--border-color);
+}
+
+body.dark-mode .modal-header .btn-close {
+	filter: invert(1) grayscale(100%) brightness(200%);
+}
+
+body.dark-mode .modal-backdrop.show {
+	background-color: rgba(0, 0, 0, 0.7);
+}
+
+/* --- Pagination (Additional) --- */
+body.dark-mode .pagination .page-link.bg-light {
+	background-color: var(--bg-body) !important;
+	color: var(--text-main);
+}
+
+body.dark-mode .pagination .page-link.bg-light:hover {
+	background-color: var(--border-color) !important;
+}
+
+body.dark-mode .pagination .page-item.active .page-link {
+	background-color: var(--primary) !important;
+	border-color: var(--primary);
+	color: white;
+}
+
+body.dark-mode .pagination .page-item.disabled .page-link {
+	background-color: var(--bg-body) !important;
+	color: var(--text-muted);
+}
+
+/* Page ellipsis */
+body.dark-mode .page-ellipsis {
+	background-color: var(--bg-body) !important;
+	color: var(--text-muted);
+}
+
+body.dark-mode .page-ellipsis:hover {
+	background-color: var(--border-color) !important;
+	color: var(--text-main);
+}
+
+/* --- Empty States --- */
+body.dark-mode .empty-state .bg-light,
+body.dark-mode .text-center .bg-light.rounded-circle,
+body.dark-mode .p-5.text-center .bg-light.rounded-circle {
+	background-color: rgba(255, 255, 255, 0.05) !important;
+}
+
+/* --- Invest Page Specific --- */
+body.dark-mode .card-plan .border-top.border-bottom {
+	border-color: var(--border-color) !important;
+}
+
+body.dark-mode .card-plan .text-secondary {
+	color: var(--text-muted) !important;
+}
+
+body.dark-mode .roi-badge.bg-light {
+	background-color: rgba(255, 255, 255, 0.1) !important;
+	color: var(--text-main);
+}
+
+body.dark-mode .roi-badge.bg-light.text-dark {
+	color: var(--text-main) !important;
+}
+
+/* Profit estimator card */
+body.dark-mode .bg-white.p-4 {
+	background-color: var(--card-bg) !important;
+}
+
+body.dark-mode input[readonly].bg-light {
+	background-color: rgba(255, 255, 255, 0.05) !important;
+	color: var(--text-main);
+}
+
+/* --- Alerts in Dark Mode --- */
+body.dark-mode .alert.bg-primary.bg-opacity-10 {
+	background-color: rgba(79, 70, 229, 0.15) !important;
+	border-color: rgba(79, 70, 229, 0.3);
+}
+
+body.dark-mode .alert.bg-warning.bg-opacity-10 {
+	background-color: rgba(245, 158, 11, 0.15) !important;
+	border-color: rgba(245, 158, 11, 0.3);
+}
+
+body.dark-mode .alert.alert-warning {
+	background-color: rgba(245, 158, 11, 0.1);
+	border-color: rgba(245, 158, 11, 0.3);
+	color: #fbbf24;
+}
+
+/* --- HR/ Dividers --- */
+body.dark-mode hr.border-light,
+body.dark-mode hr.border-secondary {
+	border-color: var(--border-color) !important;
+	opacity: 0.5;
+}
+
+body.dark-mode .border-top-light {
+	border-color: var(--border-color) !important;
+}
+
+body.dark-mode .border-bottom-light {
+	border-color: var(--border-color) !important;
+}
+
+/* --- List Groups --- */
+body.dark-mode .list-group-item {
+	background-color: var(--card-bg);
+	border-color: var(--border-color);
+	color: var(--text-main);
+}
+
+body.dark-mode .list-group-item:hover {
+	background-color: rgba(255, 255, 255, 0.02);
+}
+
+/* --- Social Share Buttons --- */
+body.dark-mode .btn-social:hover {
+	opacity: 0.9;
+}
+
+/* --- Badge Styling --- */
+body.dark-mode .badge.bg-secondary.bg-opacity-10 {
+	background-color: rgba(255, 255, 255, 0.1) !important;
+	color: var(--text-muted);
+}
+
+/* --- Select Dropdown Options --- */
+body.dark-mode select option {
+	background-color: var(--card-bg);
+	color: var(--text-main);
+}
+
+/* --- Investment Cards Hover --- */
+body.dark-mode .investment-card:hover {
+	background-color: rgba(255, 255, 255, 0.02);
+}
+
+/* --- Countdown Timer --- */
+body.dark-mode .countdown-timer {
+	color: var(--text-main);
+}
+
+/* --- BG Light Override (comprehensive) --- */
+body.dark-mode .bg-light {
+	background-color: rgba(255, 255, 255, 0.05) !important;
+}
+
+/* Border opacity helper */
+body.dark-mode .border-opacity-10 {
+	border-color: var(--border-color) !important;
+}
+
+/* White background with opacity in dark mode */
+body.dark-mode .bg-white.bg-opacity-10,
+body.dark-mode .bg-white.bg-opacity-25 {
+	background-color: rgba(255, 255, 255, 0.1) !important;
+}
+
+/* --- Hover states for interactive elements --- */
+body.dark-mode .hover-bg:hover {
+	background-color: rgba(255, 255, 255, 0.05) !important;
+}
+
+/* =========================================
+   ADDITIONAL DARK MODE STYLES - PAGE SPECIFIC
+   ========================================= */
+
+/* --- Invest Page Modal --- */
+body.dark-mode #investModal .modal-content {
+	background-color: var(--card-bg);
+	border-color: var(--border-color);
+}
+
+body.dark-mode #investModal .modal-header {
+	background-color: transparent;
+	border-bottom-color: var(--border-color);
+}
+
+body.dark-mode #investModal .modal-header.bg-light {
+	background-color: var(--bg-sidebar) !important;
+}
+
+body.dark-mode #investModal input[readonly] {
+	background-color: rgba(255, 255, 255, 0.05) !important;
+	color: var(--text-main);
+	border-color: var(--border-color);
+}
+
+body.dark-mode #investModal .bg-light.rounded {
+	background-color: rgba(255, 255, 255, 0.05) !important;
+}
+
+body.dark-mode #investModal .text-muted {
+	color: var(--text-muted) !important;
+}
+
+/* --- My Investments Modal --- */
+body.dark-mode .modal .bg-light.rounded-3 {
+	background-color: rgba(255, 255, 255, 0.05) !important;
+}
+
+body.dark-mode .modal .list-group-item {
+	background-color: transparent;
+	border-color: var(--border-color);
+}
+
+body.dark-mode .modal .text-dark {
+	color: var(--text-main) !important;
+}
+
+body.dark-mode .modal .text-muted {
+	color: var(--text-muted) !important;
+}
+
+body.dark-mode .modal .text-secondary {
+	color: var(--text-muted) !important;
+}
+
+/* --- Deposit Page - Payment Details Card --- */
+body.dark-mode .position-relative[style*='background: linear-gradient'] .text-white-50 {
+	color: rgba(255, 255, 255, 0.7) !important;
+}
+
+body.dark-mode .position-relative[style*='background: linear-gradient'] .alert {
+	background-color: rgba(255, 255, 255, 0.1) !important;
+	border-color: rgba(255, 255, 255, 0.2) !important;
+}
+
+/* --- Withdraw Page - Warning Box --- */
+body.dark-mode .warning-box {
+	background-color: rgba(245, 158, 11, 0.1);
+	border-color: rgba(245, 158, 11, 0.3);
+	color: #fbbf24;
+}
+
+/* --- Profile Page - 2FA Switch --- */
+body.dark-mode .form-switch .form-check-input {
+	background-color: var(--border-color);
+	border-color: var(--border-color);
+}
+
+body.dark-mode .form-switch .form-check-input:checked {
+	background-color: var(--primary);
+	border-color: var(--primary);
+}
+
+/* --- Activity Item Hover --- */
+body.dark-mode .activity-item:hover {
+	background-color: rgba(255, 255, 255, 0.02);
+}
+
+/* --- Chart Container Backgrounds --- */
+body.dark-mode #profitChart,
+body.dark-mode #allocationChart {
+	background: transparent;
+}
+
+/* --- Select2/Dropdown Styles (if used) --- */
+body.dark-mode .form-select option {
+	background-color: var(--card-bg);
+	color: var(--text-main);
+}
+
+/* --- Card Plan Hover --- */
+body.dark-mode .card-plan:hover {
+	border-color: var(--primary);
+}
+
+/* --- Method Card Icon Backgrounds --- */
+body.dark-mode .method-icon {
+	background-color: rgba(255, 255, 255, 0.05) !important;
+}
+
+/* --- Referral Stats Card Icons --- */
+body.dark-mode .icon-box {
+	background-color: rgba(255, 255, 255, 0.05) !important;
+}
+
+/* --- Pagination Ellipsis Hover --- */
+body.dark-mode .page-ellipsis:hover {
+	background-color: var(--border-color) !important;
+	color: var(--text-main);
+}
+
+/* --- Transaction Amount Colors --- */
+body.dark-mode .text-success {
+	color: #4ade80 !important;
+}
+
+body.dark-mode .text-danger {
+	color: #f87171 !important;
+}
+
+/* --- Empty State Icons --- */
+body.dark-mode .fa-search,
+body.dark-mode .fa-chart-pie,
+body.dark-mode .fa-history,
+body.dark-mode .fa-users,
+body.dark-mode .fa-inbox,
+body.dark-mode .fa-wallet {
+	opacity: 0.5;
+}
+
+/* --- Table Header Sort Icons --- */
+body.dark-mode .table thead th .fa-sort,
+body.dark-mode .table thead th .fa-sort-up,
+body.dark-mode .table thead th .fa-sort-down {
+	color: var(--text-muted);
+}
+
+/* --- Modal Form Controls --- */
+body.dark-mode .modal .form-control,
+body.dark-mode .modal .form-select {
+	background-color: var(--input-bg);
+	border-color: var(--border-color);
+	color: var(--text-main);
+}
+
+body.dark-mode .modal .form-control:focus,
+body.dark-mode .modal .form-select:focus {
+	border-color: var(--primary);
+	box-shadow: 0 0 0 4px rgba(79, 70, 229, 0.2);
+}
+
+/* --- Invest Page - Plan Card Specific --- */
+body.dark-mode .card-plan.popular {
+	background: linear-gradient(180deg, #1e293b 0%, #0f172a 100%);
+	border-color: var(--primary);
+}
+
+body.dark-mode .card-plan .border-top,
+body.dark-mode .card-plan .border-bottom {
+	border-color: var(--border-color) !important;
+}
+
+/* --- Badge Soft Variants --- */
+body.dark-mode .badge-soft.bg-success {
+	background-color: rgba(34, 197, 94, 0.15) !important;
+	color: #4ade80;
+}
+
+body.dark-mode .badge-soft.bg-danger {
+	background-color: rgba(239, 68, 68, 0.15) !important;
+	color: #f87171;
+}
+
+body.dark-mode .badge-soft.bg-warning {
+	background-color: rgba(245, 158, 11, 0.15) !important;
+	color: #fbbf24;
+}
+
+body.dark-mode .badge-soft.bg-info {
+	background-color: rgba(6, 182, 212, 0.15) !important;
+	color: #22d3ee;
+}
+
+body.dark-mode .badge-soft.bg-primary {
+	background-color: rgba(79, 70, 229, 0.15) !important;
+	color: #818cf8;
+}
+
+body.dark-mode .badge-soft.bg-secondary {
+	background-color: rgba(255, 255, 255, 0.1) !important;
+	color: var(--text-muted);
+}
+
+/* --- Status Badge Variants --- */
+body.dark-mode .badge.bg-success {
+	background-color: rgba(34, 197, 94, 0.2) !important;
+	color: #4ade80;
+}
+
+body.dark-mode .badge.bg-danger {
+	background-color: rgba(239, 68, 68, 0.2) !important;
+	color: #f87171;
+}
+
+body.dark-mode .badge.bg-warning {
+	background-color: rgba(245, 158, 11, 0.2) !important;
+	color: #fbbf24;
+}
+
+body.dark-mode .badge.bg-warning.text-dark {
+	color: #fbbf24 !important;
+}
+
+body.dark-mode .badge.bg-info {
+	background-color: rgba(6, 182, 212, 0.2) !important;
+	color: #22d3ee;
+}
+
+body.dark-mode .badge.bg-secondary {
+	background-color: rgba(255, 255, 255, 0.1) !important;
+	color: var(--text-muted);
+}
+
+/* --- Hover Effects for Cards --- */
+body.dark-mode .card-custom:hover,
+body.dark-mode .stat-card:hover,
+body.dark-mode .card-plan:hover {
+	box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+}
+
+/* --- Progress Bar Background --- */
+body.dark-mode .progress {
+	background-color: var(--border-color);
+}
+
+/* --- Input Group Text --- */
+body.dark-mode .input-group-text {
+	background-color: var(--bg-sidebar);
+	border-color: var(--border-color);
+	color: var(--text-muted);
+}
+
+/* --- Form Floating Labels --- */
+body.dark-mode .form-floating .form-control {
+	background-color: var(--input-bg);
+	border-color: var(--border-color);
+	color: var(--text-main);
+}
+
+body.dark-mode .form-floating label {
+	color: var(--text-muted);
+}
+
+/* --- Toast Notifications --- */
+body.dark-mode .toast {
+	background-color: var(--card-bg);
+	border-color: var(--border-color);
+	color: var(--text-main);
+}
+
+body.dark-mode .toast-header {
+	background-color: var(--bg-sidebar);
+	border-bottom-color: var(--border-color);
+	color: var(--text-main);
+}
+
+/* =========================================
+   PROFILE PAGE DARK MODE STYLES
+   ========================================= */
+
+/* Profile Cover - already has gradient, ensure text is visible */
+body.dark-mode .profile-cover {
+	background: var(--gradient-card);
+}
+
+/* Profile Avatar */
+body.dark-mode .profile-avatar {
+	border-color: var(--card-bg);
+	background-color: var(--card-bg);
+}
+
+/* Settings Navigation Buttons */
+body.dark-mode .settings-nav .btn-nav {
+	color: var(--text-muted);
+}
+
+body.dark-mode .settings-nav .btn-nav:hover {
+	background-color: rgba(255, 255, 255, 0.05);
+	color: var(--text-main);
+}
+
+body.dark-mode .settings-nav .btn-nav.active {
+	background-color: rgba(79, 70, 229, 0.15);
+	color: var(--primary);
+}
+
+/* Upload Zone */
+body.dark-mode .upload-zone {
+	background-color: var(--bg-body);
+	border-color: var(--border-color);
+}
+
+body.dark-mode .upload-zone:hover {
+	border-color: var(--primary);
+	background-color: rgba(79, 70, 229, 0.05);
+}
+
+/* Tab Transitions Background */
+body.dark-mode .tab-enter,
+body.dark-mode .tab-leave {
+	background-color: var(--card-bg);
+}
+
+/* Form Controls in Profile */
+body.dark-mode .form-control.bg-light {
+	background-color: rgba(255, 255, 255, 0.05) !important;
+	color: var(--text-main);
+}
+
+body.dark-mode .form-control.bg-light:read-only {
+	background-color: rgba(255, 255, 255, 0.03) !important;
+	color: var(--text-muted);
+}
+
+/* KYC Status Badges */
+body.dark-mode .badge.border-success.border-opacity-10 {
+	background-color: rgba(34, 197, 94, 0.15) !important;
+	color: #4ade80;
+	border-color: rgba(34, 197, 94, 0.3) !important;
+}
+
+body.dark-mode .badge.border-warning.border-opacity-10 {
+	background-color: rgba(245, 158, 11, 0.15) !important;
+	color: #fbbf24;
+	border-color: rgba(245, 158, 11, 0.3) !important;
+}
+
+body.dark-mode .badge.border-danger.border-opacity-10 {
+	background-color: rgba(239, 68, 68, 0.15) !important;
+	color: #f87171;
+	border-color: rgba(239, 68, 68, 0.3) !important;
+}
+
+body.dark-mode .badge.border-secondary.border-opacity-10 {
+	background-color: rgba(255, 255, 255, 0.1) !important;
+	color: var(--text-muted);
+	border-color: rgba(255, 255, 255, 0.2) !important;
+}
+
+/* Camera button on profile avatar */
+body.dark-mode .btn-dark.rounded-circle {
+	background-color: var(--bg-sidebar);
+	border-color: var(--card-bg) !important;
+}
+
+/* Form text helper */
+body.dark-mode .form-text small,
+body.dark-mode .form-text {
+	color: var(--text-muted);
+}
+
+/* KYC List Group Items */
+body.dark-mode .list-group-item .bg-light {
+	background-color: rgba(255, 255, 255, 0.05) !important;
+}
+
+/* Alert variants in profile */
+body.dark-mode .alert.alert-primary.bg-opacity-10 {
+	background-color: rgba(79, 70, 229, 0.15) !important;
+	border-color: rgba(79, 70, 229, 0.3);
+	color: #818cf8;
+}
+
+body.dark-mode .alert.alert-primary .text-primary-emphasis {
+	color: #818cf8;
+}
+
+body.dark-mode .alert.alert-warning.bg-opacity-10 {
+	background-color: rgba(245, 158, 11, 0.15) !important;
+	border-color: rgba(245, 158, 11, 0.3);
+	color: #fbbf24;
+}
+
+/* Select dropdown for country */
+body.dark-mode select.form-select option {
+	background-color: var(--card-bg);
+	color: var(--text-main);
+}
+
+/* 2FA Switch container */
+body.dark-mode .d-flex.align-items-center.justify-content-between.p-3.bg-light {
+	background-color: rgba(255, 255, 255, 0.05) !important;
+}
+
+body.dark-mode .d-flex.align-items-center.justify-content-between.p-3.bg-light h6 {
+	color: var(--text-main);
+}
+
+body.dark-mode .d-flex.align-items-center.justify-content-between.p-3.bg-light p {
+	color: var(--text-muted);
+}
+
+/* Divider in security tab */
+body.dark-mode hr.text-secondary.opacity-10 {
+	border-color: var(--border-color) !important;
+	opacity: 0.5;
+}
+
+/* =========================================
+   REFERRALS PAGE DARK MODE STYLES
+   ========================================= */
+
+/* How it works card - already has gradient background */
+body.dark-mode .card[style*='background: var(--gradient-card)'] .text-white-50 {
+	color: rgba(255, 255, 255, 0.7) !important;
+}
+
+/* Stats cards text */
+body.dark-mode .stat-card h2.text-dark {
+	color: var(--text-main) !important;
+}
+
+body.dark-mode .stat-card h6.text-secondary {
+	color: var(--text-muted) !important;
+}
+
+body.dark-mode .stat-card p.text-secondary {
+	color: var(--text-muted) !important;
+}
+
+/* Referral item hover */
+body.dark-mode .referral-item:hover {
+	background-color: rgba(255, 255, 255, 0.02);
+}
+
+body.dark-mode .referral-item .text-dark {
+	color: var(--text-main) !important;
+}
+
+body.dark-mode .referral-item .text-secondary {
+	color: var(--text-muted) !important;
+}
+
+/* Copy input in referrals */
+body.dark-mode .copy-input-group .copy-input {
+	color: var(--text-main);
+}
+
+body.dark-mode .copy-input-group .text-secondary {
+	color: var(--text-muted) !important;
+}
+
+/* Empty state in referrals */
+body.dark-mode .p-5.text-center .bg-light {
+	background-color: rgba(255, 255, 255, 0.05) !important;
+}
+
+/* =========================================
+   INVEST PAGE DARK MODE STYLES
+   ========================================= */
+
+/* Profit estimator input */
+body.dark-mode input.form-control.fw-bold.text-primary[readonly] {
+	background-color: rgba(79, 70, 229, 0.1) !important;
+	color: #818cf8 !important;
+}
+
+/* Available balance text */
+body.dark-mode .small.text-muted strong {
+	color: var(--text-main);
+}
+
+/* Plan card stats border */
+body.dark-mode .card-plan .border-top,
+body.dark-mode .card-plan .border-bottom {
+	border-color: var(--border-color) !important;
+}
+
+body.dark-mode .card-plan .border-top.py-3.mb-4 {
+	border-color: var(--border-color) !important;
+}
+
+/* ROI badge */
+body.dark-mode .roi-badge.bg-light {
+	background-color: rgba(255, 255, 255, 0.1) !important;
+}
+
+body.dark-mode .roi-badge.bg-primary {
+	background-color: var(--primary) !important;
+	color: white;
+}
+
+/* Plan card popular badge */
+body.dark-mode .badge.bg-primary.rounded-pill.px-3.py-2.shadow-sm {
+	background-color: var(--primary) !important;
+	color: white;
+}
+
+/* =========================================
+   DEPOSIT/WITHDRAW PAGE DARK MODE STYLES
+   ========================================= */
+
+/* Method selection cards */
+body.dark-mode .method-card .text-dark {
+	color: var(--text-main) !important;
+}
+
+body.dark-mode .method-card small.text-muted {
+	color: var(--text-muted) !important;
+}
+
+/* Payment details card */
+body.dark-mode .card[style*='background: linear-gradient'] .btn-light {
+	background-color: rgba(255, 255, 255, 0.9);
+	color: #1e293b;
+}
+
+body.dark-mode .card[style*='background: linear-gradient'] .btn-light:hover {
+	background-color: white;
+}
+
+/* Warning/info alerts in payment details */
+body.dark-mode .alert.bg-warning.bg-opacity-25 {
+	background-color: rgba(245, 158, 11, 0.2) !important;
+	border-color: rgba(245, 158, 11, 0.3);
+	color: #fbbf24;
+}
+
+body.dark-mode .alert.bg-info.bg-opacity-25 {
+	background-color: rgba(6, 182, 212, 0.2) !important;
+	border-color: rgba(6, 182, 212, 0.3);
+	color: #22d3ee;
+}
+
+/* Upload zone in deposit */
+body.dark-mode .upload-zone.dark-mode {
+	background: rgba(255, 255, 255, 0.05);
+	border-color: rgba(255, 255, 255, 0.2);
+	color: white;
+}
+
+body.dark-mode .upload-zone.dark-mode:hover {
+	background: rgba(255, 255, 255, 0.1);
+	border-color: rgba(255, 255, 255, 0.4);
+}
+
+/* Fee breakdown box */
+body.dark-mode .bg-light.rounded-3.p-3 {
+	background-color: rgba(255, 255, 255, 0.05) !important;
+}
+
+body.dark-mode .border-top.border-secondary.border-opacity-10 {
+	border-color: var(--border-color) !important;
+}
+
+/* =========================================
+   MY INVESTMENTS PAGE DARK MODE STYLES
+   ========================================= */
+
+/* Portfolio overview right side */
+body.dark-mode div[style*='background: #f8fafc'] {
+	background-color: var(--bg-sidebar) !important;
+}
+
+body.dark-mode div[style*='border-left: 1px solid #e2e8f0'] {
+	border-color: var(--border-color) !important;
+}
+
+/* Investment list item hover */
+body.dark-mode div[onmouseover] {
+	transition: background 0.2s;
+}
+
+body.dark-mode div[onmouseover]:hover {
+	background-color: rgba(255, 255, 255, 0.02) !important;
+}
+
+/* Progress bar in investments */
+body.dark-mode .progress[style*='background: #f1f5f9'] {
+	background-color: var(--border-color) !important;
+}
+
+/* Manage button */
+body.dark-mode .btn-outline-secondary {
+	color: var(--text-muted);
+	border-color: var(--border-color);
+}
+
+body.dark-mode .btn-outline-secondary:hover {
+	background-color: rgba(255, 255, 255, 0.05);
+	color: var(--text-main);
+	border-color: var(--text-muted);
+}
+
+/* Modal content */
+body.dark-mode .modal-content .bg-light.rounded-3 {
+	background-color: rgba(255, 255, 255, 0.05) !important;
+}
+
+body.dark-mode .modal-content .text-dark {
+	color: var(--text-main) !important;
+}
+
+body.dark-mode .modal-content .text-muted {
+	color: var(--text-muted) !important;
+}
+
+body.dark-mode .modal-content .text-secondary {
+	color: var(--text-muted) !important;
+}
+
+/* Table in history tab */
+body.dark-mode .table thead th {
+	background-color: var(--bg-sidebar) !important;
+	color: var(--text-muted);
+}
+
+body.dark-mode .table tbody tr:hover {
+	background-color: rgba(255, 255, 255, 0.02);
+}
+
+/* =========================================
+   TRANSACTIONS PAGE DARK MODE STYLES
+   ========================================= */
+
+/* Filter select dropdowns */
+body.dark-mode .form-select.border-0.bg-white {
+	background-color: var(--card-bg) !important;
+	color: var(--text-main);
+	border-color: var(--border-color) !important;
+}
+
+/* Desktop header */
+body.dark-mode .d-none.d-md-flex.bg-light {
+	background-color: var(--bg-sidebar) !important;
+}
+
+body.dark-mode .d-none.d-md-flex.text-secondary {
+	color: var(--text-muted) !important;
+}
+
+/* Transaction row hover */
+body.dark-mode .transaction-row:hover {
+	background-color: rgba(255, 255, 255, 0.02);
+}
+
+/* Icon circle backgrounds */
+body.dark-mode .icon-circle {
+	background-color: rgba(255, 255, 255, 0.05) !important;
+}
+
+/* Badge soft */
+body.dark-mode .badge-soft {
+	background-color: rgba(255, 255, 255, 0.05) !important;
+}
+
+/* Empty state */
+body.dark-mode .p-5.text-center .bg-light.rounded-circle {
+	background-color: rgba(255, 255, 255, 0.05) !important;
+}
+
+/* =========================================
+   DASHBOARD PAGE DARK MODE STYLES
+   ========================================= */
+
+/* Stat cards text */
+body.dark-mode .card-custom h3.text-dark {
+	color: var(--text-main) !important;
+}
+
+body.dark-mode .card-custom p.text-secondary {
+	color: var(--text-muted) !important;
+}
+
+body.dark-mode .card-custom small.text-muted {
+	color: var(--text-muted) !important;
+}
+
+/* Investment cards */
+body.dark-mode .card-custom.border-top {
+	background-color: var(--card-bg);
+}
+
+body.dark-mode .card-custom .bg-light.rounded {
+	background-color: rgba(255, 255, 255, 0.05) !important;
+}
+
+/* Countdown timer */
+body.dark-mode .countdown-timer {
+	color: var(--text-main);
+}
+
+/* Add new investment card */
+body.dark-mode .card-custom.border-dashed {
+	border-color: var(--border-color) !important;
+}
+
+body.dark-mode .card-custom.border-dashed .bg-white {
+	background-color: var(--card-bg) !important;
+}
+
+/* Chart period select */
+body.dark-mode #chartPeriod.form-select {
+	background-color: var(--bg-sidebar);
+	color: var(--text-main);
+}
+
+/* Recent activity */
+body.dark-mode .activity-item {
+	transition: background-color 0.2s;
+}
+
+body.dark-mode .activity-item:hover {
+	background-color: rgba(255, 255, 255, 0.02);
+}
+
+body.dark-mode .activity-item.border-bottom {
+	border-color: var(--border-color) !important;
+}
+
+/* Activity empty state */
+body.dark-mode .text-center.py-4.text-muted {
+	color: var(--text-muted) !important;
+}
+
+/* Chart empty state */
+body.dark-mode #profitChart + div .bg-light,
+body.dark-mode div[style*='min-height: 300px'] + div .bg-light {
+	background-color: rgba(255, 255, 255, 0.05) !important;
+}
+
+/* =========================================
+   SYSTEM THEME - DARK MODE EQUIVALENTS
+   ========================================= */
+
+/**
+ * When system theme is active and OS is in dark mode,
+ * JavaScript adds the 'dark-mode' class alongside 'system-theme'.
+ * These rules ensure all dark mode styles are applied correctly.
+ */
+
+/* Ensure system-theme with dark-mode class gets all dark styles */
+@media (prefers-color-scheme: dark) {
+	/* Additional component styles for system theme */
+	body.system-theme .method-card {
+		background-color: var(--card-bg);
+		border-color: var(--border-color);
+	}
+
+	body.system-theme .method-card:hover {
+		background-color: rgba(255, 255, 255, 0.02);
+	}
+
+	body.system-theme .copy-input-group {
+		background-color: rgba(255, 255, 255, 0.1);
+		border-color: rgba(255, 255, 255, 0.2);
+	}
+
+	body.system-theme .nav-pills-custom .nav-link.active {
+		background-color: rgba(79, 70, 229, 0.15);
+	}
+
+	body.system-theme .stat-card:hover {
+		background-color: rgba(255, 255, 255, 0.02);
+	}
+
+	body.system-theme .table thead.bg-light th {
+		background-color: var(--bg-sidebar) !important;
+	}
+
+	body.system-theme .table tbody tr:hover {
+		background-color: rgba(255, 255, 255, 0.02);
+	}
+
+	body.system-theme .card-footer.bg-white {
+		background-color: var(--card-bg) !important;
+	}
+
+	body.system-theme .settings-nav .btn-nav:hover {
+		background-color: rgba(255, 255, 255, 0.05);
+	}
+
+	body.system-theme .upload-zone {
+		background-color: var(--bg-body);
+		border-color: var(--border-color);
+	}
+
+	body.system-theme .investment-card:hover,
+	body.system-theme .referral-item:hover,
+	body.system-theme .activity-item:hover {
+		background-color: rgba(255, 255, 255, 0.02);
+	}
+
+	body.system-theme .badge.bg-secondary,
+	body.system-theme .badge-soft.bg-secondary {
+		background-color: rgba(255, 255, 255, 0.1) !important;
+	}
+
+	body.system-theme .roi-badge.bg-light {
+		background-color: rgba(255, 255, 255, 0.1) !important;
+	}
+
+	body.system-theme .card-plan.popular {
+		background: linear-gradient(180deg, #1e293b 0%, #0f172a 100%);
+	}
+
+	body.system-theme div[style*='background: #f8fafc'] {
+		background-color: var(--bg-sidebar) !important;
+	}
+
+	body.system-theme .progress[style*='background: #f1f5f9'] {
+		background-color: var(--border-color) !important;
+	}
+
+	body.system-theme .empty-state .bg-light,
+	body.system-theme .text-center .bg-light.rounded-circle {
+		background-color: rgba(255, 255, 255, 0.05) !important;
+	}
+
+	body.system-theme .qr-placeholder {
+		background-color: white;
+	}
+}
+
+/* =========================================
+   COMPREHENSIVE DARK MODE FIXES
+   ========================================= */
+
+/* --- 1. INVEST PAGE FIXES --- */
+
+/* Profit Estimator Card - White background section */
+body.dark-mode .col-lg-8.p-4.bg-white {
+	background-color: var(--card-bg) !important;
+}
+
+body.dark-mode .col-lg-8.p-4.bg-white h5.fw-bold {
+	color: var(--text-main) !important;
+}
+
+body.dark-mode .col-lg-8.p-4.bg-white label.small.text-muted {
+	color: var(--text-muted) !important;
+}
+
+body.dark-mode .col-lg-8.p-4.bg-white .text-muted {
+	color: var(--text-muted) !important;
+}
+
+body.dark-mode .col-lg-8.p-4.bg-white input[readonly] {
+	background-color: rgba(255, 255, 255, 0.05) !important;
+	color: var(--text-main) !important;
+}
+
+body.dark-mode .col-lg-8.p-4.bg-white input[type='number'] {
+	background-color: rgba(255, 255, 255, 0.05) !important;
+	color: var(--text-main) !important;
+}
+
+/* Available Plans heading */
+body.dark-mode .d-flex.justify-content-between h5.fw-bold {
+	color: var(--text-main) !important;
+}
+
+body.dark-mode .d-lg-none.text-secondary {
+	color: var(--text-muted) !important;
+}
+
+/* Plan Cards */
+body.dark-mode .card-plan {
+	background-color: var(--card-bg) !important;
+	border-color: var(--border-color) !important;
+}
+
+body.dark-mode .card-plan:hover {
+	border-color: var(--primary) !important;
+}
+
+body.dark-mode .card-plan h4.fw-bold {
+	color: var(--text-main) !important;
+}
+
+body.dark-mode .card-plan p.text-secondary {
+	color: var(--text-muted) !important;
+}
+
+body.dark-mode .card-plan .border-top,
+body.dark-mode .card-plan .border-bottom {
+	border-color: var(--border-color) !important;
+}
+
+body.dark-mode .card-plan span.text-muted {
+	color: var(--text-muted) !important;
+}
+
+body.dark-mode .card-plan span.fw-bold:not(.text-primary):not(.text-success) {
+	color: var(--text-main) !important;
+}
+
+/* ROI Badge */
+body.dark-mode .roi-badge.bg-light {
+	background-color: rgba(255, 255, 255, 0.1) !important;
+	color: var(--text-main) !important;
+}
+
+body.dark-mode .roi-badge.bg-light.text-dark {
+	color: var(--text-main) !important;
+}
+
+/* Plan selection buttons */
+body.dark-mode .card-plan .btn-outline-dark {
+	color: var(--text-main);
+	border-color: var(--border-color);
+}
+
+body.dark-mode .card-plan .btn-outline-dark:hover {
+	background-color: rgba(255, 255, 255, 0.05);
+	color: var(--text-main);
+}
+
+/* --- 2. TRANSACTIONS PAGE FIXES --- */
+
+/* Transaction Row Hover */
+body.dark-mode .transaction-row:hover {
+	background-color: rgba(255, 255, 255, 0.03) !important;
+}
+
+/* Empty State */
+body.dark-mode .p-5.text-center .bg-light.rounded-circle {
+	background-color: rgba(255, 255, 255, 0.05) !important;
+}
+
+body.dark-mode .p-5.text-center h5.fw-bold.text-dark {
+	color: var(--text-main) !important;
+}
+
+body.dark-mode .p-5.text-center p.text-muted {
+	color: var(--text-muted) !important;
+}
+
+/* Filter buttons hover */
+body.dark-mode .filter-btn:hover {
+	background-color: rgba(255, 255, 255, 0.05);
+	border-color: var(--border-color);
+	color: var(--text-main);
+}
+
+/* Desktop header */
+body.dark-mode .d-none.d-md-flex.bg-light {
+	background-color: var(--bg-sidebar) !important;
+	border-color: var(--border-color) !important;
+}
+
+body.dark-mode .d-none.d-md-flex .text-secondary {
+	color: var(--text-muted) !important;
+}
+
+/* --- 3. MY INVESTMENTS PAGE FIXES --- */
+
+/* Investment List Items */
+body.dark-mode div[style*='border-color: #e2e8f0'][onmouseover] {
+	border-color: var(--border-color) !important;
+}
+
+body.dark-mode div[onmouseover]:hover {
+	background-color: rgba(255, 255, 255, 0.03) !important;
+}
+
+/* Active investment text colors */
+body.dark-mode h6.fw-bold.text-dark {
+	color: var(--text-main) !important;
+}
+
+body.dark-mode div.text-muted.small {
+	color: var(--text-muted) !important;
+}
+
+body.dark-mode span.text-muted {
+	color: var(--text-muted) !important;
+}
+
+/* Progress bar background */
+body.dark-mode div.progress[style*='background: #f1f5f9'] {
+	background-color: var(--border-color) !important;
+}
+
+/* Manage button */
+body.dark-mode .btn-outline-secondary {
+	color: var(--text-muted);
+	border-color: var(--border-color);
+}
+
+body.dark-mode .btn-outline-secondary:hover {
+	background-color: rgba(255, 255, 255, 0.05);
+	color: var(--text-main);
+	border-color: var(--text-muted);
+}
+
+/* History Table */
+body.dark-mode .table thead.bg-light th {
+	background-color: var(--bg-sidebar) !important;
+	color: var(--text-muted) !important;
+	border-color: var(--border-color) !important;
+}
+
+body.dark-mode .table tbody tr {
+	border-color: var(--border-color) !important;
+}
+
+body.dark-mode .table tbody tr:hover {
+	background-color: rgba(255, 255, 255, 0.03) !important;
+}
+
+body.dark-mode .table tbody td {
+	color: var(--text-main);
+	border-color: var(--border-color) !important;
+}
+
+body.dark-mode .table tbody td.text-muted {
+	color: var(--text-muted) !important;
+}
+
+/* Table icon backgrounds */
+body.dark-mode .table tbody td .rounded-circle.bg-light {
+	background-color: rgba(255, 255, 255, 0.05) !important;
+}
+
+body.dark-mode .table tbody td .text-muted {
+	color: var(--text-muted) !important;
+}
+
+/* Empty States */
+body.dark-mode .text-center.py-3 .fa-chart-pie,
+body.dark-mode .text-center.py-3 .fa-history {
+	opacity: 0.5;
+}
+
+body.dark-mode .text-center.py-3 h6.fw-bold.text-dark {
+	color: var(--text-main) !important;
+}
+
+body.dark-mode .text-center.py-3 p.text-muted {
+	color: var(--text-muted) !important;
+}
+
+body.dark-mode .text-center.py-3 i.text-secondary {
+	color: var(--text-muted) !important;
+}
+
+/* Modal in My Investments */
+body.dark-mode .modal .list-group-item {
+	background-color: transparent;
+	border-color: var(--border-color);
+}
+
+body.dark-mode .modal .bg-light.rounded-3 {
+	background-color: rgba(255, 255, 255, 0.05) !important;
+}
+
+body.dark-mode .modal span.text-muted {
+	color: var(--text-muted) !important;
+}
+
+body.dark-mode .modal span.fw-bold.text-dark {
+	color: var(--text-main) !important;
+}
+
+body.dark-mode .modal .alert.alert-warning {
+	background-color: rgba(245, 158, 11, 0.1);
+	border-color: rgba(245, 158, 11, 0.3);
+	color: #fbbf24;
+}
+
+/* --- 4. DEPOSIT PAGE FIXES --- */
+
+/* Method Card */
+body.dark-mode .method-card {
+	background-color: var(--card-bg) !important;
+	border-color: var(--border-color) !important;
+}
+
+body.dark-mode .method-card:hover {
+	background-color: rgba(255, 255, 255, 0.03) !important;
+	border-color: var(--text-muted) !important;
+}
+
+body.dark-mode .method-card.active {
+	background-color: rgba(79, 70, 229, 0.1) !important;
+	border-color: var(--primary) !important;
+}
+
+body.dark-mode .method-card h6.fw-bold.text-dark {
+	color: var(--text-main) !important;
+}
+
+body.dark-mode .method-card small.text-muted {
+	color: var(--text-muted) !important;
+}
+
+body.dark-mode .method-card .method-icon {
+	background-color: rgba(255, 255, 255, 0.05) !important;
+}
+
+/* Form Label with badge */
+body.dark-mode h6.form-label {
+	color: var(--text-main) !important;
+}
+
+/* Amount input */
+body.dark-mode input.form-control-lg[type='number'] {
+	background-color: var(--input-bg);
+	color: var(--text-main);
+	border-color: var(--border-color);
+}
+
+/* Fee breakdown box */
+body.dark-mode .bg-light.rounded-3.p-3 {
+	background-color: rgba(255, 255, 255, 0.05) !important;
+}
+
+body.dark-mode .bg-light.rounded-3 span.text-secondary {
+	color: var(--text-muted) !important;
+}
+
+body.dark-mode .bg-light.rounded-3 span.fw-bold.text-dark {
+	color: var(--text-main) !important;
+}
+
+body.dark-mode .border-top.border-secondary {
+	border-color: var(--border-color) !important;
+}
+
+/* Recent Deposits Table */
+body.dark-mode .card-header.bg-transparent {
+	background-color: transparent !important;
+	border-color: var(--border-color) !important;
+}
+
+body.dark-mode .card-header h5.fw-bold {
+	color: var(--text-main) !important;
+}
+
+body.dark-mode table.table thead.bg-light th {
+	background-color: var(--bg-sidebar) !important;
+	color: var(--text-muted) !important;
+	border-color: var(--border-color) !important;
+}
+
+body.dark-mode table.table tbody td {
+	color: var(--text-main);
+	border-color: var(--border-color) !important;
+}
+
+body.dark-mode table.table tbody tr:hover {
+	background-color: rgba(255, 255, 255, 0.03) !important;
+}
+
+/* Badge styles in table */
+body.dark-mode .badge.bg-warning.bg-opacity-10 {
+	background-color: rgba(245, 158, 11, 0.15) !important;
+	color: #fbbf24;
+}
+
+body.dark-mode .badge.bg-success.bg-opacity-10 {
+	background-color: rgba(34, 197, 94, 0.15) !important;
+	color: #4ade80;
+}
+
+body.dark-mode .badge.bg-danger.bg-opacity-10 {
+	background-color: rgba(239, 68, 68, 0.15) !important;
+	color: #f87171;
+}
+
+/* --- 5. WITHDRAWAL PAGE FIXES --- */
+
+/* Card Glass Background */
+body.dark-mode .card-glass {
+	background-color: var(--card-bg) !important;
+	border-color: var(--border-color) !important;
+}
+
+/* Balance Card */
+body.dark-mode .balance-card {
+	background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+}
+
+/* Method Radio Cards */
+body.dark-mode .method-radio {
+	background-color: var(--card-bg);
+	border-color: var(--border-color);
+	color: var(--text-main);
+}
+
+body.dark-mode .method-radio:hover {
+	background-color: rgba(255, 255, 255, 0.03);
+	border-color: var(--text-muted);
+}
+
+body.dark-mode .method-radio.active {
+	background-color: rgba(79, 70, 229, 0.1);
+	border-color: var(--primary);
+}
+
+body.dark-mode .method-radio i.text-secondary {
+	color: var(--text-muted) !important;
+}
+
+body.dark-mode .method-radio.active i.text-primary {
+	color: var(--primary) !important;
+}
+
+body.dark-mode .method-radio div.small.fw-bold {
+	color: var(--text-main);
+}
+
+/* Form Labels */
+body.dark-mode label.small.fw-bold.text-secondary {
+	color: var(--text-muted) !important;
+}
+
+/* Form Controls */
+body.dark-mode .form-control,
+body.dark-mode .form-select {
+	background-color: var(--input-bg);
+	border-color: var(--border-color);
+	color: var(--text-main);
+}
+
+body.dark-mode .form-control::placeholder {
+	color: var(--text-muted);
+	opacity: 0.6;
+}
+
+body.dark-mode .form-control:focus,
+body.dark-mode .form-select:focus {
+	border-color: var(--primary);
+	box-shadow: 0 0 0 4px rgba(79, 70, 229, 0.2);
+}
+
+/* Warning Box */
+body.dark-mode .warning-box {
+	background-color: rgba(245, 158, 11, 0.1);
+	border-color: rgba(245, 158, 11, 0.3);
+	color: #fbbf24;
+}
+
+/* MAX Button */
+body.dark-mode .btn.btn-light {
+	background-color: rgba(255, 255, 255, 0.1);
+	border-color: var(--border-color);
+	color: var(--text-main);
+}
+
+body.dark-mode .btn.btn-light:hover {
+	background-color: rgba(255, 255, 255, 0.15);
+}
+
+body.dark-mode .btn.btn-light.text-primary {
+	color: var(--primary) !important;
+}
+
+/* Summary Card */
+body.dark-mode .summary-card {
+	background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+}
+
+/* Recent Withdrawals Table */
+body.dark-mode .card-glass .table thead th {
+	background-color: var(--bg-sidebar) !important;
+	color: var(--text-muted) !important;
+	border-color: var(--border-color) !important;
+}
+
+body.dark-mode .card-glass .table tbody td {
+	color: var(--text-main);
+	border-color: var(--border-color) !important;
+}
+
+body.dark-mode .card-glass .table tbody tr:hover {
+	background-color: rgba(255, 255, 255, 0.03) !important;
+}
+
+body.dark-mode .card-glass .table tbody td.text-muted {
+	color: var(--text-muted) !important;
+}
+
+body.dark-mode .card-glass .badge.bg-warning {
+	background-color: rgba(245, 158, 11, 0.2) !important;
+	color: #fbbf24;
+}
+
+/* --- 6. PROFILE PAGE FIXES --- */
+
+/* Profile Card */
+body.dark-mode .card.border-0.shadow-sm .profile-cover {
+	background: var(--gradient-card);
+}
+
+body.dark-mode .card.border-0.shadow-sm h5.fw-bold.text-dark {
+	color: var(--text-main) !important;
+}
+
+body.dark-mode .card.border-0.shadow-sm p.text-secondary {
+	color: var(--text-muted) !important;
+}
+
+/* Settings Navigation */
+body.dark-mode .settings-nav .btn-nav {
+	color: var(--text-muted);
+	background-color: transparent;
+}
+
+body.dark-mode .settings-nav .btn-nav:hover {
+	background-color: rgba(255, 255, 255, 0.05);
+	color: var(--text-main);
+}
+
+body.dark-mode .settings-nav .btn-nav.active {
+	background-color: rgba(79, 70, 229, 0.15);
+	color: var(--primary);
+}
+
+/* Tab Content Cards */
+body.dark-mode .col-lg-8 .card.border-0.shadow-sm {
+	background-color: var(--card-bg);
+}
+
+body.dark-mode .card-header.bg-transparent {
+	background-color: transparent !important;
+	border-color: var(--border-color) !important;
+}
+
+body.dark-mode .card-header h5.fw-bold {
+	color: var(--text-main) !important;
+}
+
+/* Form Controls in Profile */
+body.dark-mode .form-control:not([readonly]) {
+	background-color: var(--input-bg);
+	border-color: var(--border-color);
+	color: var(--text-main);
+}
+
+body.dark-mode .form-control[readonly].bg-light {
+	background-color: rgba(255, 255, 255, 0.05) !important;
+	color: var(--text-muted);
+}
+
+body.dark-mode .form-select {
+	background-color: var(--input-bg);
+	border-color: var(--border-color);
+	color: var(--text-main);
+}
+
+body.dark-mode .form-select option {
+	background-color: var(--card-bg);
+	color: var(--text-main);
+}
+
+body.dark-mode .form-text {
+	color: var(--text-muted);
+}
+
+body.dark-mode label.small.fw-bold.text-secondary {
+	color: var(--text-muted) !important;
+}
+
+/* 2FA Section */
+body.dark-mode .d-flex.align-items-center.justify-content-between.p-3.bg-light {
+	background-color: rgba(255, 255, 255, 0.05) !important;
+}
+
+body.dark-mode .d-flex.align-items-center.justify-content-between h6 {
+	color: var(--text-main) !important;
+}
+
+body.dark-mode .d-flex.align-items-center.justify-content-between p {
+	color: var(--text-muted) !important;
+}
+
+/* KYC Upload Zones */
+body.dark-mode .upload-zone {
+	background-color: var(--bg-body);
+	border-color: var(--border-color);
+}
+
+body.dark-mode .upload-zone:hover {
+	border-color: var(--primary);
+	background-color: rgba(79, 70, 229, 0.05);
+}
+
+body.dark-mode .upload-zone i.text-primary {
+	color: var(--primary) !important;
+}
+
+body.dark-mode .upload-zone h6 {
+	color: var(--text-main) !important;
+}
+
+body.dark-mode .upload-zone p.text-muted {
+	color: var(--text-muted) !important;
+}
+
+/* KYC List Group */
+body.dark-mode .list-group-item {
+	background-color: transparent;
+	border-color: var(--border-color);
+	color: var(--text-main);
+}
+
+body.dark-mode .list-group-item .bg-light {
+	background-color: rgba(255, 255, 255, 0.05) !important;
+}
+
+body.dark-mode .list-group-item span.fw-bold {
+	color: var(--text-main) !important;
+}
+
+body.dark-mode .list-group-item small.text-muted {
+	color: var(--text-muted) !important;
+}
+
+/* Alert Boxes */
+body.dark-mode .alert.alert-primary.bg-opacity-10 {
+	background-color: rgba(79, 70, 229, 0.15) !important;
+	border-color: rgba(79, 70, 229, 0.3);
+}
+
+body.dark-mode .alert.alert-primary i.text-primary {
+	color: #818cf8 !important;
+}
+
+body.dark-mode .alert.alert-primary .small {
+	color: #818cf8 !important;
+}
+
+body.dark-mode .alert.alert-warning.bg-opacity-10 {
+	background-color: rgba(245, 158, 11, 0.15) !important;
+	border-color: rgba(245, 158, 11, 0.3);
+	color: #fbbf24;
+}
+
+/* Dividers */
+body.dark-mode hr.border-bottom,
+body.dark-mode hr.border-top,
+body.dark-mode .border-bottom {
+	border-color: var(--border-color) !important;
+}
+
+body.dark-mode .pt-3.border-top {
+	border-color: var(--border-color) !important;
+}
+
+/* --- 7. REFERRAL PAGE FIXES --- */
+
+/* Stats Cards */
+body.dark-mode .stat-card {
+	background-color: var(--card-bg) !important;
+}
+
+body.dark-mode .stat-card h2.fw-bold.text-dark {
+	color: var(--text-main) !important;
+}
+
+body.dark-mode .stat-card h6.text-secondary {
+	color: var(--text-muted) !important;
+}
+
+body.dark-mode .stat-card p.text-secondary {
+	color: var(--text-muted) !important;
+}
+
+body.dark-mode .stat-card .small.text-success {
+	color: #4ade80 !important;
+}
+
+/* Icon Box in Stats */
+body.dark-mode .icon-box {
+	background-color: rgba(255, 255, 255, 0.05) !important;
+}
+
+/* Share Link Card */
+body.dark-mode #shareSection .card.border-0.shadow-sm {
+	background-color: var(--card-bg);
+}
+
+body.dark-mode #shareSection h5.fw-bold {
+	color: var(--text-main) !important;
+}
+
+body.dark-mode #shareSection p.text-secondary {
+	color: var(--text-muted) !important;
+}
+
+/* Copy Input Group */
+body.dark-mode .copy-input-group {
+	background-color: var(--bg-body);
+	border-color: var(--border-color);
+}
+
+body.dark-mode .copy-input-group .copy-input {
+	color: var(--text-main);
+	background-color: transparent;
+}
+
+body.dark-mode .copy-input-group .text-secondary {
+	color: var(--text-muted) !important;
+}
+
+/* Referral History Card */
+body.dark-mode .col-lg-7 .card.border-0.shadow-sm {
+	background-color: var(--card-bg);
+}
+
+body.dark-mode .col-lg-7 .card-header {
+	background-color: transparent !important;
+	border-color: var(--border-color) !important;
+}
+
+body.dark-mode .col-lg-7 .card-header h5.fw-bold {
+	color: var(--text-main) !important;
+}
+
+/* Nav Pills */
+body.dark-mode .nav-pills-custom .nav-link {
+	color: var(--text-muted);
+	background-color: transparent;
+}
+
+body.dark-mode .nav-pills-custom .nav-link:hover {
+	color: var(--text-main);
+}
+
+body.dark-mode .nav-pills-custom .nav-link.active {
+	background-color: rgba(79, 70, 229, 0.15);
+	color: var(--primary);
+}
+
+/* Referral Items */
+body.dark-mode .referral-item {
+	background-color: transparent;
+	border-color: var(--border-color);
+}
+
+body.dark-mode .referral-item:hover {
+	background-color: rgba(255, 255, 255, 0.03) !important;
+}
+
+body.dark-mode .referral-item h6.fw-bold.text-dark {
+	color: var(--text-main) !important;
+}
+
+body.dark-mode .referral-item span.text-secondary {
+	color: var(--text-muted) !important;
+}
+
+body.dark-mode .referral-item .text-success {
+	color: #4ade80 !important;
+}
+
+/* Empty State in Referrals */
+body.dark-mode .list-group.list-group-flush .p-5.text-center .bg-light {
+	background-color: rgba(255, 255, 255, 0.05) !important;
+}
+
+body.dark-mode .list-group.list-group-flush h5.fw-bold.text-dark {
+	color: var(--text-main) !important;
+}
+
+body.dark-mode .list-group.list-group-flush p.text-muted {
+	color: var(--text-muted) !important;
+}
+
+/* How it Works Card (has gradient, ensure text is visible) */
+body.dark-mode .card[style*='background: var(--gradient-card)'] h5,
+body.dark-mode .card[style*='background: var(--gradient-card)'] h6 {
+	color: white !important;
+}
+
+body.dark-mode .card[style*='background: var(--gradient-card)'] p {
+	color: rgba(255, 255, 255, 0.7) !important;
+}
+
+/* Social Share Buttons */
+body.dark-mode .btn-social:hover {
+	opacity: 0.9;
+	transform: scale(1.1);
+}
+
+/* --- HOVER EFFECTS CONSISTENCY --- */
+
+/* Ensure all hover effects work in dark mode */
+body.dark-mode .card:hover,
+body.dark-mode .stat-card:hover,
+body.dark-mode .method-card:hover,
+body.dark-mode .method-radio:hover,
+body.dark-mode .settings-nav .btn-nav:hover,
+body.dark-mode .referral-item:hover,
+body.dark-mode .transaction-row:hover,
+body.dark-mode .list-group-item:hover,
+body.dark-mode .upload-zone:hover {
+	transition: all 0.2s ease;
+}
+
+/* Table row hover consistency */
+body.dark-mode .table-hover tbody tr:hover td {
+	background-color: rgba(255, 255, 255, 0.03) !important;
+}
+
+/* Button hover states */
+body.dark-mode .btn-outline-secondary:hover {
+	background-color: rgba(255, 255, 255, 0.08);
+}
+
+body.dark-mode .btn-outline-primary:hover {
+	background-color: rgba(79, 70, 229, 0.2);
+}
+
+/* Link hover states */
+body.dark-mode a:hover {
+	opacity: 0.9;
+}
+
+/* Focus states for accessibility */
+body.dark-mode .form-control:focus,
+body.dark-mode .form-select:focus,
+body.dark-mode .btn:focus {
+	box-shadow: 0 0 0 4px rgba(79, 70, 229, 0.25);
+}
+
+/* =========================================
+   INLINE STYLE OVERRIDES FOR DARK MODE
+   ========================================= */
+
+/* Fix inline hover styles in My Investments */
+body.dark-mode div[style*='transition: background 0.2s'] {
+	transition: background 0.2s !important;
+}
+
+body.dark-mode div[style*='transition: background 0.2s']:hover {
+	background-color: rgba(255, 255, 255, 0.03) !important;
+}
+
+/* Override inline onmouseout="this.style.background='transparent'" */
+body.dark-mode div[onmouseout*='transparent'] {
+	background-color: transparent !important;
+}
+
+/* Fix border colors with inline styles */
+body.dark-mode div[style*='border-color: #e2e8f0'] {
+	border-color: var(--border-color) !important;
+}
+
+/* Fix progress bar backgrounds with inline styles */
+body.dark-mode div[style*='background: #f1f5f9'] {
+	background-color: var(--border-color) !important;
+}
+
+/* Fix any remaining bg-light inline styles */
+body.dark-mode [style*='background: #f8fafc'],
+body.dark-mode [style*='background-color: #f8fafc'] {
+	background-color: var(--bg-sidebar) !important;
+}
+
+/* Fix any remaining bg-white inline styles */
+body.dark-mode [style*='background: #ffffff'],
+body.dark-mode [style*='background-color: #ffffff'] {
+	background-color: var(--card-bg) !important;
+}
+
+/* =========================================
+   SPECIFIC COMPONENT FIXES
+   ========================================= */
+
+/* Invest Page - Ensure all text in white section is visible */
+body.dark-mode .col-lg-8.p-4 h5.m-0 {
+	color: var(--text-main) !important;
+}
+
+/* Transaction page empty state icon */
+body.dark-mode .fa-search.fa-2x {
+	opacity: 0.5;
+}
+
+/* Deposit page - Recent Deposits specific */
+body.dark-mode .table-responsive .table tbody tr td {
+	color: var(--text-main);
+}
+
+body.dark-mode .table-responsive .table tbody tr td .fw-bold {
+	color: var(--text-main);
+}
+
+/* Withdrawal page - Method radio active state */
+body.dark-mode .method-radio.active .fw-bold {
+	color: var(--primary);
+}
+
+/* Profile page - Camera button */
+body.dark-mode button.btn-dark.rounded-circle {
+	background-color: var(--bg-sidebar);
+	border-color: var(--card-bg) !important;
+}
+
+/* Profile page - Form section headers */
+body.dark-mode h6.fw-bold.text-dark {
+	color: var(--text-main) !important;
+}
+
+/* Referrals page - Ensure stat cards are fully styled */
+body.dark-mode .row.g-4.mb-4 .card {
+	background-color: var(--card-bg);
+}
+
+body.dark-mode .row.g-4.mb-4 .card h2,
+body.dark-mode .row.g-4.mb-4 .card h6,
+body.dark-mode .row.g-4.mb-4 .card p {
+	color: var(--text-main);
+}
+
+body.dark-mode .row.g-4.mb-4 .card h6.text-secondary,
+body.dark-mode .row.g-4.mb-4 .card p.text-secondary {
+	color: var(--text-muted) !important;
+}
+
+/* All h5 headings in dark mode */
+body.dark-mode h5.fw-bold {
+	color: var(--text-main);
+}
+
+/* Fix any remaining light backgrounds in cards */
+body.dark-mode .card .bg-light {
+	background-color: rgba(255, 255, 255, 0.05) !important;
+}
+
+/* Ensure all text-dark classes become text-main */
+body.dark-mode .text-dark {
+	color: var(--text-main) !important;
+}
+
+/* Ensure all text-secondary classes become text-muted */
+body.dark-mode .text-secondary {
+	color: var(--text-muted) !important;
+}
+
+/* Fix form labels */
+body.dark-mode label.small.fw-bold {
+	color: var(--text-muted);
+}
+
+/* Fix placeholder text */
+body.dark-mode ::placeholder {
+	color: var(--text-muted);
+	opacity: 0.6;
+}
+
+body.dark-mode ::-webkit-input-placeholder {
+	color: var(--text-muted);
+	opacity: 0.6;
+}
+
+body.dark-mode ::-moz-placeholder {
+	color: var(--text-muted);
+	opacity: 0.6;
+}
+
+/* Fix input autofill in dark mode */
+body.dark-mode input:-webkit-autofill,
+body.dark-mode input:-webkit-autofill:hover,
+body.dark-mode input:-webkit-autofill:focus,
+body.dark-mode textarea:-webkit-autofill,
+body.dark-mode textarea:-webkit-autofill:hover,
+body.dark-mode textarea:-webkit-autofill:focus,
+body.dark-mode select:-webkit-autofill,
+body.dark-mode select:-webkit-autofill:hover,
+body.dark-mode select:-webkit-autofill:focus {
+	-webkit-text-fill-color: var(--text-main);
+	-webkit-box-shadow: 0 0 0px 1000px var(--input-bg) inset;
+	transition: background-color 5000s ease-in-out 0s;
+}
+
+/* =========================================
+   SYSTEM THEME EQUIVALENTS
+   ========================================= */
+
+@media (prefers-color-scheme: dark) {
+	body.system-theme .col-lg-8.p-4.bg-white,
+	body.system-theme .card-glass,
+	body.system-theme .stat-card,
+	body.system-theme .method-card,
+	body.system-theme .card-plan {
+		background-color: var(--card-bg) !important;
+	}
+
+	body.system-theme .table thead.bg-light th {
+		background-color: var(--bg-sidebar) !important;
+	}
+
+	body.system-theme .transaction-row:hover,
+	body.system-theme .referral-item:hover,
+	body.system-theme div[onmouseover]:hover {
+		background-color: rgba(255, 255, 255, 0.03) !important;
+	}
+
+	body.system-theme .text-dark {
+		color: var(--text-main) !important;
+	}
+
+	body.system-theme .text-secondary {
+		color: var(--text-muted) !important;
+	}
+}
+
+/* =========================================
+   INVESTMENT ROW SPECIFIC STYLES
+   ========================================= */
+
+/* Investment row in My Investments page */
+.investment-row {
+	transition: background-color 0.2s ease;
+	background-color: transparent;
+}
+
+.investment-row:hover {
+	background-color: #f8fafc;
+}
+
+body.dark-mode .investment-row {
+	background-color: transparent;
+}
+
+body.dark-mode .investment-row:hover {
+	background-color: rgba(255, 255, 255, 0.03) !important;
+}
+
+/* Border handling for investment rows */
+.investment-row.border-top {
+	border-top: 1px solid #e2e8f0;
+}
+
+body.dark-mode .investment-row.border-top {
+	border-top-color: var(--border-color) !important;
+}
+
+/* =========================================
+   TABLE FIXES FOR DARK MODE
+   ========================================= */
+
+/* Force all table headers with bg-light to use dark colors */
+body.dark-mode table.table thead.bg-light,
+body.dark-mode table.table thead.bg-light tr,
+body.dark-mode table.table thead.bg-light th {
+	background-color: var(--bg-sidebar) !important;
+	color: var(--text-muted) !important;
+	border-color: var(--border-color) !important;
+}
+
+/* Table header text */
+body.dark-mode table.table thead th {
+	background-color: var(--bg-sidebar) !important;
+	color: var(--text-muted) !important;
+	border-bottom-color: var(--border-color) !important;
+}
+
+/* Table body cells */
+body.dark-mode table.table tbody td {
+	background-color: transparent !important;
+	color: var(--text-main) !important;
+	border-color: var(--border-color) !important;
+}
+
+/* Table rows */
+body.dark-mode table.table tbody tr {
+	background-color: transparent !important;
+	border-color: var(--border-color) !important;
+}
+
+/* Table row hover - must override Bootstrap */
+body.dark-mode .table-hover tbody tr:hover,
+body.dark-mode .table-hover tbody tr:hover td,
+body.dark-mode table.table tbody tr:hover,
+body.dark-mode table.table tbody tr:hover td {
+	background-color: rgba(255, 255, 255, 0.03) !important;
+}
+
+/* Desktop header in transactions */
+body.dark-mode .d-none.d-md-flex.bg-light {
+	background-color: var(--bg-sidebar) !important;
+	color: var(--text-muted) !important;
+	border-bottom-color: var(--border-color) !important;
+}
+
+/* Card that contains tables */
+body.dark-mode .card-body.p-0 .table-responsive table {
+	background-color: transparent !important;
+}
+
+/* Fix card header with bg-transparent */
+body.dark-mode .card-header.bg-transparent {
+	background-color: transparent !important;
+	border-bottom-color: var(--border-color) !important;
+}
+
+body.dark-mode .card-header.bg-transparent h5 {
+	color: var(--text-main) !important;
+}
+
+/* Ensure all text in tables is correct color */
+body.dark-mode table.table tbody td.fw-bold:not(.text-success):not(.text-danger):not(.text-primary):not(.text-warning):not(.text-info) {
+	color: var(--text-main) !important;
+}
+
+body.dark-mode table.table tbody td.text-muted {
+	color: var(--text-muted) !important;
+}
+
+/* Table icon backgrounds (bg-light circles in cells) */
+body.dark-mode table.table tbody td .rounded-circle.bg-light {
+	background-color: rgba(255, 255, 255, 0.08) !important;
+}
+
+body.dark-mode table.table tbody td .rounded-circle.text-muted {
+	color: var(--text-muted) !important;
+}
+
+/* History table icon in my-investments */
+body.dark-mode table.table tbody td .rounded-circle.bg-light.p-2 {
+	background-color: rgba(255, 255, 255, 0.08) !important;
+}
+
+/* Table text-dark spans */
+body.dark-mode table.table tbody td span.fw-bold.text-dark {
+	color: var(--text-main) !important;
+}
+
+body.dark-mode table.table tbody td span.text-dark {
+	color: var(--text-main) !important;
+}
+
+/* Table links */
+body.dark-mode table.table tbody td a {
+	color: var(--primary);
+}
+
+body.dark-mode table.table tbody td a:hover {
+	color: var(--accent);
+}
+
+/* Card glass for withdrawal table */
+body.dark-mode .card-glass {
+	background-color: var(--card-bg) !important;
+}
+
+body.dark-mode .card-glass .table thead th {
+	background-color: var(--bg-sidebar) !important;
+}
+
+body.dark-mode .card-glass .table tbody tr:hover {
+	background-color: rgba(255, 255, 255, 0.03) !important;
+}
+
+/* =========================================
+   PROFILE PAGE SPECIFIC FIXES
+   ========================================= */
+
+/* Profile Card Container */
+body.dark-mode .col-lg-4 .card.border-0.shadow-sm {
+	background-color: var(--card-bg) !important;
+}
+
+/* Profile Card Body */
+body.dark-mode .card-body.p-0.text-center.pb-4 {
+	background-color: var(--card-bg) !important;
+}
+
+/* Profile Name */
+body.dark-mode .card-body.p-0 h5.fw-bold.text-dark {
+	color: var(--text-main) !important;
+}
+
+/* Profile Email */
+body.dark-mode .card-body.p-0 p.text-secondary {
+	color: var(--text-muted) !important;
+}
+
+/* Settings Navigation Card */
+body.dark-mode .col-lg-4 .card.border-0.shadow-sm .card-body.p-2 {
+	background-color: var(--card-bg) !important;
+}
+
+/* Settings Nav Buttons */
+body.dark-mode .settings-nav .btn-nav {
+	background-color: transparent;
+	color: var(--text-muted);
+}
+
+body.dark-mode .settings-nav .btn-nav:hover {
+	background-color: rgba(255, 255, 255, 0.05) !important;
+	color: var(--text-main);
+}
+
+body.dark-mode .settings-nav .btn-nav.active {
+	background-color: rgba(79, 70, 229, 0.15) !important;
+	color: var(--primary);
+}
+
+/* Settings Nav Icons */
+body.dark-mode .settings-nav .btn-nav i {
+	color: var(--text-muted);
+}
+
+body.dark-mode .settings-nav .btn-nav:hover i {
+	color: var(--text-main);
+}
+
+body.dark-mode .settings-nav .btn-nav.active i {
+	color: var(--primary);
+}
+
+/* Right Content Area Cards */
+body.dark-mode .col-lg-8 .card.border-0.shadow-sm {
+	background-color: var(--card-bg) !important;
+}
+
+body.dark-mode .col-lg-8 .card-header.bg-transparent {
+	background-color: transparent !important;
+	border-bottom-color: var(--border-color) !important;
+}
+
+body.dark-mode .col-lg-8 .card-header h5.fw-bold {
+	color: var(--text-main) !important;
+}
+
+/* Form Controls in Profile */
+body.dark-mode .col-lg-8 .form-control {
+	background-color: var(--input-bg);
+	border-color: var(--border-color);
+	color: var(--text-main);
+}
+
+body.dark-mode .col-lg-8 .form-control[readonly] {
+	background-color: rgba(255, 255, 255, 0.05) !important;
+	color: var(--text-muted);
+}
+
+body.dark-mode .col-lg-8 .form-select {
+	background-color: var(--input-bg);
+	border-color: var(--border-color);
+	color: var(--text-main);
+}
+
+body.dark-mode .col-lg-8 label.small.fw-bold.text-secondary {
+	color: var(--text-muted) !important;
+}
+
+/* Form Text Helper */
+body.dark-mode .col-lg-8 .form-text {
+	color: var(--text-muted);
+}
+
+body.dark-mode .col-lg-8 .form-text small {
+	color: var(--text-muted);
+}
+
+/* Divider in Profile */
+body.dark-mode .col-lg-8 hr.border-bottom,
+body.dark-mode .col-lg-8 hr.border-top {
+	border-color: var(--border-color) !important;
+}
+
+body.dark-mode .col-lg-8 .pt-3.border-top {
+	border-color: var(--border-color) !important;
+}
+
+/* Security Tab 2FA Section */
+body.dark-mode .col-lg-8 .d-flex.align-items-center.justify-content-between.p-3.bg-light {
+	background-color: rgba(255, 255, 255, 0.05) !important;
+}
+
+body.dark-mode .col-lg-8 .d-flex.align-items-center h6.fw-bold {
+	color: var(--text-main) !important;
+}
+
+body.dark-mode .col-lg-8 .d-flex.align-items-center p.text-secondary {
+	color: var(--text-muted) !important;
+}
+
+/* KYC Upload Section */
+body.dark-mode .col-lg-8 .upload-zone {
+	background-color: var(--bg-body);
+	border-color: var(--border-color);
+}
+
+body.dark-mode .col-lg-8 .upload-zone:hover {
+	background-color: rgba(79, 70, 229, 0.05);
+	border-color: var(--primary);
+}
+
+body.dark-mode .col-lg-8 .upload-zone i {
+	color: var(--primary);
+	opacity: 0.8;
+}
+
+body.dark-mode .col-lg-8 .upload-zone h6 {
+	color: var(--text-main) !important;
+}
+
+body.dark-mode .col-lg-8 .upload-zone p.text-muted {
+	color: var(--text-muted) !important;
+}
+
+/* KYC List Group */
+body.dark-mode .col-lg-8 .list-group-item {
+	background-color: transparent;
+	border-color: var(--border-color);
+}
+
+body.dark-mode .col-lg-8 .list-group-item .bg-light {
+	background-color: rgba(255, 255, 255, 0.08) !important;
+}
+
+body.dark-mode .col-lg-8 .list-group-item span.fw-bold {
+	color: var(--text-main) !important;
+}
+
+body.dark-mode .col-lg-8 .list-group-item small.text-muted {
+	color: var(--text-muted) !important;
+}
+
+/* Alert Boxes in Profile */
+body.dark-mode .col-lg-8 .alert.alert-primary {
+	background-color: rgba(79, 70, 229, 0.15) !important;
+	border-color: rgba(79, 70, 229, 0.3);
+	color: #818cf8;
+}
+
+body.dark-mode .col-lg-8 .alert.alert-primary i {
+	color: #818cf8 !important;
+}
+
+body.dark-mode .col-lg-8 .alert.alert-warning {
+	background-color: rgba(245, 158, 11, 0.15) !important;
+	border-color: rgba(245, 158, 11, 0.3);
+	color: #fbbf24;
+}
+
+body.dark-mode .col-lg-8 .alert.alert-warning i {
+	color: #fbbf24 !important;
+}
+
+/* Modal in Profile/My-Investments */
+body.dark-mode .modal .modal-content {
+	background-color: var(--card-bg);
+	border-color: var(--border-color);
+}
+
+body.dark-mode .modal .modal-header {
+	border-bottom-color: var(--border-color);
+}
+
+body.dark-mode .modal .modal-header h5 {
+	color: var(--text-main) !important;
+}
+
+body.dark-mode .modal .modal-body {
+	color: var(--text-main);
+}
+
+body.dark-mode .modal .modal-footer {
+	border-top-color: var(--border-color);
+}
+
+body.dark-mode .modal .bg-light.rounded-3 {
+	background-color: rgba(255, 255, 255, 0.05) !important;
+}
+
+body.dark-mode .modal .text-dark {
+	color: var(--text-main) !important;
+}
+
+body.dark-mode .modal .text-muted {
+	color: var(--text-muted) !important;
+}
+
+body.dark-mode .modal .text-secondary {
+	color: var(--text-muted) !important;
+}
+
+body.dark-mode .modal .btn-close {
+	filter: invert(1) grayscale(100%) brightness(200%);
+}
+
+/* =========================================
+   INLINE STYLE OVERRIDES
+   ========================================= */
+
+/* Override inline bg-light styles */
+body.dark-mode [class*='bg-light'],
+body.dark-mode [style*='background-color: #f8fafc'],
+body.dark-mode [style*='background: #f8fafc'] {
+	background-color: var(--bg-sidebar) !important;
+}
+
+/* Override inline bg-white styles */
+body.dark-mode [style*='background-color: #ffffff'],
+body.dark-mode [style*='background: #ffffff'] {
+	background-color: var(--card-bg) !important;
+}
+
+/* Table specific overrides */
+body.dark-mode thead[class*='bg-light'] th,
+body.dark-mode thead[style*='background'] th {
+	background-color: var(--bg-sidebar) !important;
+}
+
+/* Card headers */
+body.dark-mode .card-header[class*='bg-transparent'] {
+	background-color: transparent !important;
+}
+
+/* Force dark background on all card bodies */
+body.dark-mode .card-body {
+	background-color: var(--card-bg);
+}
+
+/* Ensure text contrast */
+body.dark-mode .card-body .text-dark {
+	color: var(--text-main) !important;
+}
+
+body.dark-mode .card-body .text-secondary {
+	color: var(--text-muted) !important;
+}
+
+/* =========================================
+   TRANSACTION PAGE SPECIFIC FIXES
+   ========================================= */
+
+/* Card footer with bg-white */
+body.dark-mode .card-footer.bg-white {
+	background-color: var(--card-bg) !important;
+	border-top-color: var(--border-color) !important;
+}
+
+/* Transaction row specific */
+body.dark-mode .transaction-row {
+	border-bottom-color: var(--border-color) !important;
+	background-color: transparent;
+}
+
+body.dark-mode .transaction-row:hover {
+	background-color: rgba(255, 255, 255, 0.03) !important;
+}
+
+/* Transaction row text colors */
+body.dark-mode .transaction-row h6.fw-bold.text-dark {
+	color: var(--text-main) !important;
+}
+
+body.dark-mode .transaction-row p.text-secondary {
+	color: var(--text-muted) !important;
+}
+
+body.dark-mode .transaction-row .text-secondary {
+	color: var(--text-muted) !important;
+}
+
+/* Icon circle in transactions */
+body.dark-mode .transaction-row .icon-circle {
+	background-color: rgba(255, 255, 255, 0.05) !important;
+}
+
+/* Badge soft in transactions */
+body.dark-mode .transaction-row .badge-soft {
+	background-color: rgba(255, 255, 255, 0.05) !important;
+}
+
+/* Pagination specific */
+body.dark-mode .pagination .page-link.bg-light {
+	background-color: rgba(255, 255, 255, 0.05) !important;
+	color: var(--text-main) !important;
+}
+
+body.dark-mode .pagination .page-link.bg-light:hover {
+	background-color: rgba(255, 255, 255, 0.1) !important;
+}
+
+body.dark-mode .pagination .page-item.disabled .page-link {
+	background-color: rgba(255, 255, 255, 0.03) !important;
+	color: var(--text-muted) !important;
+}
+
+body.dark-mode .pagination .page-item.active .page-link {
+	background-color: var(--primary) !important;
+	color: white !important;
+}
+
+/* Page ellipsis */
+body.dark-mode .page-ellipsis {
+	background-color: rgba(255, 255, 255, 0.05) !important;
+	color: var(--text-muted) !important;
+}
+
+body.dark-mode .page-ellipsis:hover {
+	background-color: rgba(255, 255, 255, 0.1) !important;
+	color: var(--text-main) !important;
+}
+
+/* =========================================
+   DEPOSIT/WITHDRAW TABLE FIXES
+   ========================================= */
+
+/* Recent Deposits table - ensure full styling */
+body.dark-mode .row.mt-4 .card.border-0.shadow-sm {
+	background-color: var(--card-bg) !important;
+}
+
+body.dark-mode .row.mt-4 .card-header {
+	background-color: transparent !important;
+	border-bottom-color: var(--border-color) !important;
+}
+
+body.dark-mode .row.mt-4 .card-header h5 {
+	color: var(--text-main) !important;
+}
+
+body.dark-mode .row.mt-4 .table-responsive table {
+	background-color: transparent !important;
+}
+
+body.dark-mode .row.mt-4 table thead.bg-light th {
+	background-color: var(--bg-sidebar) !important;
+	color: var(--text-muted) !important;
+}
+
+body.dark-mode .row.mt-4 table tbody td {
+	color: var(--text-main) !important;
+	border-color: var(--border-color) !important;
+}
+
+body.dark-mode .row.mt-4 table tbody tr:hover {
+	background-color: rgba(255, 255, 255, 0.03) !important;
+}
+
+/* Withdrawal history specific */
+body.dark-mode .row.mt-5 h5.fw-bold {
+	color: var(--text-main) !important;
+}
+
+body.dark-mode .row.mt-5 .card-glass {
+	background-color: var(--card-bg) !important;
+}
+
+body.dark-mode .row.mt-5 table thead th {
+	background-color: var(--bg-sidebar) !important;
+	color: var(--text-muted) !important;
+}
+
+body.dark-mode .row.mt-5 table tbody td {
+	color: var(--text-main) !important;
+	border-color: var(--border-color) !important;
+}
+
+body.dark-mode .row.mt-5 table tbody tr:hover {
+	background-color: rgba(255, 255, 255, 0.03) !important;
+}
+
+/* Badge in withdrawal table */
+body.dark-mode .row.mt-5 .badge.bg-warning {
+	background-color: rgba(245, 158, 11, 0.2) !important;
+	color: #fbbf24;
+}
+
+body.dark-mode .row.mt-5 .badge.bg-success {
+	background-color: rgba(34, 197, 94, 0.2) !important;
+	color: #4ade80;
+}
+
+body.dark-mode .row.mt-5 .badge.bg-danger {
+	background-color: rgba(239, 68, 68, 0.2) !important;
+	color: #f87171;
+}
+
+/* Empty state in tables */
+body.dark-mode table tbody tr td.text-center.py-5 {
+	color: var(--text-muted) !important;
+}
+
+body.dark-mode table tbody tr td.text-center i {
+	opacity: 0.3;
+}
+
+/* =========================================
+   MY-INVESTMENTS SPECIFIC FIXES
+   ========================================= */
+
+/* History table container */
+body.dark-mode div[x-show="activeTab === 'history'"] .card.border-0.shadow-sm {
+	background-color: var(--card-bg) !important;
+}
+
+/* Table in history tab */
+body.dark-mode div[x-show="activeTab === 'history'"] table.table {
+	background-color: transparent !important;
+}
+
+body.dark-mode div[x-show="activeTab === 'history'"] table thead.bg-light th {
+	background-color: var(--bg-sidebar) !important;
+	color: var(--text-muted) !important;
+}
+
+body.dark-mode div[x-show="activeTab === 'history'"] table tbody td {
+	color: var(--text-main) !important;
+	border-color: var(--border-color) !important;
+}
+
+body.dark-mode div[x-show="activeTab === 'history'"] table tbody tr:hover {
+	background-color: rgba(255, 255, 255, 0.03) !important;
+}
+
+/* Icon in history table */
+body.dark-mode div[x-show="activeTab === 'history'"] .rounded-circle.bg-light {
+	background-color: rgba(255, 255, 255, 0.08) !important;
+}
+
+/* Text colors in history table */
+body.dark-mode div[x-show="activeTab === 'history'"] span.fw-bold.text-dark {
+	color: var(--text-main) !important;
+}
+
+body.dark-mode div[x-show="activeTab === 'history'"] td.text-muted {
+	color: var(--text-muted) !important;
+}
+
+body.dark-mode div[x-show="activeTab === 'history'"] td.fw-medium.text-dark {
+	color: var(--text-main) !important;
+}
+
+/* Badge in history table */
+body.dark-mode div[x-show="activeTab === 'history'"] .badge.bg-success {
+	background-color: rgba(34, 197, 94, 0.2) !important;
+	color: #4ade80;
+}
+
+body.dark-mode div[x-show="activeTab === 'history'"] .badge.bg-secondary {
+	background-color: rgba(255, 255, 255, 0.1) !important;
+	color: var(--text-muted);
+}
+
+/* Empty states in my-investments */
+body.dark-mode div[x-show="activeTab === 'active'"] .text-center.py-3,
+body.dark-mode div[x-show="activeTab === 'history'"] .text-center.py-3 {
+	color: var(--text-muted);
+}
+
+body.dark-mode div[x-show="activeTab === 'active'"] h6.fw-bold.text-dark,
+body.dark-mode div[x-show="activeTab === 'history'"] h6.fw-bold.text-dark {
+	color: var(--text-main) !important;
+}
+
+body.dark-mode div[x-show="activeTab === 'active'"] p.text-muted,
+body.dark-mode div[x-show="activeTab === 'history'"] p.text-muted {
+	color: var(--text-muted) !important;
+}
+
+body.dark-mode div[x-show="activeTab === 'active'"] i.text-secondary,
+body.dark-mode div[x-show="activeTab === 'history'"] i.text-secondary {
+	color: var(--text-muted) !important;
+	opacity: 0.5;
+}
+
+/* =========================================
+   GLOBAL HOVER FIXES
+   ========================================= */
+
+/* Ensure all hover transitions work */
+body.dark-mode .table-hover tbody tr {
+	transition: background-color 0.2s ease;
+}
+
+body.dark-mode .table-hover tbody tr:hover {
+	transition: background-color 0.2s ease;
+}
+
+/* Force dark mode table styling with !important */
+body.dark-mode table.table-hover > tbody > tr:hover > * {
+	background-color: rgba(255, 255, 255, 0.03) !important;
+}
+
+/* Bootstrap table hover override */
+body.dark-mode .table > :not(caption) > * > * {
+	background-color: transparent;
+}
+
+body.dark-mode .table-hover > tbody > tr:hover > * {
+	--bs-table-accent-bg: rgba(255, 255, 255, 0.03);
+	background-color: rgba(255, 255, 255, 0.03) !important;
+	color: var(--text-main);
+}
+
+/* =========================================
+   PROFILE PAGE - SPECIFIC ELEMENT FIXES
+   ========================================= */
+
+/* Profile Card - Main Container */
+body.dark-mode .col-lg-4 > .card.border-0.shadow-sm {
+	background-color: var(--card-bg) !important;
+}
+
+/* Profile Card Body */
+body.dark-mode .col-lg-4 .card-body.p-0.text-center.pb-4 {
+	background-color: var(--card-bg) !important;
+}
+
+/* Profile Name - h5 with text-dark */
+body.dark-mode .col-lg-4 .card-body h5.fw-bold.text-dark {
+	color: var(--text-main) !important;
+}
+
+/* Profile Email - p with text-secondary */
+body.dark-mode .col-lg-4 .card-body p.text-secondary {
+	color: var(--text-muted) !important;
+}
+
+/* Settings Navigation Card */
+body.dark-mode .col-lg-4 > .card.border-0.shadow-sm:nth-child(2) {
+	background-color: var(--card-bg) !important;
+}
+
+/* Settings Navigation Card Body */
+body.dark-mode .settings-nav {
+	background-color: var(--card-bg) !important;
+}
+
+body.dark-mode .settings-nav.d-flex.flex-column {
+	background-color: var(--card-bg) !important;
+}
+
+/* Settings Nav Buttons - more specific */
+body.dark-mode .settings-nav button.btn-nav {
+	background-color: transparent;
+	color: var(--text-muted);
+	border: none;
+}
+
+body.dark-mode .settings-nav button.btn-nav:hover {
+	background-color: rgba(255, 255, 255, 0.05) !important;
+	color: var(--text-main);
+}
+
+body.dark-mode .settings-nav button.btn-nav.active {
+	background-color: rgba(79, 70, 229, 0.15) !important;
+	color: var(--primary);
+}
+
+/* Settings Nav Button Content */
+body.dark-mode .settings-nav button.btn-nav span {
+	color: inherit;
+}
+
+body.dark-mode .settings-nav button.btn-nav i {
+	color: inherit;
+	opacity: 0.5;
+}
+
+body.dark-mode .settings-nav button.btn-nav:hover i {
+	opacity: 0.8;
+}
+
+body.dark-mode .settings-nav button.btn-nav.active i {
+	opacity: 1;
+	color: var(--primary);
+}
+
+/* KYC Status Badges in Profile */
+body.dark-mode .col-lg-4 .badge.bg-success {
+	background-color: rgba(34, 197, 94, 0.15) !important;
+	border-color: rgba(34, 197, 94, 0.3) !important;
+	color: #4ade80;
+}
+
+body.dark-mode .col-lg-4 .badge.bg-warning {
+	background-color: rgba(245, 158, 11, 0.15) !important;
+	border-color: rgba(245, 158, 11, 0.3) !important;
+	color: #fbbf24;
+}
+
+body.dark-mode .col-lg-4 .badge.bg-danger {
+	background-color: rgba(239, 68, 68, 0.15) !important;
+	border-color: rgba(239, 68, 68, 0.3) !important;
+	color: #f87171;
+}
+
+body.dark-mode .col-lg-4 .badge.bg-secondary {
+	background-color: rgba(255, 255, 255, 0.1) !important;
+	border-color: rgba(255, 255, 255, 0.2) !important;
+	color: var(--text-muted);
+}
+
+/* Camera button */
+body.dark-mode .col-lg-4 button.btn-dark {
+	background-color: var(--bg-sidebar);
+	border-color: var(--card-bg) !important;
+}
+
+/* =========================================
+   BOOTSTRAP TABLE OVERRIDE - CRITICAL
+   ========================================= */
+
+/* Critical override for Bootstrap table colors */
+body.dark-mode .table {
+	--bs-table-bg: transparent;
+	--bs-table-accent-bg: transparent;
+	--bs-table-striped-color: var(--text-main);
+	--bs-table-striped-bg: rgba(255, 255, 255, 0.02);
+	--bs-table-active-color: var(--text-main);
+	--bs-table-active-bg: rgba(255, 255, 255, 0.05);
+	--bs-table-hover-color: var(--text-main);
+	--bs-table-hover-bg: rgba(255, 255, 255, 0.03);
+	color: var(--text-main);
+	border-color: var(--border-color);
+}
+
+/* Table head */
+body.dark-mode .table thead {
+	background-color: var(--bg-sidebar) !important;
+}
+
+body.dark-mode .table thead th {
+	color: var(--text-muted);
+	background-color: var(--bg-sidebar) !important;
+	border-bottom-color: var(--border-color);
+}
+
+/* Table cells */
+body.dark-mode .table td,
+body.dark-mode .table th {
+	background-color: transparent;
+	border-bottom-color: var(--border-color);
+}
+
+/* Striped table */
+body.dark-mode .table-striped > tbody > tr:nth-of-type(odd) > * {
+	--bs-table-accent-bg: rgba(255, 255, 255, 0.02);
+	color: var(--text-main);
+}
+
+/* Hover effect */
+body.dark-mode .table-hover > tbody > tr:hover > * {
+	--bs-table-accent-bg: rgba(255, 255, 255, 0.03);
+	color: var(--text-main);
+}
+
+/* Active row */
+body.dark-mode .table-active,
+body.dark-mode .table-active > td,
+body.dark-mode .table-active > th {
+	background-color: rgba(255, 255, 255, 0.05);
+}
+
+/* =========================================
+   CARD FOOTER AND PAGINATION FIXES
+   ========================================= */
+
+/* Card footer */
+body.dark-mode .card-footer {
+	background-color: var(--card-bg);
+	border-top-color: var(--border-color);
+}
+
+body.dark-mode .card-footer.bg-white {
+	background-color: var(--card-bg) !important;
+}
+
+/* Pagination in dark mode */
+body.dark-mode .pagination {
+	--bs-pagination-padding-x: 0.75rem;
+	--bs-pagination-padding-y: 0.375rem;
+	--bs-pagination-font-size: 1rem;
+	--bs-pagination-color: var(--text-main);
+	--bs-pagination-bg: rgba(255, 255, 255, 0.05);
+	--bs-pagination-border-width: 0;
+	--bs-pagination-border-color: transparent;
+	--bs-pagination-hover-color: var(--text-main);
+	--bs-pagination-hover-bg: rgba(255, 255, 255, 0.1);
+	--bs-pagination-hover-border-color: transparent;
+	--bs-pagination-focus-color: var(--text-main);
+	--bs-pagination-focus-bg: rgba(255, 255, 255, 0.1);
+	--bs-pagination-focus-box-shadow: 0 0 0 0.25rem rgba(79, 70, 229, 0.25);
+	--bs-pagination-active-color: #fff;
+	--bs-pagination-active-bg: var(--primary);
+	--bs-pagination-active-border-color: var(--primary);
+	--bs-pagination-disabled-color: var(--text-muted);
+	--bs-pagination-disabled-bg: rgba(255, 255, 255, 0.03);
+	--bs-pagination-disabled-border-color: transparent;
+}
+
+/* =========================================
+   FINAL COMPREHENSIVE FIXES
+   ========================================= */
+
+/* Universal bg-light override in dark mode */
+body.dark-mode .bg-light,
+body.dark-mode [class*='bg-light'] {
+	background-color: rgba(255, 255, 255, 0.05) !important;
+}
+
+/* Universal text-dark override in dark mode */
+body.dark-mode .text-dark,
+body.dark-mode [class*='text-dark'] {
+	color: var(--text-main) !important;
+}
+
+/* Universal text-secondary override in dark mode */
+body.dark-mode .text-secondary,
+body.dark-mode [class*='text-secondary'] {
+	color: var(--text-muted) !important;
+}
+
+/* Table thead with bg-light class - highest specificity */
+body.dark-mode table thead.bg-light,
+body.dark-mode table.table thead.bg-light,
+body.dark-mode .table-responsive table thead.bg-light,
+body.dark-mode .card-body table thead.bg-light,
+body.dark-mode .table-hover thead.bg-light {
+	background-color: var(--bg-sidebar) !important;
+}
+
+body.dark-mode table thead.bg-light th,
+body.dark-mode table.table thead.bg-light th,
+body.dark-mode .table-responsive table thead.bg-light th {
+	background-color: var(--bg-sidebar) !important;
+	color: var(--text-muted) !important;
+}
+
+/* All table rows hover */
+body.dark-mode table tbody tr,
+body.dark-mode table.table tbody tr,
+body.dark-mode .table-responsive table tbody tr {
+	background-color: transparent;
+}
+
+body.dark-mode table tbody tr:hover,
+body.dark-mode table.table tbody tr:hover,
+body.dark-mode .table-responsive table tbody tr:hover,
+body.dark-mode .table-hover tbody tr:hover {
+	background-color: rgba(255, 255, 255, 0.03) !important;
+}
+
+/* All table cells */
+body.dark-mode table tbody td,
+body.dark-mode table.table tbody td,
+body.dark-mode .table-responsive table tbody td {
+	background-color: transparent !important;
+	color: var(--text-main) !important;
+}
+
+body.dark-mode table tbody td:hover,
+body.dark-mode table.table tbody td:hover {
+	background-color: transparent !important;
+}
+
+/* Force table row hover with !important */
+body.dark-mode .table-hover > tbody > tr:hover {
+	background-color: rgba(255, 255, 255, 0.03) !important;
+}
+
+body.dark-mode .table-hover > tbody > tr:hover > td {
+	background-color: rgba(255, 255, 255, 0.03) !important;
+}
+
+/* Card with shadow-sm that contains tables */
+body.dark-mode .card.shadow-sm {
+	background-color: var(--card-bg);
+}
+
+body.dark-mode .card.shadow-sm .card-body {
+	background-color: var(--card-bg);
+}
+
+body.dark-mode .card.shadow-sm .card-header {
+	background-color: transparent;
+	border-bottom-color: var(--border-color);
+}
+
+body.dark-mode .card.shadow-sm .card-footer {
+	background-color: var(--card-bg);
+	border-top-color: var(--border-color);
+}
+
+/* Profile specific - ensure all cards are styled */
+body.dark-mode .col-lg-4 .card,
+body.dark-mode .col-lg-8 .card {
+	background-color: var(--card-bg) !important;
+}
+
+body.dark-mode .col-lg-4 .card-body,
+body.dark-mode .col-lg-8 .card-body {
+	background-color: var(--card-bg) !important;
+}
+
+/* Settings nav container */
+body.dark-mode .settings-nav {
+	background-color: var(--card-bg) !important;
+}
+
+body.dark-mode .settings-nav .card-body {
+	background-color: var(--card-bg) !important;
+}
+
+/* Ensure all buttons in settings nav are visible */
+body.dark-mode .settings-nav button {
+	color: var(--text-muted);
+}
+
+body.dark-mode .settings-nav button:hover {
+	color: var(--text-main);
+}
+
+body.dark-mode .settings-nav button.active {
+	color: var(--primary);
+}
+
+/* Fix any remaining white backgrounds in tables */
+body.dark-mode table {
+	background-color: transparent !important;
+}
+
+body.dark-mode table * {
+	border-color: var(--border-color) !important;
+}
+
+/* Specific fix for bg-light in table headers */
+body.dark-mode thead.bg-light {
+	background-color: var(--bg-sidebar) !important;
+}
+
+body.dark-mode thead.bg-light * {
+	background-color: var(--bg-sidebar) !important;
+}
+
+/* Transaction row specific fixes */
+body.dark-mode div.transaction-row {
+	background-color: transparent;
+}
+
+body.dark-mode div.transaction-row:hover {
+	background-color: rgba(255, 255, 255, 0.03) !important;
+}
+
+body.dark-mode div.transaction-row h6 {
+	color: var(--text-main) !important;
+}
+
+body.dark-mode div.transaction-row p {
+	color: var(--text-muted) !important;
+}
+
+/* Investment row specific */
+body.dark-mode div.investment-row {
+	background-color: transparent;
+}
+
+body.dark-mode div.investment-row:hover {
+	background-color: rgba(255, 255, 255, 0.03) !important;
+}
+
+/* Fix for inline hover styles */
+body.dark-mode [onmouseover]:hover {
+	background-color: rgba(255, 255, 255, 0.03) !important;
+}
+
+/* =========================================
+   GRADIENT FIXES FOR DARK MODE
+   ========================================= */
+
+/* 1. Referral Page - How it Works section */
+body.dark-mode .card[style*='background: var(--gradient-card)'],
+body.dark-mode div[style*='background: var(--gradient-card)'] {
+	background: var(--gradient-card) !important;
+}
+
+/* Ensure text is visible on gradient in dark mode */
+body.dark-mode .card[style*='background: var(--gradient-card)'] h5,
+body.dark-mode .card[style*='background: var(--gradient-card)'] h6,
+body.dark-mode div[style*='background: var(--gradient-card)'] h5,
+body.dark-mode div[style*='background: var(--gradient-card)'] h6 {
+	color: white !important;
+}
+
+body.dark-mode .card[style*='background: var(--gradient-card)'] p,
+body.dark-mode .card[style*='background: var(--gradient-card)'] span:not(.badge),
+body.dark-mode div[style*='background: var(--gradient-card)'] p,
+body.dark-mode div[style*='background: var(--gradient-card)'] span:not(.badge) {
+	color: rgba(255, 255, 255, 0.8) !important;
+}
+
+/* 2 & 3. Withdraw Page - Transaction Summary gradient */
+body.dark-mode .summary-card {
+	background: var(--gradient-card) !important;
+}
+
+/* Withdraw Page - Available Balance card gradient for dark mode */
+body.dark-mode .balance-card {
+	background: var(--gradient-card) !important;
+}
+
+body.dark-mode .balance-card h3,
+body.dark-mode .balance-card span {
+	color: white !important;
+}
+
+/* 4. Deposit Page - Complete Payment gradient */
+body.dark-mode .card[style*='background: linear-gradient(135deg, #4f46e5'],
+body.dark-mode div[style*='background: linear-gradient(135deg, #4f46e5'] {
+	background: linear-gradient(135deg, #4f46e5 0%, #4338ca 100%) !important;
+}
+
+body.dark-mode .card[style*='background: linear-gradient'] h5,
+body.dark-mode .card[style*='background: linear-gradient'] p,
+body.dark-mode div[style*='background: linear-gradient'] h5,
+body.dark-mode div[style*='background: linear-gradient'] p {
+	color: white !important;
+}
+
+/* Ensure white text on gradient cards */
+body.dark-mode .card.text-white,
+body.dark-mode .card.text-white h5,
+body.dark-mode .card.text-white p,
+body.dark-mode .card.text-white label,
+body.dark-mode .card.text-white span {
+	color: white !important;
+}
+
+body.dark-mode .card.text-white .text-white-50 {
+	color: rgba(255, 255, 255, 0.7) !important;
+}
+
+/* 5. Transaction Page - Amount Colors */
+body.dark-mode .transaction-row h6.text-success {
+	color: #4ade80 !important;
+}
+
+body.dark-mode .transaction-row h6.text-danger {
+	color: #f87171 !important;
+}
+
+body.dark-mode .transaction-row h6.text-primary {
+	color: #818cf8 !important;
+}
+
+body.dark-mode .transaction-row h6.text-info {
+	color: #22d3ee !important;
+}
+
+body.dark-mode .transaction-row h6.text-warning {
+	color: #fbbf24 !important;
+}
+
+/* Also fix badge colors in transactions */
+body.dark-mode .transaction-row .badge.text-success {
+	color: #4ade80 !important;
+}
+
+body.dark-mode .transaction-row .badge.text-danger {
+	color: #f87171 !important;
+}
+
+body.dark-mode .transaction-row .badge.text-primary {
+	color: #818cf8 !important;
+}
+
+body.dark-mode .transaction-row .badge.text-info {
+	color: #22d3ee !important;
+}
+
+body.dark-mode .transaction-row .badge.text-warning {
+	color: #fbbf24 !important;
+}
+
+/* 6. My-Investments Page - Manage Button */
+body.dark-mode .btn-outline-secondary {
+	color: var(--text-muted);
+	border-color: var(--border-color);
+	background-color: transparent;
+}
+
+body.dark-mode .btn-outline-secondary:hover {
+	background-color: rgba(255, 255, 255, 0.1) !important;
+	border-color: var(--text-muted);
+	color: var(--text-main);
+}
+
+body.dark-mode .investment-row .btn-outline-secondary {
+	background-color: rgba(79, 70, 229, 0.15);
+}
+
+body.dark-mode .investment-row .btn-outline-secondary:hover {
+	background-color: rgba(79, 70, 229, 0.25) !important;
+}
+
+/* 7. Dashboard Page - Fix opacity issues */
+
+/* Wallet Card - ensure full opacity */
+body.dark-mode .wallet-card {
+	opacity: 1 !important;
+}
+
+body.dark-mode .wallet-card .bg-white,
+body.dark-mode .wallet-card .bg-opacity-25 {
+	background-color: rgba(255, 255, 255, 0.2) !important;
+	opacity: 1 !important;
+}
+
+body.dark-mode .wallet-card .text-white-50 {
+	color: rgba(255, 255, 255, 0.8) !important;
+	opacity: 1 !important;
+}
+
+body.dark-mode .wallet-card i,
+body.dark-mode .wallet-card .btn {
+	opacity: 1 !important;
+}
+
+/* Wallet card buttons */
+body.dark-mode .wallet-card .btn-light {
+	background-color: rgba(255, 255, 255, 0.95) !important;
+	color: var(--primary) !important;
+	opacity: 1 !important;
+}
+
+body.dark-mode .wallet-card .btn-outline-light {
+	border-color: rgba(255, 255, 255, 0.5) !important;
+	color: white !important;
+	opacity: 1 !important;
+}
+
+body.dark-mode .wallet-card .btn-outline-light:hover {
+	background-color: rgba(255, 255, 255, 0.15) !important;
+}
+
+/* Open New Investment Card */
+body.dark-mode .card-custom.border-dashed {
+	opacity: 1 !important;
+	background-color: transparent !important;
+}
+
+body.dark-mode .card-custom.border-dashed .bg-white {
+	background-color: var(--card-bg) !important;
+	opacity: 1 !important;
+}
+
+body.dark-mode .card-custom.border-dashed h6,
+body.dark-mode .card-custom.border-dashed p {
+	opacity: 1 !important;
+}
+
+body.dark-mode .card-custom.border-dashed i {
+	opacity: 1 !important;
+}
+
+/* Fix any low opacity elements in dashboard */
+body.dark-mode .card-custom .opacity-25,
+body.dark-mode .card-custom .opacity-50 {
+	opacity: 0.7 !important;
+}
+
+body.dark-mode .bg-light.rounded-circle.p-3 {
+	background-color: rgba(255, 255, 255, 0.08) !important;
+}
+
+/* Fix icon circles in dashboard */
+body.dark-mode .rounded-3.bg-success,
+body.dark-mode .rounded-3.bg-warning,
+body.dark-mode .rounded-3.bg-primary {
+	opacity: 1 !important;
+}
+
+body.dark-mode .rounded-3.bg-success.bg-opacity-10 {
+	background-color: rgba(34, 197, 94, 0.15) !important;
+}
+
+body.dark-mode .rounded-3.bg-warning.bg-opacity-10 {
+	background-color: rgba(245, 158, 11, 0.15) !important;
+}
+
+body.dark-mode .rounded-3.bg-primary.bg-opacity-10 {
+	background-color: rgba(79, 70, 229, 0.15) !important;
+}
+
+/* Text colors in stat cards */
+body.dark-mode .card-custom h3.text-dark {
+	color: var(--text-main) !important;
+	opacity: 1 !important;
+}
+
+/* Small text in dashboard cards */
+body.dark-mode .card-custom small,
+body.dark-mode .card-custom .small {
+	opacity: 1 !important;
+}
+
+/* Activity items */
+body.dark-mode .activity-item .bg-opacity-10 {
+	opacity: 1 !important;
+}
+
+body.dark-mode .activity-item i,
+body.dark-mode .activity-item span,
+body.dark-mode .activity-item small {
+	opacity: 1 !important;
+}
+
+/* =========================================
+   FINAL GRADIENT AND COLOR FIXES
+   ========================================= */
+
+/* Light mode balance-card should have gradient */
+.balance-card {
+	background: linear-gradient(135deg, var(--primary), var(--primary-dark)) !important;
+	color: white;
+}
+
+/* Ensure all gradient cards maintain their gradient in both modes */
+.summary-card {
+	background: linear-gradient(135deg, var(--primary), var(--primary-dark)) !important;
+	color: white;
+}
+
+/* Dark mode - ensure gradients are preserved */
+body.dark-mode .summary-card {
+	background: linear-gradient(135deg, var(--primary), var(--primary-dark)) !important;
+}
+
+body.dark-mode .balance-card {
+	background: linear-gradient(135deg, var(--primary), var(--primary-dark)) !important;
+}
+
+/* Referral How it Works - preserve gradient */
+body.dark-mode .card[style*='background: var(--gradient-card)'] {
+	background: var(--gradient-card) !important;
+}
+
+/* Deposit Complete Payment - preserve gradient */
+body.dark-mode .card[style*='linear-gradient(135deg, #4f46e5'] {
+	background: linear-gradient(135deg, #4f46e5 0%, #4338ca 100%) !important;
+}
+
+/* Ensure text on gradient cards is white */
+body.dark-mode .balance-card .text-white,
+body.dark-mode .summary-card .text-white,
+body.dark-mode .balance-card h3,
+body.dark-mode .summary-card h5,
+body.dark-mode .balance-card span:not(.badge),
+body.dark-mode .summary-card span:not(.badge) {
+	color: white !important;
+}
+
+/* But button text inside summary card should be dark (for white buttons) */
+body.dark-mode .summary-card button.btn-white span,
+body.dark-mode .summary-card button.btn-light span {
+	color: inherit !important;
+}
+
+body.dark-mode .balance-card .text-white-50,
+body.dark-mode .summary-card .text-white-50 {
+	color: rgba(255, 255, 255, 0.7) !important;
+}
+
+/* Fix deposit gradient card text colors */
+body.dark-mode .card.text-white h5,
+body.dark-mode .card.text-white label,
+body.dark-mode .card.text-white .text-white {
+	color: white !important;
+}
+
+body.dark-mode .card.text-white .text-white-50 {
+	color: rgba(255, 255, 255, 0.7) !important;
+}
+
+/* Transaction colors - ensure visibility in dark mode */
+body.dark-mode .transaction-row .text-success {
+	color: #4ade80 !important;
+}
+
+body.dark-mode .transaction-row .text-danger {
+	color: #f87171 !important;
+}
+
+body.dark-mode .transaction-row .text-primary {
+	color: #818cf8 !important;
+}
+
+body.dark-mode .transaction-row .text-warning {
+	color: #fbbf24 !important;
+}
+
+body.dark-mode .transaction-row .text-info {
+	color: #22d3ee !important;
+}
+
+/* Dashboard opacity fixes */
+body.dark-mode .wallet-card .btn-light {
+	background-color: rgba(255, 255, 255, 0.95) !important;
+	color: var(--primary) !important;
+}
+
+body.dark-mode .wallet-card .btn-outline-light {
+	border-color: rgba(255, 255, 255, 0.5) !important;
+	color: white !important;
+}
+
+/* Add new investment card */
+body.dark-mode .card-custom[style*='background: transparent'] {
+	background-color: transparent !important;
+}
+
+body.dark-mode .card-custom.border-dashed .bg-white.rounded-circle {
+	background-color: var(--card-bg) !important;
+}
+
+body.dark-mode .card-custom.border-dashed i.fa-plus {
+	color: var(--primary) !important;
+}
+
+/* =========================================
+   CRITICAL FIXES - GRADIENTS AND COLORS
+   ========================================= */
+
+/* 1. REFERRAL PAGE - How it Works Gradient Fix */
+/* The card has inline style with var(--gradient-card) */
+body.dark-mode #shareSection .card[style*='background: var(--gradient-card)'] {
+	background: var(--gradient-card) !important;
+}
+
+body.dark-mode #shareSection .card[style*='var(--gradient-card)'] .card-body {
+	background: transparent !important;
+}
+
+body.dark-mode #shareSection .card[style*='var(--gradient-card)'] h5,
+body.dark-mode #shareSection .card[style*='var(--gradient-card)'] h6 {
+	color: white !important;
+}
+
+body.dark-mode #shareSection .card[style*='var(--gradient-card)'] p {
+	color: rgba(255, 255, 255, 0.7) !important;
+}
+
+/* 2 & 3. WITHDRAW PAGE - Transaction Summary Gradient Fix */
+body.dark-mode .summary-card {
+	background: linear-gradient(135deg, var(--primary), var(--primary-dark)) !important;
+}
+
+body.dark-mode .summary-card .card-body {
+	background: transparent !important;
+}
+
+/* Light mode - summary card already has gradient via CSS */
+.summary-card {
+	background: linear-gradient(135deg, var(--primary), var(--primary-dark)) !important;
+}
+
+/* 4. DEPOSIT PAGE - Complete Payment Gradient Fix */
+/* The gradient is on a div inside the card */
+body.dark-mode div[style*='background: linear-gradient(135deg, #4f46e5'] {
+	background: linear-gradient(135deg, #4f46e5 0%, #4338ca 100%) !important;
+}
+
+body.dark-mode div[style*='linear-gradient(135deg, #4f46e5'] ~ .card-body,
+body.dark-mode div[style*='linear-gradient(135deg, #4f46e5'] + div.card-body {
+	background: transparent !important;
+}
+
+/* Alternative selector for deposit gradient card */
+body.dark-mode .col-lg-5 .card.border-0.text-white .position-absolute[style*='linear-gradient'] {
+	background: linear-gradient(135deg, #4f46e5 0%, #4338ca 100%) !important;
+}
+
+/* Ensure deposit card content is visible */
+body.dark-mode .col-lg-5 .card.border-0.text-white h5,
+body.dark-mode .col-lg-5 .card.border-0.text-white .card-body {
+	color: white !important;
+}
+
+body.dark-mode .col-lg-5 .card.border-0.text-white .text-white-50 {
+	color: rgba(255, 255, 255, 0.7) !important;
+}
+
+/* 5. TRANSACTION PAGE - Amount Colors Fix */
+/* The h6 has classes text-success or text-danger */
+body.dark-mode .transaction-row h6.text-success,
+body.dark-mode .transaction-row .text-success {
+	color: #4ade80 !important;
+}
+
+body.dark-mode .transaction-row h6.text-danger,
+body.dark-mode .transaction-row .text-danger {
+	color: #f87171 !important;
+}
+
+body.dark-mode .transaction-row h6.text-primary,
+body.dark-mode .transaction-row .text-primary {
+	color: #818cf8 !important;
+}
+
+body.dark-mode .transaction-row h6.text-info,
+body.dark-mode .transaction-row .text-info {
+	color: #22d3ee !important;
+}
+
+body.dark-mode .transaction-row h6.text-warning,
+body.dark-mode .transaction-row .text-warning {
+	color: #fbbf24 !important;
+}
+
+/* 6. MY-INVESTMENTS - Manage Button Background */
+body.dark-mode .investment-row .btn-outline-secondary,
+body.dark-mode div.investment-row .btn-outline-secondary,
+body.dark-mode .btn-outline-secondary.rounded-pill {
+	background-color: rgba(79, 70, 229, 0.15) !important;
+	border-color: rgba(79, 70, 229, 0.4) !important;
+	color: #818cf8 !important;
+}
+
+body.dark-mode .investment-row .btn-outline-secondary:hover,
+body.dark-mode div.investment-row .btn-outline-secondary:hover,
+body.dark-mode .btn-outline-secondary.rounded-pill:hover {
+	background-color: rgba(79, 70, 229, 0.25) !important;
+	border-color: rgba(79, 70, 229, 0.6) !important;
+	color: #a5b4fc !important;
+}
+
+/* Additional fix for manage button in card */
+body.dark-mode .card .btn-outline-secondary {
+	background-color: rgba(255, 255, 255, 0.05);
+	border-color: var(--border-color);
+	color: var(--text-muted);
+}
+
+body.dark-mode .card .btn-outline-secondary:hover {
+	background-color: rgba(255, 255, 255, 0.15);
+	border-color: var(--text-muted);
+	color: var(--text-main);
+}
+
+/* Ensure investment row has proper styling */
+body.dark-mode div.investment-row {
+	background-color: transparent;
+	border-color: var(--border-color) !important;
+}
+
+body.dark-mode div.investment-row:hover {
+	background-color: rgba(255, 255, 255, 0.03) !important;
+}
+
+/* Text colors in investment row */
+body.dark-mode div.investment-row h6.fw-bold {
+	color: var(--text-main) !important;
+}
+
+body.dark-mode div.investment-row .text-muted {
+	color: var(--text-muted) !important;
+}
+
+body.dark-mode div.investment-row .text-success {
+	color: #4ade80 !important;
+}
+
+/* =========================================
+   ULTRA-SPECIFIC FIXES WITH HIGH SPECIFICITY
+   ========================================= */
+
+/* 1. Referral How it Works - highest specificity */
+html body.dark-mode #shareSection .card.border-0.text-white {
+	background: var(--gradient-card) !important;
+}
+
+html body.dark-mode #shareSection .card.border-0.text-white .card-body {
+	background: transparent !important;
+}
+
+html body.dark-mode #shareSection .card.border-0.text-white h5.fw-bold,
+html body.dark-mode #shareSection .card.border-0.text-white h6.fw-bold {
+	color: white !important;
+}
+
+html body.dark-mode #shareSection .card.border-0.text-white p.text-white-50 {
+	color: rgba(255, 255, 255, 0.7) !important;
+}
+
+/* 2 & 3. Withdraw Summary Card - highest specificity */
+html body.dark-mode div.col-lg-5 div.card.border-0.summary-card {
+	background: linear-gradient(135deg, var(--primary), var(--primary-dark)) !important;
+}
+
+html body.dark-mode div.col-lg-5 div.card.border-0.summary-card div.card-body {
+	background: transparent !important;
+}
+
+html body.dark-mode div.col-lg-5 div.card.border-0.summary-card h5.fw-bold,
+html body.dark-mode div.col-lg-5 div.card.border-0.summary-card span.fw-bold:not(button span),
+html body.dark-mode div.col-lg-5 div.card.border-0.summary-card div.fw-bold {
+	color: white !important;
+}
+
+/* Button text inside summary card - inherit from button */
+html body.dark-mode div.col-lg-5 div.card.border-0.summary-card button.btn-white span,
+html body.dark-mode div.col-lg-5 div.card.border-0.summary-card button.btn-light span,
+html body.dark-mode div.col-lg-5 div.card.border-0.summary-card button.btn-white,
+html body.dark-mode div.col-lg-5 div.card.border-0.summary-card button.btn-light {
+	color: inherit !important;
+}
+
+html body.dark-mode div.col-lg-5 div.card.border-0.summary-card span.text-white-50,
+html body.dark-mode div.col-lg-5 div.card.border-0.summary-card label.text-white-50 {
+	color: rgba(255, 255, 255, 0.7) !important;
+}
+
+html body.dark-mode div.col-lg-5 div.card.border-0.summary-card span.text-warning {
+	color: #fbbf24 !important;
+}
+
+/* Summary card - icon circle keeps white bg, translucent areas use rgba */
+html body.dark-mode div.col-lg-5 div.card.border-0.summary-card div.bg-white:not(.bg-opacity-10):not(.bg-opacity-25) {
+	background-color: white !important;
+}
+
+html body.dark-mode div.col-lg-5 div.card.border-0.summary-card div.bg-white:not(.bg-opacity-10):not(.bg-opacity-25) i {
+	color: var(--primary) !important;
+}
+
+/* Translucent backgrounds in summary card */
+html body.dark-mode div.col-lg-5 div.card.border-0.summary-card div.bg-white.bg-opacity-10,
+html body.dark-mode div.col-lg-5 div.card.border-0.summary-card div.bg-white.bg-opacity-25 {
+	background-color: rgba(255, 255, 255, 0.15) !important;
+}
+
+/* 4. Deposit Complete Payment - highest specificity */
+html body.dark-mode div.col-lg-5 div.card.border-0.text-white.position-relative {
+	background: transparent !important;
+}
+
+html body.dark-mode div.col-lg-5 div.card.border-0.text-white.position-relative > div.position-absolute[style*='linear-gradient'] {
+	background: linear-gradient(135deg, #4f46e5 0%, #4338ca 100%) !important;
+}
+
+html body.dark-mode div.col-lg-5 div.card.border-0.text-white.position-relative div.card-body {
+	background: transparent !important;
+}
+
+html body.dark-mode div.col-lg-5 div.card.border-0.text-white.position-relative h5.fw-bold {
+	color: white !important;
+}
+
+html body.dark-mode div.col-lg-5 div.card.border-0.text-white.position-relative label,
+html body.dark-mode div.col-lg-5 div.card.border-0.text-white.position-relative span {
+	color: white !important;
+}
+
+html body.dark-mode div.col-lg-5 div.card.border-0.text-white.position-relative span.text-white-50,
+html body.dark-mode div.col-lg-5 div.card.border-0.text-white.position-relative label.text-white-50 {
+	color: rgba(255, 255, 255, 0.7) !important;
+}
+
+html body.dark-mode div.col-lg-5 div.card.border-0.text-white.position-relative div.alert {
+	background-color: rgba(255, 255, 255, 0.1) !important;
+	color: white !important;
+}
+
+/* 5. Transaction Amount Colors - highest specificity */
+html body.dark-mode div.transaction-row h6.fw-bold.text-success,
+html body.dark-mode div.transaction-row div h6.text-success {
+	color: #4ade80 !important;
+}
+
+html body.dark-mode div.transaction-row h6.fw-bold.text-danger,
+html body.dark-mode div.transaction-row div h6.text-danger {
+	color: #f87171 !important;
+}
+
+html body.dark-mode div.transaction-row h6.fw-bold.text-primary,
+html body.dark-mode div.transaction-row div h6.text-primary {
+	color: #818cf8 !important;
+}
+
+html body.dark-mode div.transaction-row h6.fw-bold.text-info,
+html body.dark-mode div.transaction-row div h6.text-info {
+	color: #22d3ee !important;
+}
+
+html body.dark-mode div.transaction-row h6.fw-bold.text-warning,
+html body.dark-mode div.transaction-row div h6.text-warning {
+	color: #fbbf24 !important;
+}
+
+/* 6. Manage Button - highest specificity */
+/* Manage button - primary color styling for better visibility */
+html body.dark-mode div.investment-row button.btn.btn-sm.btn-outline-secondary,
+html body.dark-mode div.investment-row div.ps-3 button.btn-outline-secondary {
+	background-color: rgba(79, 70, 229, 0.15) !important;
+	border-color: rgba(79, 70, 229, 0.4) !important;
+	color: #818cf8 !important;
+}
+
+html body.dark-mode div.investment-row button.btn.btn-sm.btn-outline-secondary:hover,
+html body.dark-mode div.investment-row div.ps-3 button.btn-outline-secondary:hover {
+	background-color: rgba(79, 70, 229, 0.25) !important;
+	border-color: rgba(79, 70, 229, 0.6) !important;
+	color: #a5b4fc !important;
+}
+
+/* Also ensure investment row hover works */
+html body.dark-mode div.investment-row:hover {
+	background-color: rgba(255, 255, 255, 0.03) !important;
+}
+
+/* Balance card gradient for both modes */
+.balance-card {
+	background: linear-gradient(135deg, var(--primary), var(--primary-dark)) !important;
+	color: white;
+}
+
+html body.dark-mode .balance-card {
+	background: linear-gradient(135deg, var(--primary), var(--primary-dark)) !important;
+}
+
+html body.dark-mode .balance-card h3,
+html body.dark-mode .balance-card span {
+	color: white !important;
+}
+
+/* =========================================
+   FINAL PRIORITY FIXES - !IMPORTANT OVERRIDE
+   ========================================= */
+
+/* 1. REFERRAL - How it Works gradient with !important */
+body.dark-mode #shareSection .card.border-0.text-white[style*='border-radius: 1.25rem'] {
+	background: var(--gradient-card) !important;
+}
+
+body.dark-mode #shareSection .card.border-0.text-white .card-body.p-4 {
+	background: transparent !important;
+}
+
+body.dark-mode #shareSection .card.border-0.text-white .card-body h5,
+body.dark-mode #shareSection .card.border-0.text-white .card-body h6 {
+	color: white !important;
+}
+
+body.dark-mode #shareSection .card.border-0.text-white .card-body p {
+	color: rgba(255, 255, 255, 0.8) !important;
+}
+
+/* 2. WITHDRAW - Transaction Summary gradient */
+body.dark-mode div[x-data] .col-lg-5 .card.summary-card,
+body.dark-mode .col-lg-5 .card.summary-card {
+	background: linear-gradient(135deg, var(--primary), var(--primary-dark)) !important;
+}
+
+/* Summary card inner elements - preserve proper backgrounds */
+body.dark-mode .summary-card .card-body {
+	background: transparent !important;
+}
+
+body.dark-mode .summary-card .bg-white.bg-opacity-10,
+body.dark-mode .summary-card .bg-white.bg-opacity-25 {
+	background-color: rgba(255, 255, 255, 0.15) !important;
+}
+
+body.dark-mode .summary-card .border-top.border-white {
+	border-color: rgba(255, 255, 255, 0.3) !important;
+}
+
+body.dark-mode .summary-card .text-white {
+	color: white !important;
+}
+
+body.dark-mode .summary-card .text-white-50 {
+	color: rgba(255, 255, 255, 0.8) !important;
+}
+
+body.dark-mode .summary-card .text-warning {
+	color: #fbbf24 !important;
+}
+
+/* 3. WITHDRAW - Available Balance gradient (already has it, ensure it stays) */
+body.dark-mode .balance-card {
+	background: linear-gradient(135deg, var(--primary), var(--primary-dark)) !important;
+}
+
+body.dark-mode .balance-card .text-white {
+	color: white !important;
+}
+
+body.dark-mode .balance-card .text-white-50 {
+	color: rgba(255, 255, 255, 0.7) !important;
+}
+
+/* 4. DEPOSIT - Complete Payment gradient */
+body.dark-mode div.col-lg-5 > div.card.border-0.text-white {
+	background-color: transparent !important;
+}
+
+body.dark-mode div.col-lg-5 > div.card.border-0.text-white > div.position-absolute:first-child {
+	background: linear-gradient(135deg, #4f46e5 0%, #4338ca 100%) !important;
+}
+
+body.dark-mode div.col-lg-5 > div.card.border-0.text-white .card-body {
+	background: transparent !important;
+}
+
+body.dark-mode div.col-lg-5 > div.card.border-0.text-white h5,
+body.dark-mode div.col-lg-5 > div.card.border-0.text-white label,
+body.dark-mode div.col-lg-5 > div.card.border-0.text-white span:not(.badge) {
+	color: white !important;
+}
+
+body.dark-mode div.col-lg-5 > div.card.border-0.text-white .alert {
+	background-color: rgba(255, 255, 255, 0.1) !important;
+	color: white !important;
+}
+
+body.dark-mode div.col-lg-5 > div.card.border-0.text-white .copy-input-group {
+	background-color: rgba(255, 255, 255, 0.1) !important;
+	border-color: rgba(255, 255, 255, 0.2) !important;
+}
+
+body.dark-mode div.col-lg-5 > div.card.border-0.text-white .copy-input {
+	color: white !important;
+}
+
+/* 5. TRANSACTION - Amount colors */
+body.dark-mode div.list-wrapper div.transaction-row h6.text-success {
+	color: #4ade80 !important;
+}
+
+body.dark-mode div.list-wrapper div.transaction-row h6.text-danger {
+	color: #f87171 !important;
+}
+
+body.dark-mode div.list-wrapper div.transaction-row h6.text-primary {
+	color: #818cf8 !important;
+}
+
+body.dark-mode div.list-wrapper div.transaction-row h6.text-info {
+	color: #22d3ee !important;
+}
+
+body.dark-mode div.list-wrapper div.transaction-row h6.text-warning {
+	color: #fbbf24 !important;
+}
+
+/* Also fix the icon circle colors in transaction row */
+body.dark-mode div.transaction-row .icon-circle.text-success {
+	color: #4ade80 !important;
+}
+
+body.dark-mode div.transaction-row .icon-circle.text-danger {
+	color: #f87171 !important;
+}
+
+body.dark-mode div.transaction-row .icon-circle.text-primary {
+	color: #818cf8 !important;
+}
+
+body.dark-mode div.transaction-row .icon-circle.text-info {
+	color: #22d3ee !important;
+}
+
+body.dark-mode div.transaction-row .icon-circle.text-warning {
+	color: #fbbf24 !important;
+}
+
+/* 6. MY-INVESTMENTS - Manage button */
+/* Manage button - updated with primary color styling */
+body.dark-mode div[x-show="activeTab === 'active'"] button.btn-outline-secondary,
+body.dark-mode .investment-row button.btn-outline-secondary,
+body.dark-mode div.investment-row button.btn-outline-secondary {
+	background-color: rgba(79, 70, 229, 0.15) !important;
+	border-color: rgba(79, 70, 229, 0.4) !important;
+	color: #818cf8 !important;
+}
+
+body.dark-mode div[x-show="activeTab === 'active'"] button.btn-outline-secondary:hover,
+body.dark-mode .investment-row button.btn-outline-secondary:hover,
+body.dark-mode div.investment-row button.btn-outline-secondary:hover {
+	background-color: rgba(79, 70, 229, 0.25) !important;
+	border-color: rgba(79, 70, 229, 0.6) !important;
+	color: #a5b4fc !important;
+}
+
+/* Ensure all gradient cards maintain their gradients */
+body.dark-mode [style*='var(--gradient-card)'] {
+	background: var(--gradient-card) !important;
+}
+
+body.dark-mode .card[style*='var(--gradient-card)'] {
+	background: var(--gradient-card) !important;
+}
+
+html body.dark-mode div.col-lg-5 div.card.border-0.summary-card form button.darkMode-dark-text {
+	color: var(--primary-dark) !important;
+}
+/* Button loading spinner */
+@keyframes btn-spin {
+	to {
+		transform: rotate(360deg);
+	}
+}
+
+.btn-spinner {
+	display: inline-block;
+	width: 14px;
+	height: 14px;
+	border: 2px solid currentColor;
+	border-right-color: transparent;
+	border-radius: 50%;
+	animation: btn-spin 0.65s linear infinite;
+	vertical-align: middle;
+}
+
+.btn-loading {
+	pointer-events: none;
+	opacity: 0.75;
+}

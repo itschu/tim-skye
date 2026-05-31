@@ -1,0 +1,7 @@
+# Cron Directory Security
+
+# Deny all access except to process-investments.php, cleanup-logs.php, and fetch-exchange-rates.php
+
+<FilesMatch "^(?!process-investments\.php$|cleanup-logs\.php$|fetch-exchange-rates\.php$).*$">
+Require all denied
+</FilesMatch>

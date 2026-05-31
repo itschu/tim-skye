@@ -1,0 +1,16 @@
+# Prevent PHP execution
+
+<IfModule mod_php5.c>
+    php_flag engine off
+</IfModule>
+<IfModule mod_php7.c>
+    php_flag engine off
+</IfModule>
+<IfModule mod_php8.c>
+    php_flag engine off
+</IfModule>
+
+# Deny all direct access - files must be served through PHP proxy
+
+Order Deny,Allow
+Deny from all

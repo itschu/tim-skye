@@ -1,0 +1,88 @@
+<!-- SUBJECT: Investment Cancelled - {{site_name}} -->
+<!doctype html>
+<html>
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width,initial-scale=1" />
+		<title>Investment Cancelled</title>
+		<style>
+			body {
+				background: #f4f6f9;
+				margin: 0;
+			}
+			a {
+				color: #0a1628;
+			}
+		</style>
+	</head>
+	<body>
+		<table role="presentation" width="100%" bgcolor="#f4f6f9">
+			<tr>
+				<td align="center" style="padding: 20px">
+					<table role="presentation" width="600" bgcolor="#ffffff" style="border-collapse: collapse">
+						<tr>
+							<td bgcolor="#0a1628" style="height: 80px; text-align: center; padding: 20px"><img src="{{logo_url}}" alt="{{site_name}}" style="max-height: 56px" /></td>
+						</tr>
+						<tr>
+							<td bgcolor="#c9a84c" style="height: 3px"></td>
+						</tr>
+						<tr>
+							<td
+								style="
+									padding: 40px;
+									font-family:
+										Inter,
+										Segoe UI,
+										Arial;
+									color: #334155;
+									font-size: 15px;
+									line-height: 1.7;
+								"
+							>
+								<h1 style="color: #0a1628; font-size: 22px; font-weight: 600; margin: 0 0 8px 0">[[__("Investment Cancelled")]]</h1>
+								<p style="margin: 0 0 16px">[[__("Dear")]] {{user_name}},</p>
+								<p style="margin: 0 0 20px">[[__("Your investment ({{investment_reference}}) has been cancelled. The refund amount and any penalties applied are listed below.")]]</p>
+								<table role="presentation" width="100%" cellpadding="12" cellspacing="0" border="0" style="margin-top: 16px; border-collapse: collapse">
+									<tr bgcolor="#f8fafc" style="border-bottom: 1px solid #e5e7eb">
+										<td style="color: #6b7280; font-size: 13px">[[__("Original Amount")]]</td>
+										<td align="right" style="color: #0a1628; font-weight: 600; font-size: 14px">{{original_amount}}</td>
+									</tr>
+									<tr bgcolor="#ffffff" style="border-bottom: 1px solid #e5e7eb">
+										<td style="color: #6b7280; font-size: 13px">[[__("Penalty")]]</td>
+										<td align="right" style="color: #dc2626; font-weight: 600; font-size: 14px">{{penalty}}</td>
+									</tr>
+									<tr bgcolor="#f8fafc" style="border-bottom: 1px solid #e5e7eb">
+										<td style="color: #6b7280; font-size: 13px">[[__("Refund")]]</td>
+										<td align="right" style="color: #059669; font-weight: 600; font-size: 14px">{{refund_amount}}</td>
+									</tr>
+								</table>
+							</td>
+						</tr>
+						<tr>
+							<td
+								bgcolor="#f4f6f9"
+								style="
+									padding: 32px 40px;
+									text-align: center;
+									color: #9ca3af;
+									font-family:
+										Inter,
+										Segoe UI,
+										Arial;
+								"
+							>
+								<div style="font-weight: 600; color: #0a1628; font-size: 14px">{{site_name}}</div>
+
+								<div style="color: #9ca3af; font-size: 11px; margin-top: 8px; max-width: 520px; margin: auto">
+									[[__("This communication is for informational purposes only and does not constitute financial advice.")]] {{site_name}} [[__("is not responsible for any investment decisions made based on this communication.")]]
+								</div>
+								<div style="color: #6b7280; font-size: 12px; margin-top: 8px">[[__("Need assistance? Contact")]] <a href="mailto:{{support_email}}">{{support_email}}</a></div>
+								<div style="color: #9ca3af; font-size: 11px; margin-top: 8px">© {{current_year}} {{site_name}}. [[__("All rights reserved.")]]</div>
+							</td>
+						</tr>
+					</table>
+				</td>
+			</tr>
+		</table>
+	</body>
+</html>

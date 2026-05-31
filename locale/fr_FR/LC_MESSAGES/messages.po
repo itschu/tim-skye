@@ -1,0 +1,4435 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: Investment Platform\n"
+"POT-Creation-Date: 2026-02-07 12:00+0000\n"
+"PO-Revision-Date: 2026-02-07 12:00+0000\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Language: fr_FR\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+# Registration page
+msgid "Create Account"
+msgstr "Créer un compte"
+
+msgid "Join our investment platform today"
+msgstr "Rejoignez notre plateforme d'investissement aujourd'hui"
+
+msgid "Full Name"
+msgstr "Nom complet"
+
+msgid "Email Address"
+msgstr "Adresse e-mail"
+
+msgid "Phone Number (Optional)"
+msgstr "Numéro de téléphone (facultatif)"
+
+msgid "Password"
+msgstr "Mot de passe"
+
+msgid "Confirm Password"
+msgstr "Confirmer le mot de passe"
+
+msgid "Referral Code (Optional)"
+msgstr "Code de parrainage (facultatif)"
+
+msgid "Already have an account?"
+msgstr "Vous avez déjà un compte ?"
+
+msgid "Sign in here"
+msgstr "Connectez-vous ici"
+
+# Login page
+msgid "Welcome Back"
+msgstr "Bon retour"
+
+msgid "Sign in to your account"
+msgstr "Connectez-vous à votre compte"
+
+msgid "Remember me"
+msgstr "Se souvenir de moi"
+
+msgid "Sign In"
+msgstr "Se connecter"
+
+msgid "Don't have an account?"
+msgstr "Vous n'avez pas de compte ?"
+
+msgid "Create one"
+msgstr "Créez-en un"
+
+msgid "Forgot your password?"
+msgstr "Mot de passe oublié ?"
+
+# Password reset page
+msgid "Reset Password"
+msgstr "Réinitialiser le mot de passe"
+
+msgid "Enter your email address and we'll send you a link to reset your password"
+msgstr "Entrez votre adresse e-mail et nous vous enverrons un lien pour réinitialiser votre mot de passe"
+
+msgid "Send Reset Link"
+msgstr "Envoyer le lien de réinitialisation"
+
+msgid "Back to Login"
+msgstr "Retour à la connexion"
+
+msgid "Set New Password"
+msgstr "Définir un nouveau mot de passe"
+
+msgid "Enter your new password below"
+msgstr "Entrez votre nouveau mot de passe ci-dessous"
+
+msgid "New Password"
+msgstr "Nouveau mot de passe"
+
+msgid "Minimum 6 characters"
+msgstr "Minimum 6 caractères"
+
+msgid "Request New Link"
+msgstr "Demander un nouveau lien"
+
+# Transactions page
+msgid "Transactions"
+msgstr "Transactions"
+
+msgid "All"
+msgstr "Tout"
+
+msgid "Deposits"
+msgstr "Dépôts"
+
+msgid "Withdrawals"
+msgstr "Retraits"
+
+msgid "Profits"
+msgstr "Profits"
+
+msgid "Referrals"
+msgstr "Parrainages"
+
+msgid "Date"
+msgstr "Date"
+
+msgid "Type"
+msgstr "Type"
+
+msgid "Amount"
+msgstr "Montant"
+
+msgid "Status"
+msgstr "Statut"
+
+msgid "Details"
+msgstr "Détails"
+
+msgid "Pending"
+msgstr "En attente"
+
+msgid "Approved"
+msgstr "Approuvé"
+
+msgid "Completed"
+msgstr "Complété"
+
+msgid "Rejected"
+msgstr "Rejeté"
+
+msgid "No transactions found."
+msgstr "Aucune transaction trouvée."
+
+msgid "Previous"
+msgstr "Précédent"
+
+msgid "Next"
+msgstr "Suivant"
+
+msgid "Page"
+msgstr "Page"
+
+msgid "of"
+msgstr "de"
+
+# Common messages
+msgid "Success!"
+msgstr "Succès !"
+
+msgid "Your account has been created. Please log in with your credentials."
+msgstr "Votre compte a été créé. Veuillez vous connecter avec vos identifiants."
+
+msgid "Session Expired."
+msgstr "Session expirée."
+
+msgid "Your session has timed out. Please log in again."
+msgstr "Votre session a expiré. Veuillez vous reconnecter."
+
+msgid "Logged Out."
+msgstr "Déconnecté."
+
+msgid "You have been successfully logged out."
+msgstr "Vous avez été déconnecté avec succès."
+
+msgid "Your password has been reset. Please log in with your new password."
+msgstr "Votre mot de passe a été réinitialisé. Veuillez vous connecter avec votre nouveau mot de passe."
+
+msgid "Check Your Email!"
+msgstr "Vérifiez votre e-mail !"
+
+msgid "If an account exists with that email, you'll receive a password reset link."
+msgstr "Si un compte existe avec cet e-mail, vous recevrez un lien de réinitialisation de mot de passe."
+
+# Navigation menu items
+msgid "Dashboard"
+msgstr "Tableau de bord"
+
+msgid "Deposit"
+msgstr "Dépôt"
+
+msgid "Withdraw"
+msgstr "Retirer"
+
+msgid "Invest"
+msgstr "Investir"
+
+msgid "My Investments"
+msgstr "Mes investissements"
+
+msgid "Profile"
+msgstr "Profil"
+
+msgid "Funds"
+msgstr "Fonds"
+
+msgid "Account"
+msgstr "Compte"
+
+# Traductions d'intervalle
+msgid "minute"
+msgstr "minute"
+
+msgid "minutes"
+msgstr "minutes"
+
+msgid "hour"
+msgstr "heure"
+
+msgid "hours"
+msgstr "heures"
+
+msgid "day"
+msgstr "jour"
+
+msgid "days"
+msgstr "jours"
+
+msgid "week"
+msgstr "semaine"
+
+msgid "weeks"
+msgstr "semaines"
+
+msgid "month"
+msgstr "mois"
+
+msgid "months"
+msgstr "mois"
+
+msgid "every %d %s"
+msgstr "tous les %d %s"
+
+msgid "%s%% every %d %s"
+msgstr "%s%% tous les %d %s"
+
+msgid "Payout Schedule"
+msgstr "Calendrier de paiement"
+
+msgid "Every"
+msgstr "Chaque"
+
+msgid "Total Payouts"
+msgstr "Total des paiements"
+
+# Pending withdrawals admin page
+msgid "Pending Withdrawals"
+msgstr "Retraits en attente"
+
+msgid "Review payout requests and process securely."
+msgstr "Examinez les demandes de paiement et traitez-les en toute sécurité."
+
+msgid "Search by user or ID"
+msgstr "Rechercher par utilisateur ou ID"
+
+msgid "Processing"
+msgstr "En cours"
+
+msgid "Review"
+msgstr "Examiner"
+
+msgid "No records found."
+msgstr "Aucun enregistrement trouvé."
+
+msgid "Process Withdrawal"
+msgstr "Traiter le retrait"
+
+msgid "Ensure the user has sufficient balance and no active suspicious flags before processing."
+msgstr "Assurez-vous que l'utilisateur dispose d'un solde suffisant et qu'aucun drapeau suspect n'est actif avant le traitement."
+
+msgid "User Current Balance"
+msgstr "Solde actuel de l'utilisateur"
+
+msgid "Payout Amount"
+msgstr "Montant du paiement"
+
+msgid "2. Destination Details"
+msgstr "2. Détails de destination"
+
+msgid "Method"
+msgstr "Méthode"
+
+msgid "Address"
+msgstr "Adresse"
+
+msgid "Admin Note"
+msgstr "Note de l'administrateur"
+
+msgid "Note..."
+msgstr "Note..."
+
+msgid "Cancel"
+msgstr "Annuler"
+
+msgid "Reject"
+msgstr "Rejeter"
+
+msgid "Confirm"
+msgstr "Confirmer"
+
+msgid "Rejection reason is required"
+msgstr "La raison du rejet est requise"
+
+msgid "User"
+msgstr "Utilisateur"
+
+msgid "Destination"
+msgstr "Destination"
+
+msgid "Action"
+msgstr "Action"
+
+msgid "Language changed successfully"
+msgstr "Langue changée avec succès"
+
+msgid "Register"
+msgstr "S'inscrire"
+
+msgid "Login"
+msgstr "Connexion"
+
+msgid "Password Reset"
+msgstr "Réinitialisation du mot de passe"
+
+msgid "Contact"
+msgstr "Contact"
+
+msgid "Email"
+msgstr "E-mail"
+
+msgid "Phone"
+msgstr "Téléphone"
+
+msgid "Links"
+msgstr "Liens"
+
+msgid "Terms of Service"
+msgstr "Conditions de service"
+
+msgid "Privacy Policy"
+msgstr "Politique de confidentialité"
+
+msgid "Support & Help"
+msgstr "Support et aide"
+
+msgid "All rights reserved"
+msgstr "Tous droits réservés"
+
+msgid "Powered by"
+msgstr "Propulsé par"
+
+msgid "Logout"
+msgstr "Déconnexion"
+
+msgid "Invalid language selected"
+msgstr "Langue invalide sélectionnée"
+
+msgid "Language not available"
+msgstr "Langue non disponible"
+
+msgid "Failed to change language"
+msgstr "Échec du changement de langue"
+
+# Profile page - additional strings
+msgid "Profile & KYC"
+msgstr "Profil & KYC"
+
+msgid "Security"
+msgstr "Sécurité"
+
+msgid "KYC"
+msgstr "KYC"
+
+msgid "Update Profile"
+msgstr "Mettre à jour le profil"
+
+msgid "Current Password"
+msgstr "Mot de passe actuel"
+
+msgid "Change Password"
+msgstr "Changer le mot de passe"
+
+msgid "KYC Documents"
+msgstr "Documents KYC"
+
+msgid "ID Front"
+msgstr "Pièce d'identité (recto)"
+
+msgid "ID Back"
+msgstr "Pièce d'identité (verso)"
+
+msgid "Selfie"
+msgstr "Selfie"
+
+msgid "Upload Documents"
+msgstr "Télécharger les documents"
+
+msgid "Uploaded Documents"
+msgstr "Documents téléchargés"
+
+msgid "No documents uploaded"
+msgstr "Aucun document téléchargé"
+
+msgid "Language"
+msgstr "Langue"
+
+msgid "Invest Now"
+msgstr "Investir maintenant"
+
+msgid "My Portfolio"
+msgstr "Mon portefeuille"
+
+msgid "Referrals"
+msgstr "Parrainages"
+
+msgid "Support"
+msgstr "Support"
+
+msgid "Verified"
+msgstr "Vérifié"
+
+msgid "Make a Deposit"
+msgstr "Effectuer un dépôt"
+
+msgid "Payment Method"
+msgstr "Mode de paiement"
+
+msgid "Fee"
+msgstr "Frais"
+
+msgid "Net"
+msgstr "Net"
+
+msgid "First"
+msgstr "Premier"
+
+msgid "Proof of Payment (optional)"
+msgstr "Preuve de paiement (facultatif)"
+
+msgid "Submit Deposit"
+msgstr "Soumettre le dépôt"
+
+msgid "Instructions"
+msgstr "Instructions"
+
+msgid "Copy Details"
+msgstr "Copier les détails"
+
+msgid "Copied to clipboard"
+msgstr "Copié dans le presse-papiers"
+
+msgid "Follow the selected payment provider instructions after submitting your deposit."
+msgstr "Suivez les instructions du fournisseur de paiement sélectionné après avoir soumis votre dépôt."
+
+msgid "Recent Deposits"
+msgstr "Dépôts récents"
+
+msgid "No deposits yet."
+msgstr "Aucun dépôt pour le moment."
+
+msgid "Create Investment"
+msgstr "Créer un investissement"
+
+msgid "Plan"
+msgstr "Plan"
+
+msgid "Plan Summary"
+msgstr "Résumé du plan"
+
+msgid "ROI"
+msgstr "ROI"
+
+msgid "Duration"
+msgstr "Durée"
+
+msgid "days"
+msgstr "jours"
+
+msgid "Select a plan to see details"
+msgstr "Sélectionnez un plan pour voir les détails"
+
+msgid "Available Balance"
+msgstr "Solde disponible"
+
+msgid "Close"
+msgstr "Fermer"
+
+# Dashboard page
+msgid "Welcome back!"
+msgstr "Bon retour !"
+
+msgid "Here's your portfolio performance."
+msgstr "Voici les performances de votre portefeuille."
+
+msgid "Total Balance"
+msgstr "Solde total"
+
+msgid "Deposit"
+msgstr "Dépôt"
+
+msgid "Withdraw"
+msgstr "Retirer"
+
+msgid "Total Profit"
+msgstr "Profit total"
+
+msgid "Active Plans"
+msgstr "Plans actifs"
+
+msgid "Running now"
+msgstr "En cours"
+
+msgid "History & Archive"
+msgstr "Historique et archive"
+
+msgid "Manage"
+msgstr "Gérer"
+
+msgid "Days"
+msgstr "Jours"
+
+msgid "Invested"
+msgstr "Investi"
+
+msgid "No History Yet"
+msgstr "Pas encore d'historique"
+
+msgid "Your completed investments will appear here."
+msgstr "Vos investissements terminés apparaîtront ici."
+
+msgid "Cancellation Penalty"
+msgstr "Pénalité d'annulation"
+
+msgid "Original Amount"
+msgstr "Montant original"
+
+msgid "Penalty"
+msgstr "Pénalité"
+
+msgid "Refund Amount"
+msgstr "Montant du remboursement"
+
+msgid "Note: Earned profits will not be returned."
+msgstr "Note : Les profits gagnés ne seront pas retournés."
+
+msgid "All time"
+msgstr "Depuis toujours"
+
+msgid "Referral Program"
+msgstr "Programme de parrainage"
+
+msgid "You earned"
+msgstr "Vous avez gagné"
+
+msgid "from"
+msgstr "de"
+
+msgid "invites"
+msgstr "invitations"
+
+msgid "View Link"
+msgstr "Voir le lien"
+
+msgid "Active Investments"
+msgstr "Investissements actifs"
+
+msgid "View Portfolio"
+msgstr "Voir le portefeuille"
+
+msgid "No Active Investments"
+msgstr "Aucun investissement actif"
+
+msgid "Start investing to see your portfolio here."
+msgstr "Commencez à investir pour voir votre portefeuille ici."
+
+msgid "Open New Investment"
+msgstr "Ouvrir un nouvel investissement"
+
+msgid "Choose a plan to start earning."
+msgstr "Choisissez un plan pour commencer à gagner."
+
+msgid "View Plans"
+msgstr "Voir les plans"
+
+msgid "Investment Plan"
+msgstr "Plan d'investissement"
+
+msgid "Progress"
+msgstr "Progrès"
+
+msgid "Day"
+msgstr "Jour"
+
+msgid "of"
+msgstr "sur"
+
+msgid "NEXT PAYOUT"
+msgstr "PROCHAIN PAIEMENT"
+
+msgid "PROFIT EARNED"
+msgstr "PROFIT GAGNÉ"
+
+msgid "Profit Growth"
+msgstr "Croissance des profits"
+
+msgid "Last 7 Days"
+msgstr "7 derniers jours"
+
+msgid "Last 30 Days"
+msgstr "30 derniers jours"
+
+msgid "No Profit Data Yet"
+msgstr "Pas encore de données de profit"
+
+msgid "Your profit growth chart will appear here once you start earning."
+msgstr "Votre graphique de croissance des profits apparaîtra ici une fois que vous commencerez à gagner."
+
+msgid "Recent Activity"
+msgstr "Activité récente"
+
+msgid "View All"
+msgstr "Voir tout"
+
+msgid "No recent activity"
+msgstr "Pas d'activité récente"
+
+msgid "Pending Transactions"
+msgstr "Transactions en attente"
+
+msgid "You have"
+msgstr "Vous avez"
+
+msgid "pending deposit(s)"
+msgstr "dépôt(s) en attente"
+
+msgid "pending withdrawal(s)"
+msgstr "retrait(s) en attente"
+
+msgid "and"
+msgstr "et"
+
+msgid "Profit"
+msgstr "Profit"
+
+msgid "Due"
+msgstr "Dû"
+
+# Invest page
+msgid "Invest Now"
+msgstr "Investir maintenant"
+
+msgid "Investment Market"
+msgstr "Marché des investissements"
+
+msgid "Choose your strategy and start earning"
+msgstr "Choisissez votre stratégie et commencez à gagner"
+
+msgid "Profit Estimator"
+msgstr "Estimateur de profit"
+
+msgid "Selected Plan"
+msgstr "Plan sélectionné"
+
+msgid "Investment Amount ($)"
+msgstr "Montant d'investissement ($)"
+
+msgid "Projected Net Profit"
+msgstr "Profit net projeté"
+
+msgid "Based on"
+msgstr "Basé sur"
+
+msgid "ROI"
+msgstr "ROI"
+
+msgid "Available Plans"
+msgstr "Plans disponibles"
+
+msgid "Swipe"
+msgstr "Glisser"
+
+msgid "MOST POPULAR"
+msgstr "PLUS POPULAIRE"
+
+msgid "Daily"
+msgstr "Quotidien"
+
+msgid "Min Deposit"
+msgstr "Dépôt min"
+
+msgid "Duration"
+msgstr "Durée"
+
+msgid "Days"
+msgstr "Jours"
+
+msgid "Capital Return"
+msgstr "Retour du capital"
+
+msgid "Yes"
+msgstr "Oui"
+
+msgid "Compounding"
+msgstr "Capitalisation"
+
+msgid "Active"
+msgstr "Actif"
+
+msgid "Choose Plan"
+msgstr "Choisir le plan"
+
+msgid "Confirm Investment"
+msgstr "Confirmer l'investissement"
+
+msgid "Investment Amount"
+msgstr "Montant de l'investissement"
+
+msgid "Plan"
+msgstr "Plan"
+
+msgid "Amount to Invest"
+msgstr "Montant à investir"
+
+msgid "Projected Profit"
+msgstr "Profit projeté"
+
+msgid "Total Return"
+msgstr "Rendement total"
+
+msgid "Available"
+msgstr "Disponible"
+
+msgid "Investment plan with guaranteed returns"
+msgstr "Plan d'investissement avec rendements garantis"
+
+msgid "Select a plan"
+msgstr "Sélectionnez un plan"
+
+# My Portfolio page
+msgid "My Portfolio"
+msgstr "Mon portefeuille"
+
+msgid "Portfolio Overview"
+msgstr "Aperçu du portefeuille"
+
+msgid "Track and manage your investments"
+msgstr "Suivez et gérez vos investissements"
+
+msgid "Hide"
+msgstr "Masquer"
+
+msgid "Show"
+msgstr "Afficher"
+
+msgid "Total Net Worth"
+msgstr "Valeur nette totale"
+
+msgid "Total equity across all active plans and wallet balances."
+msgstr "Capital total dans tous les plans actifs et soldes de portefeuille."
+
+msgid "Active Capital"
+msgstr "Capital actif"
+
+msgid "Running"
+msgstr "En cours"
+
+# Transactions page
+msgid "Track your financial history"
+msgstr "Suivez votre historique financier"
+
+msgid "All Status"
+msgstr "Tous les statuts"
+
+msgid "All Time"
+msgstr "Tout le temps"
+
+msgid "Today"
+msgstr "Aujourd'hui"
+
+msgid "This Week"
+msgstr "Cette semaine"
+
+msgid "This Month"
+msgstr "Ce mois-ci"
+
+msgid "Details"
+msgstr "Détails"
+
+msgid "Date"
+msgstr "Date"
+
+msgid "Status"
+msgstr "Statut"
+
+msgid "Amount"
+msgstr "Montant"
+
+msgid "No Transactions Found"
+msgstr "Aucune transaction trouvée"
+
+msgid "Try adjusting your filters."
+msgstr "Essayez d'ajuster vos filtres."
+
+# Profile page
+msgid "Account Settings"
+msgstr "Paramètres du compte"
+
+msgid "Manage your profile, security and verification"
+msgstr "Gérez votre profil, sécurité et vérification"
+
+msgid "Contact Support"
+msgstr "Contacter le support"
+
+msgid "Personal Details"
+msgstr "Informations personnelles"
+
+msgid "Security"
+msgstr "Sécurité"
+
+msgid "KYC Verification"
+msgstr "Vérification KYC"
+
+msgid "Personal Information"
+msgstr "Informations personnelles"
+
+msgid "Email cannot be changed"
+msgstr "L'e-mail ne peut pas être modifié"
+
+msgid "Save Changes"
+msgstr "Enregistrer les modifications"
+
+msgid "Security Settings"
+msgstr "Paramètres de sécurité"
+
+msgid "Change Password"
+msgstr "Changer le mot de passe"
+
+msgid "Current Password"
+msgstr "Mot de passe actuel"
+
+msgid "New Password"
+msgstr "Nouveau mot de passe"
+
+msgid "Confirm Password"
+msgstr "Confirmer le mot de passe"
+
+msgid "Update Password"
+msgstr "Mettre à jour le mot de passe"
+
+msgid "Two-Factor Authentication (2FA)"
+msgstr "Authentification à deux facteurs (2FA)"
+
+msgid "Add an extra layer of security to your account."
+msgstr "Ajoutez une couche de sécurité supplémentaire à votre compte."
+
+msgid "Identity Verification"
+msgstr "Vérification d'identité"
+
+msgid "Why verify?"
+msgstr "Pourquoi vérifier ?"
+
+msgid "Verified users get higher withdrawal limits and priority support. Please upload clear photos of your government-issued ID."
+msgstr "Les utilisateurs vérifiés bénéficient de limites de retrait plus élevées et d'un support prioritaire. Veuillez télécharger des photos claires de votre pièce d'identité officielle."
+
+msgid "Government ID (Front)"
+msgstr "Pièce d'identité (recto)"
+
+msgid "Government ID (Back)"
+msgstr "Pièce d'identité (verso)"
+
+msgid "Click to Upload"
+msgstr "Cliquez pour télécharger"
+
+msgid "Selfie with ID"
+msgstr "Selfie avec pièce d'identité"
+
+msgid "Take a Selfie"
+msgstr "Prendre un selfie"
+
+msgid "Hold your ID next to your face. Ensure good lighting."
+msgstr "Tenez votre pièce d'identité à côté de votre visage. Assurez-vous d'avoir une bonne luminosité."
+
+msgid "Submit Documents"
+msgstr "Soumettre les documents"
+
+msgid "Uploaded Documents"
+msgstr "Documents téléchargés"
+
+msgid "Your documents are under review. This usually takes 1-2 business days."
+msgstr "Vos documents sont en cours d'examen. Cela prend généralement 1-2 jours ouvrables."
+
+msgid "Not Verified"
+msgstr "Non vérifié"
+
+msgid "Verified"
+msgstr "Vérifié"
+
+msgid "Rejected"
+msgstr "Rejeté"
+
+msgid "Not Submitted"
+msgstr "Non soumis"
+
+msgid "Profile updated successfully"
+msgstr "Profil mis à jour avec succès"
+
+msgid "Country"
+msgstr "Pays"
+
+msgid "Select Country"
+msgstr "Sélectionner un pays"
+
+msgid "Profile picture updated"
+msgstr "Photo de profil mise à jour"
+
+msgid "Failed to upload image"
+msgstr "Échec du téléchargement de l'image"
+
+msgid "Invalid image format"
+msgstr "Format d'image invalide"
+
+msgid "En cours"
+msgstr "En cours"
+
+msgid "No active investments to display"
+msgstr "Aucun investissement actif à afficher"
+
+msgid "Active Investments"
+msgstr "Investissements actifs"
+
+msgid "History & Archive"
+msgstr "Historique et archive"
+
+msgid "Manage"
+msgstr "Gérer"
+
+msgid "No Active Investments"
+msgstr "Aucun investissement actif"
+
+msgid "Start investing to build your portfolio."
+msgstr "Commencez à investir pour constituer votre portefeuille."
+
+msgid "Date Started"
+msgstr "Date de début"
+
+msgid "Date Ended"
+msgstr "Date de fin"
+
+msgid "Initial Capital"
+msgstr "Capital initial"
+
+msgid "Total Return"
+msgstr "Rendement total"
+
+msgid "No History"
+msgstr "Aucun historique"
+
+msgid "Your completed investments will appear here."
+msgstr "Vos investissements terminés apparaîtront ici."
+
+msgid "Manage Investment"
+msgstr "Gérer l'investissement"
+
+msgid "Daily ROI"
+msgstr "ROI quotidien"
+
+msgid "Start Date"
+msgstr "Date de début"
+
+msgid "End Date"
+msgstr "Date de fin"
+
+msgid "Profit Earned"
+msgstr "Profit gagné"
+
+msgid "Close"
+msgstr "Fermer"
+
+msgid "Cancel Investment"
+msgstr "Annuler l'investissement"
+
+msgid "Asset Mix"
+msgstr "Mix d'actifs"
+
+msgid "Progress"
+msgstr "Progrès"
+
+# Header / Navigation
+msgid "Home"
+msgstr "Accueil"
+
+msgid "Invest"
+msgstr "Investir"
+
+msgid "Wallet"
+msgstr "Portefeuille"
+
+msgid "Menu"
+msgstr "Menu"
+
+msgid "No Investment Plans Available"
+msgstr "Aucun plan d'investissement disponible"
+
+msgid "Please check back later for new investment opportunities."
+msgstr "Veuillez revenir plus tard pour de nouvelles opportunités d'investissement."
+
+msgid "My Portfolio"
+msgstr "Mon portefeuille"
+
+msgid "Portfolio Overview"
+msgstr "Aperçu du portefeuille"
+
+msgid "Track and manage your investments"
+msgstr "Suivez et gérez vos investissements"
+
+msgid "Total Net Worth"
+msgstr "Valeur nette totale"
+
+msgid "Total equity across all active plans"
+msgstr "Capital total sur tous les plans actifs"
+
+msgid "Active Capital"
+msgstr "Capital actif"
+
+msgid "Active Plans"
+msgstr "Plans actifs"
+
+msgid "Running"
+msgstr "En cours"
+
+msgid "Failed to update profile. Please try again later."
+msgstr "Échec de la mise à jour du profil. Veuillez réessayer plus tard."
+
+# Referrals page
+msgid "Referral Program"
+msgstr "Programme de parrainage"
+
+msgid "Invite friends and earn commissions"
+msgstr "Invitez des amis et gagnez des commissions"
+
+msgid "Invite Friends"
+msgstr "Inviter des amis"
+
+msgid "Total Earnings"
+msgstr "Gains totaux"
+
+msgid "Keep inviting!"
+msgstr "Continuez à inviter !"
+
+msgid "Successful Invites"
+msgstr "Invitations réussies"
+
+msgid "Users who joined"
+msgstr "Utilisateurs qui ont rejoint"
+
+msgid "Commission Rate"
+msgstr "Taux de commission"
+
+msgid "Earn percentage on deposits"
+msgstr "Gagnez un pourcentage sur les dépôts"
+
+msgid "Flat bonus per referral"
+msgstr "Bonus fixe par parrainage"
+
+msgid "How it works"
+msgstr "Comment ça marche"
+
+msgid "They Join"
+msgstr "Ils rejoignent"
+
+msgid "Friends sign up and invest."
+msgstr "Les amis s'inscrivent et investissent."
+
+msgid "You Earn"
+msgstr "Vous gagnez"
+
+msgid "Get commission instantly."
+msgstr "Recevez la commission instantanément."
+
+msgid "Share Your Link"
+msgstr "Partagez votre lien"
+
+msgid "Copy your unique referral link and share it with your network to start earning."
+msgstr "Copiez votre lien de parrainage unique et partagez-le avec votre réseau pour commencer à gagner."
+
+msgid "Share via"
+msgstr "Partager via"
+
+msgid "Referral History"
+msgstr "Historique de parrainage"
+
+msgid "Active Investor"
+msgstr "Investisseur actif"
+
+msgid "Registered Only"
+msgstr "Inscrit seulement"
+
+msgid "Registered only"
+msgstr "Inscrit seulement"
+
+msgid "Users who invested"
+msgstr "Utilisateurs qui ont investi"
+
+msgid "Users who deposited"
+msgstr "Utilisateurs qui ont déposé"
+
+msgid "Share your link with friends."
+msgstr "Partagez votre lien avec des amis."
+
+msgid "Start sharing your link to earn commissions!"
+msgstr "Commencez à partager votre lien pour gagner des commissions !"
+
+# Referral trigger messages
+msgid "They Register"
+msgstr "Ils s'inscrivent"
+
+msgid "Friends sign up using your link."
+msgstr "Les amis s'inscrivent avec votre lien."
+
+msgid "Get bonus when they register."
+msgstr "Recevez le bonus à leur inscription."
+
+msgid "Earn percentage when friends register"
+msgstr "Gagnez un pourcentage quand les amis s'inscrivent"
+
+msgid "Fixed bonus for each registration"
+msgstr "Bonus fixe pour chaque inscription"
+
+msgid "They Deposit"
+msgstr "Ils déposent"
+
+msgid "Friends make their first deposit."
+msgstr "Les amis font leur premier dépôt."
+
+msgid "Get bonus on their first deposit."
+msgstr "Recevez le bonus sur leur premier dépôt."
+
+msgid "Earn percentage on first deposits"
+msgstr "Gagnez un pourcentage sur les premiers dépôts"
+
+msgid "Fixed bonus on first deposits"
+msgstr "Bonus fixe sur les premiers dépôts"
+
+msgid "They Invest"
+msgstr "Ils investissent"
+
+msgid "Friends make their first investment."
+msgstr "Les amis font leur premier investissement."
+
+msgid "Get bonus on their first investment."
+msgstr "Recevez le bonus sur leur premier investissement."
+
+msgid "Earn percentage on first investments"
+msgstr "Gagnez un pourcentage sur les premiers investissements"
+
+msgid "Fixed bonus on first investments"
+msgstr "Bonus fixe sur les premiers investissements"
+
+msgid "They Earn"
+msgstr "Ils gagnent"
+
+msgid "Friends receive their first profit."
+msgstr "Les amis reçoivent leur premier profit."
+
+msgid "Get bonus when they earn profit."
+msgstr "Recevez le bonus quand ils gagnent."
+
+msgid "Earn percentage on their profits"
+msgstr "Gagnez un pourcentage sur leurs profits"
+
+msgid "Fixed bonus when they profit"
+msgstr "Bonus fixe quand ils gagnent"
+
+# Deposit page
+msgid "Deposit Funds"
+msgstr "Déposer des fonds"
+
+msgid "Securely add funds to your wallet"
+msgstr "Ajoutez des fonds à votre portefeuille en toute sécurité"
+
+msgid "Select Payment Method"
+msgstr "Sélectionner le mode de paiement"
+
+msgid "Enter Amount"
+msgstr "Entrer le montant"
+
+msgid "Processing Fee"
+msgstr "Frais de traitement"
+
+msgid "You Receive"
+msgstr "Vous recevez"
+
+msgid "Complete Payment"
+msgstr "Finaliser le paiement"
+
+msgid "Scan QR code or copy address below"
+msgstr "Scannez le QR code ou copiez l'adresse ci-dessous"
+
+msgid "Copy"
+msgstr "Copier"
+
+msgid "Please ensure you are sending to the correct network. Transactions to wrong networks cannot be recovered."
+msgstr "Assurez-vous d'envoyer sur le bon réseau. Les transactions vers les mauvais réseaux ne peuvent pas être récupérées."
+
+msgid "Upload Proof of Payment"
+msgstr "Télécharger la preuve de paiement"
+
+msgid "Click to Upload Screenshot"
+msgstr "Cliquez pour télécharger une capture d'écran"
+
+msgid "Max size 5MB (JPG/PNG)"
+msgstr "Taille max 5 Mo (JPG/PNG)"
+
+msgid "Confirm Deposit"
+msgstr "Confirmer le dépôt"
+
+msgid "Recent Deposits"
+msgstr "Dépôts récents"
+
+msgid "No Payment Methods Available"
+msgstr "Aucun mode de paiement disponible"
+
+msgid "Please check back later for available deposit options."
+msgstr "Veuillez revenir plus tard pour les options de dépôt disponibles."
+
+msgid "Method"
+msgstr "Méthode"
+
+msgid "Pending"
+msgstr "En attente"
+
+msgid "Completed"
+msgstr "Terminé"
+
+# Withdrawal Page
+msgid "Withdraw Funds"
+msgstr "Retirer des fonds"
+
+msgid "Transfer your earnings to your external account"
+msgstr "Transférez vos gains vers votre compte externe"
+
+msgid "Available Balance"
+msgstr "Solde disponible"
+
+msgid "1. Select Withdrawal Method"
+msgstr "1. Sélectionnez la méthode de retrait"
+
+msgid "Destination Details"
+msgstr "Détails de destination"
+
+msgid "Select Network"
+msgstr "Sélectionnez le réseau"
+
+msgid "Select Network..."
+msgstr "Sélectionnez le réseau..."
+
+msgid "TRC20 (Tron)"
+msgstr "TRC20 (Tron)"
+
+msgid "ERC20 (Ethereum)"
+msgstr "ERC20 (Ethereum)"
+
+msgid "BEP20 (BSC)"
+msgstr "BEP20 (BSC)"
+
+msgid "Bitcoin"
+msgstr "Bitcoin"
+
+msgid "Lightning Network"
+msgstr "Réseau Lightning"
+
+msgid "Wallet Address"
+msgstr "Adresse du portefeuille"
+
+msgid "Paste your wallet address here"
+msgstr "Collez l'adresse de votre portefeuille ici"
+
+msgid "Ensure the address matches the selected"
+msgstr "Assurez-vous que l'adresse correspond à la sélection"
+
+msgid "Network"
+msgstr "Réseau"
+
+msgid "Transfers to the wrong network cannot be recovered."
+msgstr "Les transferts vers le mauvais réseau ne peuvent pas être récupérés."
+
+msgid "Bank Name"
+msgstr "Nom de la banque"
+
+msgid "e.g. Chase Bank"
+msgstr "ex. Chase Bank"
+
+msgid "Account Name"
+msgstr "Nom du compte"
+
+msgid "e.g. John Doe"
+msgstr "ex. Jean Dupont"
+
+msgid "Account Number"
+msgstr "Numéro de compte"
+
+msgid "Provider"
+msgstr "Fournisseur"
+
+msgid "Select Provider..."
+msgstr "Sélectionnez le fournisseur..."
+
+msgid "MTN Mobile Money"
+msgstr "MTN Mobile Money"
+
+msgid "Airtel Money"
+msgstr "Airtel Money"
+
+msgid "M-Pesa"
+msgstr "M-Pesa"
+
+msgid "Orange Money"
+msgstr "Orange Money"
+
+msgid "Phone Number"
+msgstr "Numéro de téléphone"
+
+msgid "3. Withdrawal Amount"
+msgstr "3. Montant du retrait"
+
+msgid "MAX"
+msgstr "MAX"
+
+msgid "Insufficient balance"
+msgstr "Solde insuffisant"
+
+msgid "Transaction Summary"
+msgstr "Résumé de la transaction"
+
+msgid "Requested Amount"
+msgstr "Montant demandé"
+
+msgid "Processing Fee"
+msgstr "Frais de traitement"
+
+msgid "Net Receivable"
+msgstr "Net à recevoir"
+
+msgid "Recipient Details"
+msgstr "Détails du destinataire"
+
+msgid "No address entered"
+msgstr "Aucune adresse saisie"
+
+msgid "Enter bank details"
+msgstr "Entrez les coordonnées bancaires"
+
+msgid "Enter mobile details"
+msgstr "Entrez les détails mobiles"
+
+msgid "Enter wallet details"
+msgstr "Entrez les détails du portefeuille"
+
+msgid "Confirm Withdrawal"
+msgstr "Confirmer le retrait"
+
+msgid "Complete Form to Continue"
+msgstr "Complétez le formulaire pour continuer"
+
+msgid "Secure Transaction"
+msgstr "Transaction sécurisée"
+
+msgid "Recent Withdrawals"
+msgstr "Retraits récents"
+
+msgid "Fee"
+msgstr "Frais"
+
+msgid "Net Amount"
+msgstr "Montant net"
+
+msgid "Method"
+msgstr "Méthode"
+
+msgid "Approved"
+msgstr "Approuvé"
+
+msgid "Pending"
+msgstr "En attente"
+
+msgid "Rejected"
+msgstr "Rejeté"
+
+msgid "No withdrawals yet."
+msgstr "Aucun retrait pour l'instant."
+
+# Admin - Withdrawal Settings
+msgid "Withdrawal Fee Configuration"
+msgstr "Configuration des frais de retrait"
+
+msgid "Withdrawal Methods"
+msgstr "Méthodes de retrait"
+
+msgid "Enable and configure the available withdrawal methods for users."
+msgstr "Activez et configurez les méthodes de retrait disponibles pour les utilisateurs."
+
+msgid "Save Fee Settings"
+msgstr "Enregistrer les paramètres de frais"
+
+msgid "Save Withdrawal Methods"
+msgstr "Enregistrer les méthodes de retrait"
+
+msgid "Enabled"
+msgstr "Activé"
+
+msgid "Disabled"
+msgstr "Désactivé"
+
+# Withdrawal submission errors/messages
+msgid "Please enter a valid wallet address"
+msgstr "Veuillez entrer une adresse de portefeuille valide"
+
+msgid "Please select a network"
+msgstr "Veuillez sélectionner un réseau"
+
+msgid "Please enter your bank name"
+msgstr "Veuillez entrer le nom de votre banque"
+
+msgid "Please enter the account name"
+msgstr "Veuillez entrer le nom du compte"
+
+msgid "Please enter your account number"
+msgstr "Veuillez entrer votre numéro de compte"
+
+msgid "Please select a mobile money provider"
+msgstr "Veuillez sélectionner un fournisseur de mobile money"
+
+msgid "Please enter a valid mobile number"
+msgstr "Veuillez entrer un numéro de mobile valide"
+
+msgid "Please enter the e-wallet provider"
+msgstr "Veuillez entrer le fournisseur de portefeuille électronique"
+
+msgid "Please enter your wallet ID or email"
+msgstr "Veuillez entrer votre ID de portefeuille ou e-mail"
+
+msgid "Invalid withdrawal method type"
+msgstr "Type de méthode de retrait invalide"
+
+msgid "Withdrawal request submitted successfully. Net amount after fee: "
+msgstr "Demande de retrait soumise avec succès. Montant net après frais : "
+
+msgid "Withdrawal methods updated successfully."
+msgstr "Méthodes de retrait mises à jour avec succès."
+
+msgid "Withdrawal methods data is missing."
+msgstr "Les données des méthodes de retrait sont manquantes."
+
+msgid "Invalid withdrawal methods format."
+msgstr "Format des méthodes de retrait invalide."
+
+msgid "Each withdrawal method must have a name and type."
+msgstr "Chaque méthode de retrait doit avoir un nom et un type."
+
+msgid "No Withdrawal Methods Available"
+msgstr "Aucune méthode de retrait disponible"
+
+msgid "Please contact support for withdrawal options."
+msgstr "Veuillez contacter le support pour les options de retrait."
+
+msgid "Bank Transfer"
+msgstr "Virement bancaire"
+
+msgid "Cryptocurrency"
+msgstr "Cryptomonnaie"
+
+msgid "E-Wallet"
+msgstr "Portefeuille électronique"
+
+msgid "Mobile Money"
+msgstr "Mobile Money"
+
+msgid "E-Wallet Provider"
+msgstr "Fournisseur de portefeuille électronique"
+
+msgid "Wallet ID / Email"
+msgstr "ID de portefeuille / E-mail"
+
+msgid "e.g. PayPal, Skrill, Neteller"
+msgstr "ex. PayPal, Skrill, Neteller"
+
+msgid "Enter your wallet ID or email"
+msgstr "Entrez votre ID de portefeuille ou e-mail"
+
+# Admin - Withdrawal Method Configuration
+msgid "Enable and configure the available withdrawal methods for users. Set your platform's receiving details for each method."
+msgstr "Activez et configurez les méthodes de retrait disponibles pour les utilisateurs. Définissez les détails de réception de votre plateforme pour chaque méthode."
+
+msgid "Method Enabled"
+msgstr "Méthode activée"
+
+msgid "Method Disabled"
+msgstr "Méthode désactivée"
+
+msgid "Available Networks"
+msgstr "Réseaux disponibles"
+
+msgid "Comma-separated list of networks"
+msgstr "Liste des réseaux séparés par des virgules"
+
+msgid "Platform Wallet Address"
+msgstr "Adresse du portefeuille de la plateforme"
+
+msgid "Your platform's receiving wallet address"
+msgstr "L'adresse du portefeuille de réception de votre plateforme"
+
+msgid "This is where user withdrawals will be sent from"
+msgstr "C'est de là que les retraits des utilisateurs seront envoyés"
+
+msgid "Bank Name"
+msgstr "Nom de la banque"
+
+msgid "Account holder name"
+msgstr "Nom du titulaire du compte"
+
+msgid "Bank account number"
+msgstr "Numéro de compte bancaire"
+
+msgid "SWIFT/BIC Code"
+msgstr "Code SWIFT/BIC"
+
+msgid "Optional"
+msgstr "Facultatif"
+
+msgid "SWIFT or BIC code"
+msgstr "Code SWIFT ou BIC"
+
+msgid "Branch Code"
+msgstr "Code de succursale"
+
+msgid "Branch code"
+msgstr "Code de succursale"
+
+msgid "Supported Providers"
+msgstr "Fournisseurs supportés"
+
+msgid "Comma-separated list of providers"
+msgstr "Liste des fournisseurs séparés par des virgules"
+
+msgid "Platform Phone Number"
+msgstr "Numéro de téléphone de la plateforme"
+
+msgid "Your platform's receiving phone number"
+msgstr "Le numéro de téléphone de réception de votre plateforme"
+
+msgid "Registered account name"
+msgstr "Nom du compte enregistré"
+
+msgid "Provider Name"
+msgstr "Nom du fournisseur"
+
+msgid "Wallet ID / Email"
+msgstr "ID du portefeuille / E-mail"
+
+msgid "Your platform's wallet ID or email"
+msgstr "L'ID du portefeuille ou l'e-mail de votre plateforme"
+
+msgid "Instructions"
+msgstr "Instructions"
+
+msgid "Instructions for users on how to process this withdrawal method"
+msgstr "Instructions pour les utilisateurs sur la façon de traiter cette méthode de retrait"
+
+# Admin Actions - Error and Success Messages
+msgid "Invalid request method"
+msgstr "Méthode de requête invalide"
+
+msgid "Invalid request"
+msgstr "Requête invalide"
+
+msgid "Invalid security token"
+msgstr "Jeton de sécurité invalide"
+
+msgid "Invalid security token. Please try again."
+msgstr "Jeton de sécurité invalide. Veuillez réessayer."
+
+msgid "Invalid deposit ID"
+msgstr "ID de dépôt invalide"
+
+msgid "Invalid withdrawal ID"
+msgstr "ID de retrait invalide"
+
+msgid "Invalid user ID"
+msgstr "ID d'utilisateur invalide"
+
+msgid "Invalid document ID"
+msgstr "ID de document invalide"
+
+msgid "Deposit not found or already processed"
+msgstr "Dépôt non trouvé ou déjà traité"
+
+msgid "Withdrawal not found or already processed"
+msgstr "Retrait non trouvé ou déjà traité"
+
+msgid "User not found"
+msgstr "Utilisateur non trouvé"
+
+msgid "User not found or banned"
+msgstr "Utilisateur non trouvé ou banni"
+
+msgid "Document not found or already processed"
+msgstr "Document non trouvé ou déjà traité"
+
+msgid "Rejection reason is required"
+msgstr "Le motif de rejet est requis"
+
+msgid "Deposit approved and wallet credited"
+msgstr "Dépôt approuvé et portefeuille crédité"
+
+msgid "Deposit approved"
+msgstr "Dépôt approuvé"
+
+msgid "Deposit rejected"
+msgstr "Dépôt rejeté"
+
+msgid "Withdrawal approved and processed"
+msgstr "Retrait approuvé et traité"
+
+msgid "Withdrawal rejected"
+msgstr "Retrait rejeté"
+
+msgid "KYC document approved"
+msgstr "Document KYC approuvé"
+
+msgid "User KYC status updated to approved"
+msgstr "Statut KYC de l'utilisateur mis à jour en approuvé"
+
+msgid "KYC document rejected"
+msgstr "Document KYC rejeté"
+
+msgid "User updated successfully"
+msgstr "Utilisateur mis à jour avec succès"
+
+msgid "Name and email are required"
+msgstr "Le nom et l'e-mail sont requis"
+
+msgid "Invalid email format"
+msgstr "Format d'e-mail invalide"
+
+msgid "Balance must be a valid number"
+msgstr "Le solde doit être un nombre valide"
+
+msgid "Balance must be a non-negative number"
+msgstr "Le solde doit être un nombre non négatif"
+
+msgid "Invalid role"
+msgstr "Rôle invalide"
+
+msgid "Invalid status"
+msgstr "Statut invalide"
+
+msgid "Email already in use"
+msgstr "E-mail déjà utilisé"
+
+msgid "User banned successfully"
+msgstr "Utilisateur banni avec succès"
+
+msgid "User unbanned successfully"
+msgstr "Utilisateur débanni avec succès"
+
+msgid "Logged in as "
+msgstr "Connecté en tant que "
+
+msgid "Cannot login as another admin"
+msgstr "Impossible de se connecter en tant qu'un autre administrateur"
+
+msgid "Investment plan created successfully"
+msgstr "Plan d'investissement créé avec succès"
+
+msgid "Investment plan updated successfully"
+msgstr "Plan d'investissement mis à jour avec succès"
+
+msgid "Investment plan deleted successfully"
+msgstr "Plan d'investissement supprimé avec succès"
+
+msgid "Plan ID is required"
+msgstr "L'ID du plan est requis"
+
+msgid "Plan not found"
+msgstr "Plan non trouvé"
+
+msgid "Plan ID, name, and payout interval are required"
+msgstr "L'ID du plan, le nom et l'intervalle de paiement sont requis"
+
+msgid "Name and payout interval are required"
+msgstr "Le nom et l'intervalle de paiement sont requis"
+
+msgid "Plan ID must contain only alphanumeric characters, underscores, and hyphens"
+msgstr "L'ID du plan doit contenir uniquement des caractères alphanumériques, des underscores et des tirets"
+
+msgid "Plan ID already exists"
+msgstr "L'ID du plan existe déjà"
+
+msgid "ROI percentage must be between 0 and 100"
+msgstr "Le pourcentage de ROI doit être entre 0 et 100"
+
+msgid "Duration must be greater than 0"
+msgstr "La durée doit être supérieure à 0"
+
+msgid "Amounts must be non-negative"
+msgstr "Les montants doivent être non négatifs"
+
+msgid "Maximum amount must be greater than or equal to minimum amount"
+msgstr "Le montant maximum doit être supérieur ou égal au montant minimum"
+
+msgid "Invalid payout interval"
+msgstr "Intervalle de paiement invalide"
+
+msgid "Invalid status"
+msgstr "Statut invalide"
+
+msgid "Cannot delete plan with active investments. Archive it instead."
+msgstr "Impossible de supprimer un plan avec des investissements actifs. Archivez-le plutôt."
+
+msgid "This plan has historical investments. Consider archiving instead of deleting. Archive allows the plan to be preserved for records while preventing new investments."
+msgstr "Ce plan a des investissements historiques. Envisagez d'archiver plutôt que de supprimer. L'archivage permet de préserver le plan pour les archives tout en empêchant les nouveaux investissements."
+
+msgid "Cannot delete plan due to existing references"
+msgstr "Impossible de supprimer le plan en raison de références existantes"
+
+msgid "No cron lock file found."
+msgstr "Aucun fichier de verrouillage cron trouvé."
+
+msgid "Cron lock cleared successfully."
+msgstr "Verrouillage cron effacé avec succès."
+
+msgid "Failed to clear cron lock. Check file permissions."
+msgstr "Échec de l'effacement du verrouillage cron. Vérifiez les permissions de fichier."
+
+msgid "An error occurred while clearing the cron lock."
+msgstr "Une erreur s'est produite lors de l'effacement du verrouillage cron."
+
+msgid "An error occurred while updating the user"
+msgstr "Une erreur s'est produite lors de la mise à jour de l'utilisateur"
+
+msgid "An error occurred while updating user status"
+msgstr "Une erreur s'est produite lors de la mise à jour du statut de l'utilisateur"
+
+msgid "An error occurred while switching user"
+msgstr "Une erreur s'est produite lors du changement d'utilisateur"
+
+msgid "An error occurred while creating the plan"
+msgstr "Une erreur s'est produite lors de la création du plan"
+
+msgid "An error occurred while updating the plan"
+msgstr "Une erreur s'est produite lors de la mise à jour du plan"
+
+msgid "An error occurred while approving the document"
+msgstr "Une erreur s'est produite lors de l'approbation du document"
+
+msgid "An error occurred while rejecting the document"
+msgstr "Une erreur s'est produite lors du rejet du document"
+
+msgid "Error approving deposit: "
+msgstr "Erreur lors de l'approbation du dépôt : "
+
+msgid "Error rejecting deposit: "
+msgstr "Erreur lors du rejet du dépôt : "
+
+msgid "Error approving withdrawal: "
+msgstr "Erreur lors de l'approbation du retrait : "
+
+msgid "Error rejecting withdrawal: "
+msgstr "Erreur lors du rejet du retrait : "
+
+msgid "Failed to debit wallet"
+msgstr "Échec du débit du portefeuille"
+
+msgid "Deposit #"
+msgstr "Dépôt #"
+
+msgid " approved"
+msgstr " approuvé"
+
+msgid "Invalid section specified."
+msgstr "Section invalide spécifiée."
+
+msgid "An error occurred while saving settings. Please try again."
+msgstr "Une erreur s'est produite lors de l'enregistrement des paramètres. Veuillez réessayer."
+
+msgid "Site name and contact email are required."
+msgstr "Le nom du site et l'e-mail de contact sont requis."
+
+msgid "Invalid email format."
+msgstr "Format d'e-mail invalide."
+
+msgid "Logo upload failed. Please check the file type and size."
+msgstr "Échec du téléchargement du logo. Veuillez vérifier le type et la taille du fichier."
+
+msgid "Site settings updated successfully."
+msgstr "Paramètres du site mis à jour avec succès."
+
+msgid "Payment methods data is missing."
+msgstr "Les données des méthodes de paiement sont manquantes."
+
+msgid "Invalid payment methods format."
+msgstr "Format des méthodes de paiement invalide."
+
+msgid "Each payment method must have name and type."
+msgstr "Chaque méthode de paiement doit avoir un nom et un type."
+
+msgid "Payment method \"%s\" must have network and wallet address."
+msgstr "La méthode de paiement \"%s\" doit avoir un réseau et une adresse de portefeuille."
+
+msgid "Payment method \"%s\" must have bank name, account name, and account number."
+msgstr "La méthode de paiement \"%s\" doit avoir un nom de banque, un nom de compte et un numéro de compte."
+
+msgid "Payment method \"%s\" must have provider and wallet ID."
+msgstr "La méthode de paiement \"%s\" doit avoir un fournisseur et un ID de portefeuille."
+
+msgid "Payment method \"%s\" must have provider and phone number."
+msgstr "La méthode de paiement \"%s\" doit avoir un fournisseur et un numéro de téléphone."
+
+msgid "Payment method \"%s\" must have payment details."
+msgstr "La méthode de paiement \"%s\" doit avoir des détails de paiement."
+
+msgid "Payment methods updated successfully."
+msgstr "Méthodes de paiement mises à jour avec succès."
+
+msgid "Deposit fee percentage must be between 0 and 100."
+msgstr "Le pourcentage de frais de dépôt doit être entre 0 et 100."
+
+msgid "Deposit fee updated successfully."
+msgstr "Frais de dépôt mis à jour avec succès."
+
+msgid "Invalid referral bonus type."
+msgstr "Type de bonus de parrainage invalide."
+
+msgid "Referral bonus amount must be a positive number."
+msgstr "Le montant du bonus de parrainage doit être un nombre positif."
+
+msgid "Invalid referral bonus trigger."
+msgstr "Déclencheur de bonus de parrainage invalide."
+
+msgid "Referral settings updated successfully."
+msgstr "Paramètres de parrainage mis à jour avec succès."
+
+msgid "Withdrawal fee percentage must be between 0 and 100."
+msgstr "Le pourcentage de frais de retrait doit être entre 0 et 100."
+
+msgid "Minimum withdrawal fee must be a positive number."
+msgstr "Les frais de retrait minimum doivent être un nombre positif."
+
+msgid "Withdrawal settings updated successfully."
+msgstr "Paramètres de retrait mis à jour avec succès."
+
+msgid "Invalid KYC required setting."
+msgstr "Paramètre KYC requis invalide."
+
+msgid "Invalid KYC timing setting."
+msgstr "Paramètre de timing KYC invalide."
+
+msgid "KYC settings updated successfully."
+msgstr "Paramètres KYC mis à jour avec succès."
+
+msgid "Invalid cancellation penalty mode."
+msgstr "Mode de pénalité d'annulation invalide."
+
+msgid "Cancellation penalty percentage must be between 0 and 100."
+msgstr "Le pourcentage de pénalité d'annulation doit être entre 0 et 100."
+
+msgid "Cancellation penalty flat amount must be a positive number."
+msgstr "Le montant fixe de pénalité d'annulation doit être un nombre positif."
+
+msgid "Invalid forfeit profits setting."
+msgstr "Paramètre de renoncement aux profits invalide."
+
+msgid "Investment cancellation policy updated successfully."
+msgstr "Politique d'annulation d'investissement mise à jour avec succès."
+
+msgid "Invalid post-registration action."
+msgstr "Action post-inscription invalide."
+
+msgid "Post-registration settings updated successfully."
+msgstr "Paramètres post-inscription mis à jour avec succès."
+
+msgid "Invalid withdrawal methods format."
+msgstr "Format des méthodes de retrait invalide."
+
+msgid "Each withdrawal method must have a name and type."
+msgstr "Chaque méthode de retrait doit avoir un nom et un type."
+
+# Admin Dashboard
+msgid "ADMIN"
+msgstr "ADMIN"
+
+msgid "Approvals"
+msgstr "Approbations"
+
+msgid "Management"
+msgstr "Gestion"
+
+msgid "All Users"
+msgstr "Tous les utilisateurs"
+
+msgid "Investment Plans"
+msgstr "Plans d'investissement"
+
+msgid "Pending Deposits"
+msgstr "Dépôts en attente"
+
+msgid "Pending Withdrawals"
+msgstr "Retraits en attente"
+
+msgid "KYC Review"
+msgstr "Revue KYC"
+
+msgid "Site Settings"
+msgstr "Paramètres du site"
+
+msgid "Sign Out"
+msgstr "Déconnexion"
+
+msgid "Admin Account"
+msgstr "Compte administrateur"
+
+msgid "Pending KYC"
+msgstr "KYC en attente"
+
+msgid "Total Value:"
+msgstr "Valeur totale :"
+
+msgid "Awaiting document review"
+msgstr "En attente de révision des documents"
+
+msgid "Total Users"
+msgstr "Total des utilisateurs"
+
+msgid "Active Investments"
+msgstr "Investissements actifs"
+
+msgid "Platform Balance"
+msgstr "Solde de la plateforme"
+
+msgid "Total Payouts"
+msgstr "Paiements totaux"
+
+msgid "Recent Activity"
+msgstr "Activité récente"
+
+msgid "Latest pending actions"
+msgstr "Dernières actions en attente"
+
+msgid "Quick Actions"
+msgstr "Actions rapides"
+
+msgid "Add Inv. Plan"
+msgstr "Ajouter un plan d'inv."
+
+msgid "View All Users"
+msgstr "Voir tous les utilisateurs"
+
+msgid "System Settings"
+msgstr "Paramètres système"
+
+msgid "System Health"
+msgstr "État du système"
+
+msgid "Good"
+msgstr "Bon"
+
+msgid "All systems operational"
+msgstr "Tous les systèmes opérationnels"
+
+msgid "No pending actions at the moment"
+msgstr "Aucune action en attente pour le moment"
+
+msgid "Deposit Request"
+msgstr "Demande de dépôt"
+
+msgid "Withdrawal Request"
+msgstr "Demande de retrait"
+
+msgid "New User Registration"
+msgstr "Nouvelle inscription d'utilisateur"
+
+msgid "Just now"
+msgstr "À l'instant"
+
+msgid "mins ago"
+msgstr "il y a quelques minutes"
+
+msgid "hours ago"
+msgstr "il y a quelques heures"
+
+msgid "days ago"
+msgstr "il y a quelques jours"
+
+msgid "Admin Panel"
+msgstr "Panneau d'administration"
+
+# Admin Dashboard Additional Translations
+msgid "Dashboard"
+msgstr "Tableau de bord"
+
+msgid "Admin Dashboard"
+msgstr "Tableau de bord admin"
+
+msgid "Pending"
+msgstr "En attente"
+
+msgid "New"
+msgstr "Nouveau"
+
+msgid "Deposit Request"
+msgstr "Demande de dépôt"
+
+msgid "Withdrawal Request"
+msgstr "Demande de retrait"
+
+msgid "KYC Document"
+msgstr "Document KYC"
+
+msgid "Profile"
+msgstr "Profil"
+
+msgid "Logout"
+msgstr "Déconnexion"
+
+# Admin Pending Deposits
+msgid "Review and approve manual deposit requests."
+msgstr "Examiner et approuver les demandes de dépôt manuelles."
+
+msgid "Search user or txn ID..."
+msgstr "Rechercher un utilisateur ou ID de transaction..."
+
+msgid "Filter"
+msgstr "Filtrer"
+
+msgid "Export"
+msgstr "Exporter"
+
+msgid "Review Needed"
+msgstr "Examen nécessaire"
+
+msgid "Review"
+msgstr "Examiner"
+
+msgid "Review Deposit"
+msgstr "Examiner le dépôt"
+
+msgid "Verify the payment proof before approving."
+msgstr "Vérifiez la preuve de paiement avant d'approuver."
+
+msgid "Payment Method"
+msgstr "Méthode de paiement"
+
+msgid "Submitted"
+msgstr "Soumis"
+
+msgid "Proof of Payment"
+msgstr "Preuve de paiement"
+
+msgid "Rejection Reason"
+msgstr "Motif de rejet"
+
+msgid "Required if rejecting..."
+msgstr "Requis si rejet..."
+
+msgid "Cancel"
+msgstr "Annuler"
+
+msgid "Approve"
+msgstr "Approuver"
+
+msgid "Showing"
+msgstr "Affichage"
+
+msgid "of"
+msgstr "sur"
+
+msgid "entries"
+msgstr "entrées"
+
+msgid "Prev"
+msgstr "Préc."
+
+msgid "Next"
+msgstr "Suiv."
+
+msgid "No pending deposits found."
+msgstr "Aucun dépôt en attente trouvé."
+
+# Email subject lines
+msgid "Deposit Submitted - {{site_name}}"
+msgstr "Dépôt soumis - {{site_name}}"
+
+msgid "Deposit Approved - {{net_amount}}"
+msgstr "Dépôt approuvé - {{net_amount}}"
+
+msgid "Deposit Request Rejected"
+msgstr "Demande de dépôt rejetée"
+
+msgid "Withdrawal Request Submitted - {{site_name}}"
+msgstr "Demande de retrait soumise - {{site_name}}"
+
+msgid "Withdrawal Processed - {{amount}}"
+msgstr "Retrait traité - {{amount}}"
+
+msgid "Withdrawal Request Rejected - {{site_name}}"
+msgstr "Demande de retrait rejetée - {{site_name}}"
+
+msgid "Investment Created Successfully - {{site_name}}"
+msgstr "Investissement créé avec succès - {{site_name}}"
+
+msgid "Investment Completed - {{plan_name}}"
+msgstr "Investissement terminé - {{plan_name}}"
+
+msgid "Investment Cancelled - {{site_name}}"
+msgstr "Investissement annulé - {{site_name}}"
+
+msgid "💰 Profit Payout Received - {{site_name}}"
+msgstr "💰 Profit reçu - {{site_name}}"
+
+msgid "🎉 Referral Bonus Earned - {{amount}} - {{site_name}}"
+msgstr "🎉 Bonus de parrainage gagné - {{amount}} - {{site_name}}"
+
+msgid "✉️ Verify Your Email Address - {{site_name}}"
+msgstr "✉️ Vérifiez votre adresse e-mail - {{site_name}}"
+
+msgid "Welcome to {{site_name}}!"
+msgstr "Bienvenue sur {{site_name}} !"
+
+msgid "🔐 Password Reset Request - {{site_name}}"
+msgstr "🔐 Demande de réinitialisation de mot de passe - {{site_name}}"
+
+msgid "✅ KYC Verification Approved - {{site_name}}"
+msgstr "✅ Vérification KYC approuvée - {{site_name}}"
+
+msgid "⚠️ KYC Verification Requires Attention - {{site_name}}"
+msgstr "⚠️ Vérification KYC nécessite attention - {{site_name}}"
+
+msgid "{{subject}} - {{site_name}}"
+msgstr "{{subject}} - {{site_name}}"
+
+# KYC & Status
+msgid "Cancelled"
+msgstr "Annulé"
+
+msgid "ID/Passport"
+msgstr "Pièce d'identité / Passeport"
+
+msgid "Proof of Address"
+msgstr "Justificatif de domicile"
+
+msgid "pending"
+msgstr "en attente"
+
+msgid "approved"
+msgstr "approuvé"
+
+msgid "completed"
+msgstr "complété"
+
+msgid "rejected"
+msgstr "rejeté"
+
+msgid "investments"
+msgstr "investissements"
+
+msgid "Investment"
+msgstr "Investissement"
+
+msgid "Investments"
+msgstr "Investissements"
+
+msgid "Help"
+msgstr "Aide"
+
+msgid "Credited"
+msgstr "Crédité"
+
+msgid "Send only the specified cryptocurrency to the address below. Transactions on the wrong networks cannot be recovered. Please verify the network before sending."
+msgstr "Envoyez uniquement la cryptomonnaie spécifiée à l'adresse ci-dessous. Les transactions sur les mauvais réseaux ne peuvent pas être récupérées. Veuillez vérifier le réseau avant d'envoyer."
+
+msgid "Transfer the exact amount to the bank account details below. Use your username as the payment reference. Deposits may take 1-3 business days to process."
+msgstr "Transférez le montant exact aux détails du compte bancaire ci-dessous. Utilisez votre nom d'utilisateur comme référence de paiement. Les dépôts peuvent prendre 1 à 3 jours ouvrables à traiter."
+
+msgid "Send payment to the e-wallet address below. Include your username in the payment note for faster processing."
+msgstr "Envoyez le paiement à l'adresse du portefeuille électronique ci-dessous. Incluez votre nom d'utilisateur dans la note de paiement pour un traitement plus rapide."
+
+msgid "Send payment to the mobile money number below. Include your username as the reference. Instant processing."
+msgstr "Envoyez le paiement au numéro de mobile money ci-dessous. Incluez votre nom d'utilisateur comme référence. Traitement instantané."
+
+msgid "Follow the payment instructions below carefully. Contact support if you need assistance."
+msgstr "Suivez attentivement les instructions de paiement ci-dessous. Contactez le support si vous avez besoin d'assistance."
+
+# Email templates - Password Reset
+msgid "Password Reset Request"
+msgstr "Demande de réinitialisation du mot de passe"
+
+msgid "Dear"
+msgstr "Cher"
+
+msgid "We received a request to reset the password for your"
+msgstr "Nous avons reçu une demande de réinitialisation du mot de passe pour votre"
+
+msgid "account. Click the button below to proceed. This link will expire in"
+msgstr "compte. Cliquez sur le bouton ci-dessous pour continuer. Ce lien expirera dans"
+
+msgid "minutes."
+msgstr "minutes."
+
+msgid "Reset Password"
+msgstr "Réinitialiser le mot de passe"
+
+msgid "If you did not request a password reset, please contact support immediately."
+msgstr "Si vous n'avez pas demandé une réinitialisation de mot de passe, veuillez contacter le support immédiatement."
+
+msgid "This communication is for informational purposes only and does not constitute financial advice."
+msgstr "Cette communication est fournie à titre informatif uniquement et ne constitue pas un conseil financier."
+
+msgid "is not responsible for any investment decisions made based on this communication."
+msgstr "n'est pas responsable de toute décision d'investissement prise en fonction de cette communication."
+
+msgid "Need assistance? Contact"
+msgstr "Besoin d'aide ? Contactez"
+
+msgid "All rights reserved."
+msgstr "Tous les droits sont réservés."
+
+# Email templates - Registration
+msgid "Account Registration Confirmed"
+msgstr "Enregistrement du compte confirmé"
+
+msgid "Your account has been created and is ready to use. You can access your dashboard to view investment opportunities and manage your profile."
+msgstr "Votre compte a été créé et est prêt à être utilisé. Vous pouvez accéder à votre tableau de bord pour consulter les opportunités d'investissement et gérer votre profil."
+
+msgid "Access Your Dashboard"
+msgstr "Accédez à votre tableau de bord"
+
+msgid "If you did not create this account, please contact support immediately."
+msgstr "Si vous n'avez pas créé ce compte, veuillez contacter le support immédiatement."
+
+# Email templates - Email Verification
+msgid "Verify Your Email"
+msgstr "Vérifiez votre e-mail"
+
+msgid "Please confirm your email address to activate your"
+msgstr "Veuillez confirmer votre adresse e-mail pour activer votre"
+
+msgid "account."
+msgstr "compte."
+
+msgid "Confirm Email"
+msgstr "Confirmer l'e-mail"
+
+msgid "If you did not request this, please contact"
+msgstr "Si vous n'avez pas demandé ceci, veuillez contacter"
+
+# Email templates - Deposit
+msgid "Deposit Submitted"
+msgstr "Dépôt soumis"
+
+msgid "We have received your deposit request. Your funds are currently under review and will be processed shortly."
+msgstr "Nous avons reçu votre demande de dépôt. Vos fonds sont actuellement en cours d'examen et seront traités bientôt."
+
+msgid "Amount"
+msgstr "Montant"
+
+msgid "Under Review"
+msgstr "En cours d'examen"
+
+msgid "Deposit Approved"
+msgstr "Dépôt approuvé"
+
+msgid "Your deposit has been approved and credited to your account."
+msgstr "Votre dépôt a été approuvé et crédité à votre compte."
+
+msgid "Fee"
+msgstr "Frais"
+
+msgid "Method"
+msgstr "Méthode"
+
+msgid "Deposit Not Approved"
+msgstr "Dépôt non approuvé"
+
+msgid "We regret to inform you that your recent deposit request was not approved. Reason: {{reason}}"
+msgstr "Nous regrettons de vous informer que votre demande de dépôt récente n'a pas été approuvée. Raison : {{reason}}"
+
+msgid "If you have questions, please reply to this email or contact support."
+msgstr "Si vous avez des questions, veuillez répondre à cet e-mail ou contacter le support."
+
+# Email templates - Withdrawal
+msgid "Withdrawal Request Received"
+msgstr "Demande de retrait reçue"
+
+msgid "Your withdrawal request has been received and is under review."
+msgstr "Votre demande de retrait a été reçue et est en cours d'examen."
+
+msgid "Requested"
+msgstr "Demandé"
+
+msgid "Status"
+msgstr "Statut"
+
+msgid "Withdrawal Approved"
+msgstr "Retrait approuvé"
+
+msgid "Your withdrawal has been approved and is being processed. Please allow standard banking times for completion."
+msgstr "Votre retrait a été approuvé et est en cours de traitement. Veuillez laisser les délais bancaires standard pour l'achèvement."
+
+msgid "Fees"
+msgstr "Frais"
+
+msgid "Net"
+msgstr "Net"
+
+msgid "Withdrawal Not Approved"
+msgstr "Retrait non approuvé"
+
+msgid "Your withdrawal request could not be approved. Reason: {{reason}}. Please contact support for further assistance."
+msgstr "Votre demande de retrait n'a pas pu être approuvée. Raison : {{reason}}. Veuillez contacter le support pour obtenir de l'aide."
+
+msgid "Attempted"
+msgstr "Tenté"
+
+# Email templates - Investment
+msgid "Investment Created"
+msgstr "Investissement créé"
+
+msgid "Your investment has been created and scheduled for payout according to the plan terms."
+msgstr "Votre investissement a été créé et programmé pour paiement selon les modalités du plan."
+
+msgid "Plan"
+msgstr "Plan"
+
+msgid "Next Payout"
+msgstr "Prochain versement"
+
+msgid "Investment Completed"
+msgstr "Investissement terminé"
+
+msgid "Your investment ({{investment_reference}}) has reached completion. The final payout and principal (if applicable) have been processed."
+msgstr "Votre investissement ({{investment_reference}}) a atteint l'achèvement. Le paiement final et le principal (le cas échéant) ont été traités."
+
+msgid "Principal"
+msgstr "Principal"
+
+msgid "Total Profit"
+msgstr "Profit total"
+
+msgid "Completed On"
+msgstr "Complété le"
+
+msgid "Investment Cancelled"
+msgstr "Investissement annulé"
+
+msgid "Your investment ({{investment_reference}}) has been cancelled. The refund amount and any penalties applied are listed below."
+msgstr "Votre investissement ({{investment_reference}}) a été annulé. Le montant du remboursement et les pénalités appliquées sont indiqués ci-dessous."
+
+msgid "Original Amount"
+msgstr "Montant original"
+
+msgid "Penalty"
+msgstr "Pénalité"
+
+msgid "Refund"
+msgstr "Remboursement"
+
+# Email templates - KYC
+msgid "KYC Verification Approved"
+msgstr "Vérification KYC approuvée"
+
+msgid "Your identity verification has been approved. You may now access all account features subject to applicable limits."
+msgstr "Votre vérification d'identité a été approuvée. Vous pouvez désormais accéder à toutes les fonctionnalités du compte sous réserve de limites applicables."
+
+msgid "Verified On"
+msgstr "Vérifié le"
+
+msgid "Level"
+msgstr "Niveau"
+
+msgid "KYC Verification Not Approved"
+msgstr "Vérification KYC non approuvée"
+
+msgid "We were unable to approve your identity verification. Reason: {{reason}}. Please review the guidance below and resubmit."
+msgstr "Nous n'avons pas pu approuver votre vérification d'identité. Raison : {{reason}}. Veuillez consulter le guide ci-dessous et soumettre à nouveau."
+
+msgid "Guidance"
+msgstr "Guide"
+
+# Email templates - Profit & Referral
+msgid "Profit Payout"
+msgstr "Paiement des bénéfices"
+
+msgid "A profit payout has been credited to your account for investment {{investment_reference}}."
+msgstr "Un paiement de bénéfices a été crédité à votre compte pour l'investissement {{investment_reference}}."
+
+msgid "Payout"
+msgstr "Versement"
+
+msgid "Date"
+msgstr "Date"
+
+msgid "Referral Bonus Credited"
+msgstr "Bonus de parrainage crédité"
+
+msgid "A referral bonus has been credited to your account for referring {{referred_user}}."
+msgstr "Un bonus de parrainage a été crédité à votre compte pour avoir parrainé {{referred_user}}."
+
+msgid "Bonus"
+msgstr "Bonus"
+
+msgid "Referred"
+msgstr "Parrainé"
+
+# --- Public pages: appended translations for header, landing, contact, auth, and flash messages
+# Public Nav / Header (public-header.php)
+msgid "About"
+msgstr "À propos"
+
+msgid "Plans"
+msgstr "Plans"
+
+msgid "Testimonials"
+msgstr "Témoignages"
+
+msgid "FAQs"
+msgstr "FAQ"
+
+# Landing Page - Hero (index.php)
+msgid "AI-Powered Returns"
+msgstr "Rendements propulsés par l'IA"
+
+msgid "Invest Smart."
+msgstr "Investissez intelligemment."
+
+msgid "Grow Faster."
+msgstr "Croissez plus vite."
+
+msgid "Experience the future of wealth generation with our automated trading algorithms. Secure, transparent, and built for growth."
+msgstr "Découvrez l'avenir de la création de richesse grâce à nos algorithmes de trading automatisés. Sécurisé, transparent et conçu pour la croissance."
+
+msgid "Start Investing"
+msgstr "Commencer à investir"
+
+msgid "Get Started"
+msgstr "Commencer"
+
+msgid "investors trust us"
+msgstr "investisseurs nous font confiance"
+
+msgid "ROI Payout"
+msgstr "Versement du ROI"
+
+# Landing Page - Stats
+msgid "Active Users"
+msgstr "Utilisateurs actifs"
+
+msgid "Total Deposited"
+msgstr "Total déposé"
+
+msgid "Profit Paid"
+msgstr "Profit versé"
+
+# Landing Page - Why Choose Us
+msgid "Why Choose Us"
+msgstr "Pourquoi nous choisir"
+
+msgid "Superior technology for superior returns."
+msgstr "Une technologie supérieure pour des rendements supérieurs."
+
+msgid "Secure Platform"
+msgstr "Plateforme sécurisée"
+
+msgid "Bank-level security with encrypted transactions"
+msgstr "Sécurité bancaire avec transactions chiffrées"
+
+msgid "High Returns"
+msgstr "Rendements élevés"
+
+msgid "Competitive ROI with transparent profit calculations"
+msgstr "ROI compétitif avec des calculs de profit transparents"
+
+msgid "Automated Payouts"
+msgstr "Paiements automatisés"
+
+msgid "Scheduled profit distribution to your wallet"
+msgstr "Distribution programmée des profits vers votre portefeuille"
+
+# Landing Page - Investment Plans
+msgid "Investment Plans"
+msgstr "Plans d'investissement"
+
+msgid "Hourly"
+msgstr "Horaire"
+
+msgid "End of Term"
+msgstr "Fin de terme"
+
+msgid "Recommended"
+msgstr "Recommandé"
+
+msgid "Max Deposit"
+msgstr "Dépôt maximum"
+
+msgid "day(s)"
+msgstr "jour(s)"
+
+# Landing Page - How It Works
+msgid "How It Works"
+msgstr "Comment ça fonctionne"
+
+msgid "Start your journey to financial freedom in four simple steps."
+msgstr "Commencez votre voyage vers la liberté financière en quatre étapes simples."
+
+msgid "Create your secure account in less than 2 minutes."
+msgstr "Créez votre compte sécurisé en moins de 2 minutes."
+
+msgid "Fund your wallet using Crypto and Mobile Money transfer."
+msgstr "Alimentez votre portefeuille via crypto et transfert Mobile Money."
+
+msgid "Choose a plan that fits your goals and activate it."
+msgstr "Choisissez un plan adapté à vos objectifs et activez-le."
+
+msgid "Watch your portfolio grow and withdraw earnings."
+msgstr "Regardez votre portefeuille croître et retirez vos gains."
+
+# Standalone step title used in How-It-Works
+msgid "Profit"
+msgstr "Profit"
+
+# Landing Page - Testimonials
+msgid "Trusted by Investors"
+msgstr "Approuvé par les investisseurs"
+
+msgid "reviews"
+msgstr "avis"
+
+msgid "Private Investor"
+msgstr "Investisseur privé"
+
+msgid "Entrepreneur"
+msgstr "Entrepreneur"
+
+msgid "Freelancer"
+msgstr "Indépendant"
+
+msgid "I was skeptical at first, but the automated payouts convinced me. The transparency in calculation is unmatched."
+msgstr "J'étais sceptique au début, mais les paiements automatisés m'ont convaincu. La transparence dans les calculs est incomparable."
+
+msgid "The low-fee withdrawal policy is a game changer. Customer support helped me set up my portfolio in minutes."
+msgstr "La politique de retrait à faible frais est un véritable atout. Le service client m’a aidé à configurer mon portefeuille en quelques minutes."
+
+msgid "The dashboard UI is sleek and responsive. I can track my daily ROI easily from my phone."
+msgstr "L'interface du tableau de bord est élégante et réactive. Je peux suivre mon ROI quotidien facilement depuis mon téléphone."
+
+# Landing Page - FAQ
+msgid "Common Questions"
+msgstr "Questions fréquentes"
+
+msgid "Everything you need to know about investing with us. Can't find the answer?"
+msgstr "Tout ce que vous devez savoir sur l'investissement avec nous. Vous ne trouvez pas la réponse ?"
+
+msgid "Need Support?"
+msgstr "Besoin d'aide ?"
+
+msgid "Our team is available 24/7 to help you."
+msgstr "Notre équipe est disponible 24h/24 et 7j/7 pour vous aider."
+
+msgid "How do I start investing?"
+msgstr "Comment commencer à investir ?"
+
+msgid "Sign up for a free account, complete your profile, deposit funds via crypto and mobile money transfer, and select an investment plan that suits your financial goals."
+msgstr "Inscrivez-vous gratuitement, complétez votre profil, déposez des fonds via crypto et transfert Mobile Money, et sélectionnez un plan d'investissement adapté à vos objectifs financiers."
+
+msgid "Is there a minimum withdrawal?"
+msgstr "Y a-t-il un retrait minimum ?"
+
+msgid "Yes, the minimum withdrawal amount depends on the payment method. For most crypto methods, it is as low as $10."
+msgstr "Oui, le montant minimum de retrait dépend du mode de paiement. Pour la plupart des méthodes crypto, il est aussi bas que 10 $."
+
+msgid "What payment methods are supported?"
+msgstr "Quels modes de paiement sont pris en charge ?"
+
+msgid "We support crypto and Mobile Money payments depending on your region."
+msgstr "Nous prenons en charge les paiements en crypto et via Mobile Money selon votre région."
+
+msgid "Is my money safe?"
+msgstr "Mon argent est-il en sécurité ?"
+
+msgid "We use industry-standard encryption and secure transaction practices. Always enable 2FA and protect your account credentials."
+msgstr "Nous utilisons un chiffrement aux normes industrielles et des pratiques de transaction sécurisées. Activez toujours la 2FA et protégez vos identifiants."
+
+# Landing Page - CTA (updated to match page copy)
+msgid "Start Building Wealth Today"
+msgstr "Commencez à construire votre patrimoine aujourd'hui"
+
+msgid "Get Started Free"
+msgstr "Commencer gratuitement"
+
+msgid "no fees"
+msgstr "sans frais"
+
+msgid "cancel anytime"
+msgstr "annuler à tout moment"
+
+msgid "secure"
+msgstr "sécurisé"
+
+# Footer (public-footer.php)
+msgid "Your trusted investment partner"
+msgstr "Votre partenaire d'investissement de confiance"
+
+msgid "Quick Links"
+msgstr "Liens rapides"
+
+msgid "FAQ"
+msgstr "FAQ"
+
+msgid "Legal"
+msgstr "Mentions légales"
+
+msgid "Risk Disclaimer"
+msgstr "Avertissement sur les risques"
+
+msgid "Contact Us"
+msgstr "Nous contacter"
+
+# Contact Page (contact.php)
+msgid "Get in Touch"
+msgstr "Prendre contact"
+
+msgid "We are here to help you 24/7"
+msgstr "Nous sommes là pour vous aider 24h/24 et 7j/7"
+
+msgid "Contact Information"
+msgstr "Informations de contact"
+
+msgid "Our Office"
+msgstr "Notre bureau"
+
+msgid "Email Us"
+msgstr "Envoyez-nous un e-mail"
+
+msgid "Expect a reply within 24 hours"
+msgstr "Attendez une réponse dans les 24 heures"
+
+msgid "Call Us"
+msgstr "Appelez-nous"
+
+msgid "Mon-Fri from 9am to 6pm"
+msgstr "Lun-Ven de 9h à 18h"
+
+msgid "Follow Us"
+msgstr "Suivez-nous"
+
+msgid "Send a Message"
+msgstr "Envoyer un message"
+
+msgid "Name"
+msgstr "Nom"
+
+msgid "Subject"
+msgstr "Sujet"
+
+msgid "Message"
+msgstr "Message"
+
+msgid "Send Message"
+msgstr "Envoyer le message"
+
+# Auth Pages - Login (login.php)
+msgid "Enter your credentials to continue"
+msgstr "Entrez vos identifiants pour continuer"
+
+msgid "Forgot Password?"
+msgstr "Mot de passe oublié ?"
+
+msgid "Processing…"
+msgstr "Traitement en cours…"
+
+msgid "Create free account"
+msgstr "Créer un compte gratuit"
+
+msgid "Back to Home"
+msgstr "Retour à l'accueil"
+
+msgid "Didn't receive the email? Enter your email below to resend the verification link."
+msgstr "Vous n'avez pas reçu l'e-mail ? Entrez votre adresse ci-dessous pour renvoyer le lien de vérification."
+
+msgid "Enter your email"
+msgstr "Entrez votre e-mail"
+
+msgid "Resend"
+msgstr "Renvoyer"
+
+msgid "Registration successful! Please check your email to verify your account before logging in."
+msgstr "Inscription réussie ! Veuillez vérifier votre e-mail pour valider votre compte avant de vous connecter."
+
+msgid "Registration successful! Please sign in."
+msgstr "Inscription réussie ! Veuillez vous connecter."
+
+msgid "Your email has been verified! You can now log in."
+msgstr "Votre e-mail a été vérifié ! Vous pouvez maintenant vous connecter."
+
+msgid "You have been logged out successfully."
+msgstr "Vous avez été déconnecté avec succès."
+
+msgid "••••••••"
+msgstr "••••••••"
+
+msgid "Access your dashboard, manage your investments, and track your growth in real-time."
+msgstr "Accédez à votre tableau de bord, gérez vos investissements et suivez votre croissance en temps réel."
+
+# Auth Pages - Register (register.php)
+msgid "Start your journey with us"
+msgstr "Commencez votre aventure avec nous"
+
+msgid "First Name"
+msgstr "Prénom"
+
+msgid "Last Name"
+msgstr "Nom de famille"
+
+msgid "I agree to the"
+msgstr "J'accepte les"
+
+msgid "Join the Revolution"
+msgstr "Rejoignez la révolution"
+
+msgid "Create your account in less than 2 minutes and start building your portfolio today."
+msgstr "Créez votre compte en moins de 2 minutes et commencez à construire votre portefeuille dès aujourd'hui."
+
+# Auth Pages - Reset Password (reset-password.php)
+msgid "Account Recovery"
+msgstr "Récupération de compte"
+
+msgid "Secure Your Account"
+msgstr "Sécurisez votre compte"
+
+msgid "We take security seriously. Restore access to your portfolio safely and securely."
+msgstr "Nous prenons la sécurité au sérieux. Restaurez l'accès à votre portefeuille en toute sécurité."
+
+msgid "Check your email"
+msgstr "Vérifiez votre e-mail"
+
+msgid "We have sent a password reset link to your email address. Please check your inbox and spam folder."
+msgstr "Nous avons envoyé un lien de réinitialisation à votre adresse e-mail. Veuillez vérifier votre boîte de réception et vos spams."
+
+msgid "Create a new strong password for your account."
+msgstr "Créez un nouveau mot de passe fort pour votre compte."
+
+msgid "Enter your email address to receive a reset link."
+msgstr "Entrez votre adresse e-mail pour recevoir un lien de réinitialisation."
+
+msgid "Remembered your password?"
+msgstr "Vous vous souvenez de votre mot de passe ?"
+
+# Action Files - Flash Messages
+msgid "Invalid security token. Please try again."
+msgstr "Jeton de sécurité invalide. Veuillez réessayer."
+
+msgid "Please enter both email and password."
+msgstr "Veuillez saisir votre e-mail et votre mot de passe."
+
+msgid "Invalid email or password."
+msgstr "E-mail ou mot de passe invalide."
+
+msgid "An error occurred. Please try again."
+msgstr "Une erreur s'est produite. Veuillez réessayer."
+
+msgid "Your account has been suspended."
+msgstr "Votre compte a été suspendu."
+
+msgid "Please verify your email address before logging in. Check your inbox for the verification link."
+msgstr "Veuillez vérifier votre adresse e-mail avant de vous connecter. Consultez votre boîte de réception pour le lien de vérification."
+
+msgid "Please fill in all required fields."
+msgstr "Veuillez remplir tous les champs obligatoires."
+
+msgid "Please enter a valid email address."
+msgstr "Veuillez saisir une adresse e-mail valide."
+
+msgid "Password must be at least 6 characters long."
+msgstr "Le mot de passe doit comporter au moins 6 caractères."
+
+msgid "Passwords do not match."
+msgstr "Les mots de passe ne correspondent pas."
+
+msgid "An account with this email already exists."
+msgstr "Un compte avec cet e-mail existe déjà."
+
+msgid "Referral code is invalid."
+msgstr "Le code de parrainage est invalide."
+
+msgid "An error occurred during registration. Please try again."
+msgstr "Une erreur s'est produite lors de l'inscription. Veuillez réessayer."
+
+msgid "Registration successful! Please check your email to verify your account."
+msgstr "Inscription réussie ! Veuillez vérifier votre e-mail pour valider votre compte."
+
+msgid "Account created successfully! Please log in with your credentials."
+msgstr "Compte créé avec succès ! Veuillez vous connecter avec vos identifiants."
+
+msgid "If an account exists with that email, you will receive a password reset link."
+msgstr "Si un compte existe avec cet e-mail, vous recevrez un lien de réinitialisation de mot de passe."
+
+msgid "All fields are required."
+msgstr "Tous les champs sont obligatoires."
+
+msgid "Invalid or expired token."
+msgstr "Jeton invalide ou expiré."
+
+msgid "Reset token has expired. Please request a new link."
+msgstr "Le jeton de réinitialisation a expiré. Veuillez demander un nouveau lien."
+
+msgid "Password has been reset. You may now log in with your new password."
+msgstr "Le mot de passe a été réinitialisé. Vous pouvez maintenant vous connecter avec votre nouveau mot de passe."
+
+msgid "If an unverified account exists with this email, a new verification link has been sent."
+msgstr "Si un compte non vérifié existe avec cet e-mail, un nouveau lien de vérification a été envoyé."
+
+msgid "Please wait %d minutes before requesting another verification email."
+msgstr "Veuillez attendre %d minutes avant de demander un autre e-mail de vérification."
+
+msgid "Failed to send message. Please try again later."
+msgstr "Échec de l'envoi du message. Veuillez réessayer plus tard."
+
+msgid "Thank you! Your message has been sent. We'll get back to you soon."
+msgstr "Merci ! Votre message a été envoyé. Nous vous répondrons bientôt."
+
+msgid "New contact form submission"
+msgstr "Nouvelle soumission du formulaire de contact"
+
+msgid "From"
+msgstr "De"
+
+msgid "Submitted"
+msgstr "Soumis le"
+
+msgid "IP"
+msgstr "IP"
+
+# Admin Settings
+msgid "Platform Settings"
+msgstr "Paramètres de la plateforme"
+
+msgid "Manage global configurations, payment methods, and system settings."
+msgstr "Gérez les configurations globales, les méthodes de paiement et les paramètres système."
+
+msgid "Hide Menu"
+msgstr "Masquer le menu"
+
+msgid "Show Menu"
+msgstr "Afficher le menu"
+
+msgid "General"
+msgstr "Général"
+
+msgid "SEO"
+msgstr "SEO"
+
+msgid "Financial"
+msgstr "Financier"
+
+msgid "Payment"
+msgstr "Paiement"
+
+msgid "Referral"
+msgstr "Parrainage"
+
+msgid "Withdrawal"
+msgstr "Retrait"
+
+msgid "Compliance"
+msgstr "Conformité"
+
+msgid "Cancellation"
+msgstr "Annulation"
+
+msgid "System"
+msgstr "Système"
+
+msgid "Registration"
+msgstr "Inscription"
+
+msgid "Notifications"
+msgstr "Notifications"
+
+msgid "Cron"
+msgstr "Cron"
+
+/* Admin Settings - Site tab */
+msgid "Site Configuration"
+msgstr "Configuration du site"
+
+msgid "Site Name"
+msgstr "Nom du site"
+
+msgid "Public name of your investment platform"
+msgstr "Nom public de votre plateforme d'investissement"
+
+msgid "Contact Email"
+msgstr "Admin contact email for user inquiries"
+msgstr "e-mail de contact administrateur pour les demandes des utilisateurs"
+
+msgid "Contact Phone"
+msgstr "Public phone number displayed in footer and contact page"
+msgstr "Numéro de téléphone public affiché dans le pied de page et la page de contact"
+
+msgid "Contact Address"
+msgstr "Office address displayed in footer and contact page"
+msgstr "Adresse du bureau affichée dans le pied de page et la page de contact"
+
+msgid "Secondary Language"
+msgstr "Langue secondaire"
+
+msgid "Primary language is always English"
+msgstr "La langue principale est toujours l'anglais"
+
+msgid "Translation Mode"
+msgstr "Mode de traduction"
+
+msgid "Local Translations (PO/MO files)"
+msgstr "Traductions locales (fichiers PO/MO)"
+
+msgid "Google Translate Widget"
+msgstr "Widget Google Translate"
+
+msgid "Choose between local translation files or Google Translate widget for automatic translations"
+msgstr "Choisissez entre les fichiers de traduction locaux ou le widget Google Translate pour les traductions automatiques"
+
+msgid "Currency Code"
+msgstr "Code de devise"
+
+msgid "ISO 4217 currency code (e.g., USD, EUR, GBP). Used for all display and transactions."
+msgstr "Code de devise ISO 4217 (ex. USD, EUR, GBP). Utilisé pour tous les affichages et transactions."
+
+msgid "Site Logo"
+msgstr "Logo du site"
+
+msgid "Upload a new logo (PNG, JPG, GIF - max 2MB)"
+msgstr "Télécharger un nouveau logo (PNG, JPG, GIF - max 2 Mo)"
+
+msgid "Social Links"
+msgstr "Liens sociaux"
+
+msgid "Only links you set will appear in the public footer"
+msgstr "Seuls les liens que vous définissez apparaîtront dans le pied de page public"
+
+msgid "Instant Message / Chat Snippet"
+msgstr "Message instantané / Extrait de chat"
+
+msgid "This HTML snippet will be injected into all footers. Leave empty to disable."
+msgstr "Cet extrait HTML sera injecté dans tous les pieds de page. Laissez vide pour désactiver."
+
+msgid "Save Site Settings"
+msgstr "Enregistrer les paramètres du site"
+
+/* Admin Settings - SEO tab */
+msgid "SEO Settings"
+msgstr "Paramètres SEO"
+
+msgid "Site Description"
+msgstr "Description du site"
+
+msgid "Description used in meta description tags across the public site"
+msgstr "Description utilisée dans les balises meta description sur le site public"
+
+msgid "Site Keywords"
+msgstr "Mots-clés du site"
+
+msgid "Comma-separated keywords used in meta keywords"
+msgstr "Mots-clés séparés par des virgules utilisés dans les meta keywords"
+
+msgid "Default Theme Mode"
+msgstr "Mode de thème par défaut"
+
+msgid "Light"
+msgstr "Clair"
+
+msgid "Dark"
+msgstr "Sombre"
+
+msgid "Choose the default theme mode for public pages"
+msgstr "Choisissez le mode de thème par défaut pour les pages publiques"
+
+msgid "Save SEO Settings"
+msgstr "Enregistrer les paramètres SEO"
+
+/* Admin Settings - Payment tab */
+msgid "Payment Method Management"
+msgstr "Gestion des méthodes de paiement"
+
+msgid "Active Payment Methods"
+msgstr "Méthodes de paiement actives"
+
+msgid "Edit"
+msgstr "Modifier"
+
+msgid "Delete"
+msgstr "Supprimer"
+
+msgid "Network"
+msgstr "Réseau"
+
+msgid "Address"
+msgstr "Adresse"
+
+msgid "QR code generated"
+msgstr "Code QR généré"
+
+msgid "Bank"
+msgstr "Banque"
+
+msgid "Account"
+msgstr "Compte"
+
+msgid "Number"
+msgstr "Numéro"
+
+msgid "ID"
+msgstr "ID"
+
+msgid "No payment methods configured. Add your first payment method below."
+msgstr "Aucune méthode de paiement configurée. Ajoutez votre première méthode de paiement ci-dessous."
+
+msgid "Add New Payment Method"
+msgstr "Ajouter une nouvelle méthode de paiement"
+
+msgid "Edit Payment Method"
+msgstr "Modifier la méthode de paiement"
+
+msgid "Method Name"
+msgstr "Nom de la méthode"
+
+msgid "e.g., USDT (TRC20), Bank Transfer"
+msgstr "ex. USDT (TRC20), Virement bancaire"
+
+msgid "Type"
+msgstr "Type"
+
+msgid "Select Type"
+msgstr "Sélectionner le type"
+
+msgid "Instructions for Users"
+msgstr "Instructions pour les utilisateurs"
+
+msgid "Instructions will be auto-filled based on type..."
+msgstr "Les instructions seront remplies automatiquement selon le type..."
+
+msgid "Auto-filled based on type. You can customize this message."
+msgstr "Rempli automatiquement selon le type. Vous pouvez personnaliser ce message."
+
+msgid "Cryptocurrency Fields"
+msgstr "Champs Cryptomonnaie"
+
+msgid "e.g., TRC20, ERC20, BEP20"
+msgstr "ex. TRC20, ERC20, BEP20"
+
+msgid "The blockchain network for this cryptocurrency"
+msgstr "Le réseau blockchain pour cette cryptomonnaie"
+
+msgid "Wallet Address"
+msgstr "Adresse du portefeuille"
+
+msgid "Enter wallet address"
+msgstr "Entrez l'adresse du portefeuille"
+
+msgid "QR Code (Auto-generated)"
+msgstr "Code QR (généré automatiquement)"
+
+msgid "Scan to copy address"
+msgstr "Scanner pour copier l'adresse"
+
+msgid "Bank Transfer Fields"
+msgstr "Champs Virement bancaire"
+
+msgid "e.g., Chase Bank"
+msgstr "ex. Chase Bank"
+
+msgid "Account Name"
+msgstr "Nom du compte"
+
+msgid "e.g., John Doe"
+msgstr "ex. Jean Dupont"
+
+msgid "Account Number"
+msgstr "Numéro de compte"
+
+msgid "Enter account number"
+msgstr "Entrez le numéro de compte"
+
+msgid "e.g., M-Pesa, MTN Mobile Money"
+msgstr "ex. M-Pesa, MTN Mobile Money"
+
+msgid "Phone Number"
+msgstr "Numéro de téléphone"
+
+msgid "e.g., +254712345678"
+msgstr "ex. +254712345678"
+
+msgid "Account Holder Name"
+msgstr "Nom du titulaire du compte"
+
+msgid "Other Fields"
+msgstr "Autres champs"
+
+msgid "Payment Details"
+msgstr "Détails de paiement"
+
+msgid "Enter payment details..."
+msgstr "Entrez les détails de paiement..."
+
+msgid "Add Method"
+msgstr "Ajouter la méthode"
+
+msgid "Update Method"
+msgstr "Mettre à jour la méthode"
+
+msgid "Deposit Fee"
+msgstr "Frais de dépôt"
+
+msgid "Deposit Fee (%)"
+msgstr "Frais de dépôt (%)"
+
+msgid "Percentage charged on deposits (0 = no fee)"
+msgstr "Pourcentage prélevé sur les dépôts (0 = sans frais)"
+
+msgid "Save Deposit Fee"
+msgstr "Enregistrer les frais de dépôt"
+
+msgid "Save Payment Methods"
+msgstr "Enregistrer les méthodes de paiement"
+
+/* Admin Settings - Referral tab */
+msgid "Referral Configuration"
+msgstr "Configuration du parrainage"
+
+msgid "Fixed Amount"
+msgstr "Montant fixe"
+
+msgid "Percentage"
+msgstr "Pourcentage"
+
+msgid "Bonus Amount"
+msgstr "Montant du bonus"
+
+msgid "Amount to reward for each successful referral"
+msgstr "Montant à récompenser pour chaque parrainage réussi"
+
+msgid "Referral Bonus Trigger"
+msgstr "Déclencheur du bonus de parrainage"
+
+msgid "On Registration"
+msgstr "À l'inscription"
+
+msgid "On First Deposit"
+msgstr "Au premier dépôt"
+
+msgid "On First Investment"
+msgstr "Au premier investissement"
+
+msgid "On Every Deposit"
+msgstr "À chaque dépôt"
+
+msgid "On Every Investment"
+msgstr "À chaque investissement"
+
+msgid "When to award the referral bonus"
+msgstr "Quand attribuer le bonus de parrainage"
+
+msgid "\"On Registration\" requires Fixed bonus type because there is no transaction amount to calculate percentage from."
+msgstr "\"À l'inscription\" nécessite un bonus de type fixe car il n'y a pas de montant de transaction pour calculer le pourcentage."
+
+msgid "Save Referral Settings"
+msgstr "Enregistrer les paramètres de parrainage"
+
+/* Admin Settings - Withdrawal tab */
+msgid "Withdrawal Fee Configuration"
+msgstr "Configuration des frais de retrait"
+
+msgid "Withdrawal Fee (Percentage)"
+msgstr "Frais de retrait (Pourcentage)"
+
+msgid "Percentage of withdrawal amount charged as fee (0-100)"
+msgstr "Pourcentage du montant de retrait prélevé comme frais (0-100)"
+
+msgid "Minimum Withdrawal Fee"
+msgstr "Frais de retrait minimum"
+
+msgid "Minimum fee amount (fee = max(amount × percentage ÷ 100, minimum))"
+msgstr "Montant minimum des frais (frais = max(montant × pourcentage ÷ 100, minimum))"
+
+msgid "Fee Calculation:"
+msgstr "Calcul des frais :"
+
+msgid "The withdrawal fee is calculated as the maximum of the percentage-based fee and the minimum fee amount."
+msgstr "Les frais de retrait sont calculés comme le maximum entre les frais basés sur le pourcentage et le montant minimum des frais."
+
+msgid "Save Fee Settings"
+msgstr "Enregistrer les paramètres de frais"
+
+msgid "Withdrawal Methods"
+msgstr "Méthodes de retrait"
+
+msgid "Enable or disable the available withdrawal methods for users. Icons are automatically displayed based on method type."
+msgstr "Activez ou désactivez les méthodes de retrait disponibles pour les utilisateurs. Les icônes sont affichées automatiquement selon le type de méthode."
+
+msgid "Enabled"
+msgstr "Activé"
+
+msgid "Disabled"
+msgstr "Désactivé"
+
+msgid "Save Changes"
+msgstr "Enregistrer les modifications"
+
+/* Admin Settings - KYC tab */
+msgid "KYC Configuration"
+msgstr "Configuration KYC"
+
+msgid "KYC Required"
+msgstr "KYC requis"
+
+msgid "Yes, require KYC"
+msgstr "Oui, exiger le KYC"
+
+msgid "No, KYC optional"
+msgstr "Non, KYC facultatif"
+
+msgid "KYC Timing"
+msgstr "Timing KYC"
+
+msgid "Before First Withdrawal"
+msgstr "Avant le premier retrait"
+
+msgid "Before First Investment"
+msgstr "Avant le premier investissement"
+
+msgid "Immediately After Registration"
+msgstr "Immédiatement après l'inscription"
+
+msgid "When KYC verification is required"
+msgstr "Quand la vérification KYC est requise"
+
+msgid "Always Show KYC Banner"
+msgstr "Toujours afficher la bannière KYC"
+
+msgid "Yes, always show"
+msgstr "Oui, toujours afficher"
+
+msgid "No, show based on timing"
+msgstr "Non, afficher selon le timing"
+
+msgid "When enabled, users will always see the KYC reminder banner on every page, regardless of the timing setting."
+msgstr "Lorsqu'activé, les utilisateurs verront toujours la bannière de rappel KYC sur chaque page, quel que soit le paramètre de timing."
+
+msgid "Allow Users to Dismiss Banner"
+msgstr "Permettre aux utilisateurs de fermer la bannière"
+
+msgid "Yes, allow dismiss"
+msgstr "Oui, permettre la fermeture"
+
+msgid "No, always visible"
+msgstr "Non, toujours visible"
+
+msgid "When enabled, users can close the KYC banner. When disabled, the banner is always visible until KYC is approved."
+msgstr "Lorsqu'activé, les utilisateurs peuvent fermer la bannière KYC. Lorsque désactivé, la bannière est toujours visible jusqu'à l'approbation du KYC."
+
+msgid "Save KYC Settings"
+msgstr "Enregistrer les paramètres KYC"
+
+/* Admin Settings - Cancellation tab */
+msgid "Investment Cancellation Policy"
+msgstr "Politique d'annulation d'investissement"
+
+msgid "Cancellation Penalty Mode"
+msgstr "Mode de pénalité d'annulation"
+
+msgid "Percentage of Investment Amount"
+msgstr "Pourcentage du montant d'investissement"
+
+msgid "No Penalty"
+msgstr "Aucune pénalité"
+
+msgid "Penalty Percentage"
+msgstr "Pourcentage de pénalité"
+
+msgid "Percentage of investment amount charged as penalty (0-100)"
+msgstr "Pourcentage du montant d'investissement prélevé comme pénalité (0-100)"
+
+msgid "Flat Penalty Amount"
+msgstr "Montant fixe de pénalité"
+
+msgid "Fixed amount charged as penalty"
+msgstr "Montant fixe prélevé comme pénalité"
+
+msgid "Earned Profits on Cancellation"
+msgstr "Profits gagnés lors de l'annulation"
+
+msgid "User forfeits all earned profits when cancelling"
+msgstr "L'utilisateur perd tous les profits gagnés lors de l'annulation"
+
+msgid "User keeps earned profits"
+msgstr "L'utilisateur conserve les profits gagnés"
+
+msgid "Save Cancellation Policy"
+msgstr "Enregistrer la politique d'annulation"
+
+msgid "Block Cancellation After First Payout Due"
+msgstr "Bloquer l'annulation après la première date de paiement"
+
+msgid "When enabled, users cannot cancel an investment once the first payout date has been reached."
+msgstr "Lorsqu'activé, les utilisateurs ne peuvent pas annuler un investissement une fois la première date de paiement atteinte."
+
+msgid "Block cancellation after first payout date"
+msgstr "Bloquer l'annulation après la première date de paiement"
+
+msgid "Allow cancellation anytime"
+msgstr "Autoriser l'annulation à tout moment"
+
+msgid "Cancellation is no longer allowed once the first payout date has been reached."
+msgstr "L'annulation n'est plus autorisée une fois la première date de paiement atteinte."
+
+msgid "Cancellation is blocked — the first payout date has passed."
+msgstr "L'annulation est bloquée — la première date de paiement est dépassée."
+
+msgid "Select the platform base currency. Changing this will trigger an immediate exchange rate refresh."
+msgstr "Sélectionnez la devise de base de la plateforme. Ce changement déclenchera une actualisation immédiate des taux de change."
+
+/* Admin Settings - Registration tab */
+msgid "Email Verification"
+msgstr "Vérification par e-mail"
+
+msgid "Require Email Verification"
+msgstr "Exiger la vérification par e-mail"
+
+msgid "When enabled, new users must verify their email address before they can log in."
+msgstr "Lorsqu'activé, les nouveaux utilisateurs doivent vérifier leur adresse e-mail avant de pouvoir se connecter."
+
+msgid "Yes, require email verification"
+msgstr "Oui, exiger la vérification par e-mail"
+
+msgid "No, allow login without verification"
+msgstr "Non, autoriser la connexion sans vérification"
+
+msgid "Note:"
+msgstr "Remarque :"
+
+msgid "When enabled, new registrations will receive a verification email. Users must click the link in the email before they can access their account."
+msgstr "Lorsqu'activé, les nouvelles inscriptions recevront un e-mail de vérification. Les utilisateurs doivent cliquer sur le lien dans l'e-mail avant de pouvoir accéder à leur compte."
+
+msgid "Save Email Verification Settings"
+msgstr "Enregistrer les paramètres de vérification par e-mail"
+
+msgid "Post-Registration Behavior"
+msgstr "Comportement post-inscription"
+
+msgid "After Registration Redirect"
+msgstr "Redirection après inscription"
+
+msgid "Where should users be redirected immediately after successful registration?"
+msgstr "Où les utilisateurs doivent-ils être redirigés immédiatement après une inscription réussie ?"
+
+msgid "Deposit Page"
+msgstr "Page de dépôt"
+
+msgid "Investment Page"
+msgstr "Page d'investissement"
+
+msgid "Save Post-Registration Settings"
+msgstr "Enregistrer les paramètres post-inscription"
+
+/* Admin Settings - Notifications tab */
+msgid "Bulk Notification Settings"
+msgstr "Paramètres de notification en masse"
+
+msgid "Quickly enable or disable all notification emails across all categories."
+msgstr "Activez ou désactivez rapidement tous les e-mails de notification dans toutes les catégories."
+
+msgid "Turn On All Notifications & Save"
+msgstr "Activer toutes les notifications et enregistrer"
+
+msgid "Turn Off All Notifications & Save"
+msgstr "Désactiver toutes les notifications et enregistrer"
+
+msgid "User Account Notifications"
+msgstr "Notifications de compte utilisateur"
+
+msgid "Registration Welcome Email"
+msgstr "E-mail de bienvenue à l'inscription"
+
+msgid "Send welcome email after registration"
+msgstr "Envoyer un e-mail de bienvenue après l'inscription"
+
+msgid "Password Reset"
+msgstr "Réinitialisation du mot de passe"
+
+msgid "Send password reset emails"
+msgstr "Envoyer des e-mails de réinitialisation de mot de passe"
+
+msgid "Save Account Notification Settings"
+msgstr "Enregistrer les paramètres de notification de compte"
+
+msgid "Deposit Notifications"
+msgstr "Notifications de dépôt"
+
+msgid "User Notifications"
+msgstr "Notifications utilisateur"
+
+msgid "Deposit Submitted"
+msgstr "Dépôt soumis"
+
+msgid "Notify user when deposit is submitted"
+msgstr "Notifier l'utilisateur lorsqu'un dépôt est soumis"
+
+msgid "Deposit Approved"
+msgstr "Dépôt approuvé"
+
+msgid "Notify user when deposit is approved"
+msgstr "Notifier l'utilisateur lorsqu'un dépôt est approuvé"
+
+msgid "Deposit Rejected"
+msgstr "Dépôt rejeté"
+
+msgid "Notify user when deposit is rejected"
+msgstr "Notifier l'utilisateur lorsqu'un dépôt est rejeté"
+
+msgid "Admin Notifications"
+msgstr "Notifications administrateur"
+
+msgid "New Deposit Submitted"
+msgstr "Nouveau dépôt soumis"
+
+msgid "Notify admin when new deposit is submitted"
+msgstr "Notifier l'administrateur lorsqu'un nouveau dépôt est soumis"
+
+msgid "Save Deposit Notification Settings"
+msgstr "Enregistrer les paramètres de notification de dépôt"
+
+msgid "Withdrawal Notifications"
+msgstr "Notifications de retrait"
+
+msgid "Withdrawal Submitted"
+msgstr "Retrait soumis"
+
+msgid "Notify user when withdrawal is submitted"
+msgstr "Notifier l'utilisateur lorsqu'un retrait est soumis"
+
+msgid "Withdrawal Approved"
+msgstr "Retrait approuvé"
+
+msgid "Notify user when withdrawal is approved"
+msgstr "Notifier l'utilisateur lorsqu'un retrait est approuvé"
+
+msgid "Withdrawal Rejected"
+msgstr "Retrait rejeté"
+
+msgid "Notify user when withdrawal is rejected"
+msgstr "Notifier l'utilisateur lorsqu'un retrait est rejeté"
+
+msgid "New Withdrawal Submitted"
+msgstr "Nouveau retrait soumis"
+
+msgid "Notify admin when new withdrawal is submitted"
+msgstr "Notifier l'administrateur lorsqu'un nouveau retrait est soumis"
+
+msgid "Save Withdrawal Notification Settings"
+msgstr "Enregistrer les paramètres de notification de retrait"
+
+msgid "Investment Notifications"
+msgstr "Notifications d'investissement"
+
+msgid "Investment Created"
+msgstr "Investissement créé"
+
+msgid "Notify user when investment is created"
+msgstr "Notifier l'utilisateur lorsqu'un investissement est créé"
+
+msgid "Investment Completed"
+msgstr "Investissement terminé"
+
+msgid "Notify user when investment completes"
+msgstr "Notifier l'utilisateur lorsqu'un investissement est terminé"
+
+msgid "Investment Cancelled"
+msgstr "Investissement annulé"
+
+msgid "Notify user when investment is cancelled"
+msgstr "Notifier l'utilisateur lorsqu'un investissement est annulé"
+
+msgid "Profit Payout"
+msgstr "Versement de profit"
+
+msgid "Notify user on each profit payout"
+msgstr "Notifier l'utilisateur à chaque versement de profit"
+
+msgid "Save Investment Notification Settings"
+msgstr "Enregistrer les paramètres de notification d'investissement"
+
+msgid "KYC Notifications"
+msgstr "Notifications KYC"
+
+msgid "KYC Approved"
+msgstr "KYC approuvé"
+
+msgid "Notify user when KYC is approved"
+msgstr "Notifier l'utilisateur lorsque le KYC est approuvé"
+
+msgid "KYC Rejected"
+msgstr "KYC rejeté"
+
+msgid "Notify user when KYC is rejected"
+msgstr "Notifier l'utilisateur lorsque le KYC est rejeté"
+
+msgid "KYC Submitted"
+msgstr "KYC soumis"
+
+msgid "Notify admin when KYC is submitted"
+msgstr "Notifier l'administrateur lorsqu'un KYC est soumis"
+
+msgid "Save KYC Notification Settings"
+msgstr "Enregistrer les paramètres de notification KYC"
+
+msgid "Referral Notifications"
+msgstr "Notifications de parrainage"
+
+msgid "Referral Bonus Credited"
+msgstr "Bonus de parrainage crédité"
+
+msgid "Notify user when referral bonus is credited"
+msgstr "Notifier l'utilisateur lorsque le bonus de parrainage est crédité"
+
+msgid "Save Referral Notification Settings"
+msgstr "Enregistrer les paramètres de notification de parrainage"
+
+/* Admin Settings - Cron tab */
+msgid "Cron Job Management"
+msgstr "Gestion des tâches cron"
+
+msgid "Last Cron Run"
+msgstr "Dernière exécution cron"
+
+msgid "Lock Status"
+msgstr "Statut du verrou"
+
+msgid "Locked"
+msgstr "Verrouillé"
+
+msgid "Unlocked"
+msgstr "Déverrouillé"
+
+msgid "Are you sure you want to clear the cron lock?"
+msgstr "Êtes-vous sûr de vouloir effacer le verrou cron ?"
+
+msgid "Clear Cron Lock"
+msgstr "Effacer le verrou cron"
+
+msgid "Cron Job Setup"
+msgstr "Configuration des tâches cron"
+
+msgid "Add this command to your server's crontab to run the investment profit calculation every minute:"
+msgstr "Ajoutez cette commande au crontab de votre serveur pour exécuter le calcul des profits d'investissement chaque minute :"
+
+msgid "Replace YOUR_KEY with your CRON_API_KEY from .env file"
+msgstr "Remplacez YOUR_KEY par votre CRON_API_KEY du fichier .env"
+
+msgid "Cron Endpoint"
+msgstr "Point de terminaison cron"
+
+msgid "Endpoint URL for manual testing:"
+msgstr "URL du point de terminaison pour les tests manuels :"
+
+msgid "About Cron Jobs:"
+msgstr "À propos des tâches cron :"
+
+msgid "The cron job processes pending investments and calculates profits. This should run every minute. If the process is taking too long, a lock file is created to prevent concurrent execution."
+msgstr "La tâche cron traite les investissements en attente et calcule les profits. Elle doit s'exécuter chaque minute. Si le processus prend trop de temps, un fichier de verrouillage est créé pour éviter l'exécution simultanée."
+
+/* Admin Plans page */
+msgid "Manage active and archived investment plans."
+msgstr "Gérez les plans d'investissement actifs et archivés."
+
+msgid "Create New Plan"
+msgstr "Créer un nouveau plan"
+
+msgid "Active Plans"
+msgstr "Plans actifs"
+
+msgid "No active investment plans."
+msgstr "Aucun plan d'investissement actif."
+
+msgid "Plan Name"
+msgstr "Nom du plan"
+
+msgid "ROI"
+msgstr "ROI"
+
+msgid "Limits"
+msgstr "Limites"
+
+msgid "Interval"
+msgstr "Intervalle"
+
+msgid "Featured"
+msgstr "En vedette"
+
+msgid "Every %d min"
+msgstr "Toutes les %d min"
+
+msgid "Every %d hr"
+msgstr "Toutes les %d h"
+
+msgid "Every %d day(s)"
+msgstr "Tous les %d jour(s)"
+
+msgid "Every %d wk"
+msgstr "Toutes les %d sem"
+
+msgid "Every %d mo"
+msgstr "Tous les %d mois"
+
+msgid "Compounding"
+msgstr "Capitalisation"
+
+msgid "Archived Plans"
+msgstr "Plans archivés"
+
+msgid "No archived investment plans."
+msgstr "Aucun plan d'investissement archivé."
+
+msgid "Edit Plan"
+msgstr "Modifier le plan"
+
+msgid "Manage plan settings and payouts"
+msgstr "Gérez les paramètres et les versements du plan"
+
+msgid "Interval type is required for custom intervals"
+msgstr "Le type d'intervalle est requis pour les intervalles personnalisés"
+
+msgid "Interval value must be a positive integer"
+msgstr "La valeur de l'intervalle doit être un entier positif"
+
+msgid "Interval cannot exceed plan duration"
+msgstr "L'intervalle ne peut pas dépasser la durée du plan"
+
+msgid "Compounding is only available for end of term plans"
+msgstr "La capitalisation n'est disponible que pour les plans à terme"
+
+msgid "Basic Details"
+msgstr "Détails de base"
+
+msgid "e.g., Premium Plan"
+msgstr "ex. Plan Premium"
+
+msgid "ROI %"
+msgstr "ROI %"
+
+msgid "Duration (days)"
+msgstr "Durée (jours)"
+
+msgid "Financial Limits"
+msgstr "Limites financières"
+
+msgid "Min Amount"
+msgstr "Montant minimum"
+
+msgid "Max Amount"
+msgstr "Montant maximum"
+
+msgid "Payout Schedule"
+msgstr "Calendrier de versement"
+
+msgid "Custom"
+msgstr "Personnalisé"
+
+msgid "Interval Type"
+msgstr "Type d'intervalle"
+
+msgid "Select type"
+msgstr "Sélectionner le type"
+
+msgid "Minutes"
+msgstr "Minutes"
+
+msgid "Hours"
+msgstr "Heures"
+
+msgid "Days"
+msgstr "Jours"
+
+msgid "Weeks"
+msgstr "Semaines"
+
+msgid "Months"
+msgstr "Mois"
+
+msgid "Interval Value"
+msgstr "Valeur de l'intervalle"
+
+msgid "e.g., 2"
+msgstr "ex. 2"
+
+msgid "Cannot exceed plan duration"
+msgstr "Ne peut pas dépasser la durée du plan"
+
+msgid "Enable Compounding"
+msgstr "Activer la capitalisation"
+
+msgid "Compound interest calculation"
+msgstr "Calcul des intérêts composés"
+
+msgid "Return Capital"
+msgstr "Retour du capital"
+
+msgid "At end of investment"
+msgstr "À la fin de l'investissement"
+
+msgid "Featured Plan"
+msgstr "Plan en vedette"
+
+msgid "Highlight on homepage"
+msgstr "Mettre en avant sur la page d'accueil"
+
+msgid "Archived"
+msgstr "Archivé"
+
+msgid "Save Plan"
+msgstr "Enregistrer le plan"
+
+msgid "Are you sure you want to delete this plan?"
+msgstr "Êtes-vous sûr de vouloir supprimer ce plan ?"
+
+/* Admin Investments page */
+msgid "Manage and monitor all user investments."
+msgstr "Gérez et surveillez tous les investissements des utilisateurs."
+
+msgid "Search investor or plan..."
+msgstr "Rechercher un investisseur ou un plan..."
+
+msgid "Clear"
+msgstr "Effacer"
+
+msgid "All Investments"
+msgstr "Tous les investissements"
+
+msgid "Active Running"
+msgstr "En cours actif"
+
+msgid "Investor"
+msgstr "Investisseur"
+
+msgid "Plan Details"
+msgstr "Détails du plan"
+
+msgid "Profit Earned"
+msgstr "Profit gagné"
+
+msgid "No investments found."
+msgstr "Aucun investissement trouvé."
+
+msgid "days left"
+msgstr "jours restants"
+
+msgid "Investment Summary"
+msgstr "Résumé de l'investissement"
+
+msgid "Invested Amount"
+msgstr "Montant investi"
+
+msgid "Current Value"
+msgstr "Valeur actuelle"
+
+msgid "days remaining"
+msgstr "jours restants"
+
+msgid "Performance Details"
+msgstr "Détails de performance"
+
+msgid "Plan ROI"
+msgstr "ROI du plan"
+
+msgid "Net Profit Earned"
+msgstr "Profit net gagné"
+
+msgid "Payout Interval"
+msgstr "Intervalle de versement"
+
+msgid "Capital Return"
+msgstr "Retour du capital"
+
+msgid "Yes"
+msgstr "Oui"
+
+msgid "No"
+msgstr "Non"
+
+msgid "View Full Details"
+msgstr "Voir tous les détails"
+
+/* Admin Transactions page */
+msgid "View all financial transactions across the platform."
+msgstr "Consultez toutes les transactions financières de la plateforme."
+
+msgid "All"
+msgstr "Tous"
+
+msgid "Deposits"
+msgstr "Dépôts"
+
+msgid "Withdrawals"
+msgstr "Retraits"
+
+msgid "Profits"
+msgstr "Profits"
+
+msgid "Referrals"
+msgstr "Parrainages"
+
+msgid "Search by user, email, or ID..."
+msgstr "Rechercher par utilisateur, e-mail ou ID..."
+
+msgid "Transaction ID"
+msgstr "ID de transaction"
+
+msgid "No transactions found."
+msgstr "Aucune transaction trouvée."
+
+msgid "Transaction Details"
+msgstr "Détails de la transaction"
+
+msgid "Transaction processed via platform"
+msgstr "Transaction traitée via la plateforme"
+
+/* Admin KYC Review page */
+msgid "Review and verify user identity documents."
+msgstr "Examinez et vérifiez les documents d'identité des utilisateurs."
+
+msgid "Action"
+msgstr "Action"
+
+msgid "All KYC documents have been reviewed!"
+msgstr "Tous les documents KYC ont été examinés !"
+
+msgid "Selfie"
+msgstr "Selfie"
+
+msgid "User Information"
+msgstr "Informations utilisateur"
+
+msgid "ID / Passport"
+msgstr "Pièce d'identité / Passeport"
+
+msgid "Confirm Rejection"
+msgstr "Confirmer le rejet"
+
+/* Admin In-Mail page */
+msgid "Internal Messaging"
+msgstr "Messagerie interne"
+
+msgid "Send notifications and updates to user groups."
+msgstr "Envoyez des notifications et des mises à jour aux groupes d'utilisateurs."
+
+msgid "Select Recipients"
+msgstr "Sélectionner les destinataires"
+
+msgid "Search users..."
+msgstr "Rechercher des utilisateurs..."
+
+msgid "Loading..."
+msgstr "Chargement..."
+
+msgid "Found"
+msgstr "Trouvé"
+
+msgid "results"
+msgstr "résultats"
+
+msgid "Select All"
+msgstr "Tout sélectionner"
+
+msgid "selected"
+msgstr "sélectionné(s)"
+
+msgid "Clear All"
+msgstr "Tout effacer"
+
+msgid "No recipients selected"
+msgstr "Aucun destinataire sélectionné"
+
+msgid "Add All Users"
+msgstr "Ajouter tous les utilisateurs"
+
+msgid "Compose Message"
+msgstr "Rédiger un message"
+
+msgid "Subject Line"
+msgstr "Ligne d'objet"
+
+msgid "Enter message subject..."
+msgstr "Entrez l'objet du message..."
+
+msgid "Message Body"
+msgstr "Corps du message"
+
+msgid "Type your message here..."
+msgstr "Tapez votre message ici..."
+
+msgid "Insert Variables:"
+msgstr "Insérer des variables :"
+
+msgid "Running on localhost - emails logged to files"
+msgstr "Exécution sur localhost - e-mails enregistrés dans des fichiers"
+
+msgid "Messages sent via email"
+msgstr "Messages envoyés par e-mail"
+
+msgid "Sending..."
+msgstr "Envoi en cours..."
+
+msgid "Please select at least one recipient"
+msgstr "Veuillez sélectionner au moins un destinataire"
+
+msgid "Please enter a subject"
+msgstr "Veuillez entrer un objet"
+
+msgid "Please enter a message"
+msgstr "Veuillez entrer un message"
+
+msgid "Please select at least one valid recipient"
+msgstr "Veuillez sélectionner au moins un destinataire valide"
+
+msgid "An error occurred while sending the message"
+msgstr "Une erreur s'est produite lors de l'envoi du message"
+
+/* Admin Users page */
+msgid "User Management"
+msgstr "Gestion des utilisateurs"
+
+msgid "View, edit, and manage all platform users."
+msgstr "Consultez, modifiez et gérez tous les utilisateurs de la plateforme."
+
+msgid "users"
+msgstr "utilisateurs"
+
+msgid "Search & Filter"
+msgstr "Rechercher et filtrer"
+
+msgid "Search by name or email"
+msgstr "Rechercher par nom ou e-mail"
+
+msgid "Search"
+msgstr "Rechercher"
+
+msgid "Users"
+msgstr "Utilisateurs"
+
+msgid "Admin"
+msgstr "Administrateur"
+
+msgid "Settings"
+msgstr "Paramètres"
+
+msgid "All Roles"
+msgstr "Tous les rôles"
+
+msgid "All Status"
+msgstr "Tous les statuts"
+
+msgid "Banned"
+msgstr "Banni"
+
+msgid "All KYC"
+msgstr "Tous les KYC"
+
+msgid "Not Submitted"
+msgstr "Non soumis"
+
+msgid "Approved"
+msgstr "Approuvé"
+
+msgid "Rejected"
+msgstr "Rejeté"
+
+msgid "Clear Filters"
+msgstr "Effacer les filtres"
+
+msgid "Email & Phone"
+msgstr "E-mail et téléphone"
+
+msgid "Balance"
+msgstr "Solde"
+
+msgid "Role"
+msgstr "Rôle"
+
+msgid "KYC"
+msgstr "KYC"
+
+msgid "No users found."
+msgstr "Aucun utilisateur trouvé."
+
+msgid "N/A"
+msgstr "N/D"
+
+msgid "Login as User"
+msgstr "Se connecter en tant qu'utilisateur"
+
+msgid "Resend Verification"
+msgstr "Renvoyer la vérification"
+
+msgid "Send Email"
+msgstr "Envoyer un e-mail"
+
+msgid "Overview"
+msgstr "Aperçu"
+
+msgid "Total Deposits"
+msgstr "Total des dépôts"
+
+# Landing Page — Final CTA (index.php)
+msgid "Join 50,000+ Active Investors"
+msgstr "Rejoignez 50 000+ investisseurs actifs"
+
+msgid "Start Growing Your"
+msgstr "Commencez à faire croître votre"
+
+msgid "Wealth Today"
+msgstr "Patrimoine aujourd'hui"
+
+msgid "Don't let your money sit idle. Join the fastest-growing investment platform and experience automated returns, secure wallets, and 24/7 support."
+msgstr "Ne laissez pas votre argent dormir. Rejoignez la plateforme d'investissement à la croissance la plus rapide et profitez de rendements automatisés, de portefeuilles sécurisés et d'un support 24h/24."
+
+msgid "Start Investing Now"
+msgstr "Commencer à investir maintenant"
+
+msgid "Create Free Account"
+msgstr "Créer un compte gratuit"
+
+msgid "Talk to an Expert"
+msgstr "Parler à un expert"
+
+msgid "No Hidden Fees"
+msgstr "Aucuns frais cachés"
+
+msgid "Cancel Anytime"
+msgstr "Annuler à tout moment"
+
+msgid "Secure & Encrypted"
+msgstr "Sécurisé et chiffré"
+
+# About Page (about.php)
+msgid "About Us"
+msgstr "À propos de nous"
+
+msgid "Empowering Your"
+msgstr "Renforcer votre"
+
+msgid "Financial Future"
+msgstr "Avenir financier"
+
+msgid "We are building the most secure and accessible investment ecosystem for the modern world."
+msgstr "Nous construisons l'écosystème d'investissement le plus sécurisé et accessible pour le monde moderne."
+
+msgid "Our Story"
+msgstr "Notre histoire"
+
+msgid "Founded in 2020, we set out to create a platform that makes professional investment services accessible to everyone. Over the years we have focused on security, automation, and excellent customer service to help our users achieve their financial goals."
+msgstr "Fondée en 2020, nous avons entrepris de créer une plateforme rendant les services d'investissement professionnels accessibles à tous. Au fil des années, nous nous sommes concentrés sur la sécurité, l'automatisation et un excellent service client pour aider nos utilisateurs à atteindre leurs objectifs financiers."
+
+msgid "Our Mission"
+msgstr "Notre mission"
+
+msgid "To democratize investment opportunities for everyday people by providing secure, transparent, and easy-to-use tools."
+msgstr "Démocratiser les opportunités d'investissement pour tous en fournissant des outils sécurisés, transparents et faciles à utiliser."
+
+msgid "Our Vision"
+msgstr "Notre vision"
+
+msgid "A world where everyone can build wealth through simple, reliable investing."
+msgstr "Un monde où chacun peut construire sa richesse grâce à un investissement simple et fiable."
+
+msgid "Founded"
+msgstr "Fondée"
+
+msgid "Transactions"
+msgstr "Transactions"
+
+msgid "Support"
+msgstr "Support"
+
+msgid "Transparency"
+msgstr "Transparence"
+
+msgid "Our Core Values"
+msgstr "Nos valeurs fondamentales"
+
+msgid "Security First"
+msgstr "La sécurité avant tout"
+
+msgid "Bank-level encryption and best-practice security safeguards."
+msgstr "Chiffrement bancaire et mesures de sécurité conformes aux meilleures pratiques."
+
+msgid "Innovation"
+msgstr "Innovation"
+
+msgid "Cutting-edge technology powering automated investments."
+msgstr "Une technologie de pointe alimentant les investissements automatisés."
+
+msgid "Clear fees, clear returns, and honest communication."
+msgstr "Des frais clairs, des rendements clairs et une communication honnête."
+
+msgid "Ready to get started?"
+msgstr "Prêt à commencer ?"
+
+msgid "Join thousands of investors using our platform to grow their wealth."
+msgstr "Rejoignez des milliers d'investisseurs qui utilisent notre plateforme pour faire croître leur patrimoine."
+
+msgid "Join Us Today"
+msgstr "Rejoignez-nous aujourd'hui"
+
+msgid "View Investment Plans"
+msgstr "Voir les plans d'investissement"
+
+# Terms of Service Page (terms.php)
+msgid "Please read these terms carefully before using our platform."
+msgstr "Veuillez lire attentivement ces conditions avant d'utiliser notre plateforme."
+
+msgid "Acceptance of Terms"
+msgstr "Acceptation des conditions"
+
+msgid "By accessing and using this website, you accept and agree to be bound by the terms and provision of this agreement. In addition, when using this websites particular services, you shall be subject to any posted guidelines or rules applicable to such services."
+msgstr "En accédant à ce site et en l'utilisant, vous acceptez d'être lié par les termes et dispositions de cet accord. De plus, lors de l'utilisation de services particuliers de ce site, vous serez soumis aux directives ou règles publiées applicables à ces services."
+
+msgid "Use License"
+msgstr "Licence d'utilisation"
+
+msgid "Permission is granted to temporarily download one copy of the materials (information or software) on the website for personal, non-commercial transitory viewing only. This is the grant of a license, not a transfer of title, and under this license you may not:"
+msgstr "La permission est accordée de télécharger temporairement une copie des matériaux (informations ou logiciels) sur le site web pour une consultation personnelle et non commerciale uniquement. Il s'agit d'une licence, non d'un transfert de titre, et sous cette licence vous ne pouvez pas :"
+
+msgid "modify or copy the materials;"
+msgstr "modifier ou copier les matériaux ;"
+
+msgid "use the materials for any commercial purpose, or for any public display (commercial or non-commercial);"
+msgstr "utiliser les matériaux à des fins commerciales ou pour toute présentation publique (commerciale ou non commerciale) ;"
+
+msgid "attempt to decompile or reverse engineer any software contained on the website;"
+msgstr "tenter de décompiler ou de désassembler tout logiciel contenu sur le site web ;"
+
+msgid "remove any copyright or other proprietary notations from the materials;"
+msgstr "supprimer toute mention de droits d'auteur ou autres notations propriétaires des matériaux ;"
+
+msgid "Disclaimer"
+msgstr "Avertissement"
+
+msgid "The materials on the website are provided \"as is\". We make no warranties, expressed or implied, and hereby disclaim and negate all other warranties, including without limitation, implied warranties or conditions of merchantability, fitness for a particular purpose, or non-infringement of intellectual property or other violation of rights."
+msgstr "Les matériaux sur le site web sont fournis « tels quels ». Nous ne faisons aucune garantie, expresse ou implicite, et déclinons par la présente toute autre garantie, y compris, sans limitation, les garanties implicites ou conditions de qualité marchande, d'adéquation à un usage particulier ou de non-violation de la propriété intellectuelle."
+
+msgid "Limitations"
+msgstr "Limitations"
+
+msgid "In no event shall we or our suppliers be liable for any damages (including, without limitation, damages for loss of data or profit, or due to business interruption) arising out of the use or inability to use the materials on the website."
+msgstr "En aucun cas, nous ou nos fournisseurs ne serons responsables de tout dommage (y compris, sans limitation, les dommages pour perte de données ou de profit, ou en raison d'une interruption d'activité) découlant de l'utilisation ou de l'impossibilité d'utiliser les matériaux sur le site web."
+
+msgid "Governing Law"
+msgstr "Droit applicable"
+
+msgid "Any claim relating to the website shall be governed by the laws of the jurisdiction of the company headquarters without regard to its conflict of law provisions."
+msgstr "Toute réclamation relative au site web sera régie par les lois de la juridiction du siège social de la société, sans égard à ses dispositions en matière de conflits de lois."
+
+msgid "Questions about the Terms?"
+msgstr "Des questions sur les conditions ?"
+
+msgid "Our support team is available to clarify any points."
+msgstr "Notre équipe de support est disponible pour clarifier tout point."
+
+# Privacy Policy Page (privacy.php)
+msgid "We value your privacy and are committed to protecting your personal data."
+msgstr "Nous respectons votre vie privée et nous nous engageons à protéger vos données personnelles."
+
+msgid "Information We Collect"
+msgstr "Informations que nous collectons"
+
+msgid "We collect information to provide better services to all our users. The types of information we collect include:"
+msgstr "Nous collectons des informations pour fournir de meilleurs services à tous nos utilisateurs. Les types d'informations que nous collectons comprennent :"
+
+msgid "Personal Information:"
+msgstr "Informations personnelles :"
+
+msgid "Name, email address, phone number, and payment details when you register."
+msgstr "Nom, adresse e-mail, numéro de téléphone et informations de paiement lors de votre inscription."
+
+msgid "Usage Data:"
+msgstr "Données d'utilisation :"
+
+msgid "Information on how you use our website, including pages visited and time spent."
+msgstr "Informations sur la façon dont vous utilisez notre site web, y compris les pages visitées et le temps passé."
+
+msgid "Device Information:"
+msgstr "Informations sur l'appareil :"
+
+msgid "IP address, browser type, and operating system."
+msgstr "Adresse IP, type de navigateur et système d'exploitation."
+
+msgid "How We Use Information"
+msgstr "Comment nous utilisons les informations"
+
+msgid "We use the information we collect to operate and maintain our services, notify you about changes to our service, allow you to participate in interactive features, provide customer support, and detect, prevent and address technical issues."
+msgstr "Nous utilisons les informations collectées pour exploiter et maintenir nos services, vous informer des modifications apportées à notre service, vous permettre de participer à des fonctionnalités interactives, fournir un support client et détecter, prévenir et résoudre les problèmes techniques."
+
+msgid "Data Security"
+msgstr "Sécurité des données"
+
+msgid "The security of your data is important to us, but remember that no method of transmission over the Internet, or method of electronic storage is 100% secure. While we strive to use commercially acceptable means to protect your Personal Data, we cannot guarantee its absolute security."
+msgstr "La sécurité de vos données est importante pour nous, mais n'oubliez pas qu'aucune méthode de transmission sur Internet, ou de stockage électronique, n'est 100 % sécurisée. Bien que nous nous efforcions d'utiliser des moyens commercialement acceptables pour protéger vos données personnelles, nous ne pouvons pas garantir leur sécurité absolue."
+
+msgid "Cookies"
+msgstr "Cookies"
+
+msgid "We use cookies and similar tracking technologies to track the activity on our Service and hold certain information. You can instruct your browser to refuse all cookies or to indicate when a cookie is being sent."
+msgstr "Nous utilisons des cookies et des technologies de suivi similaires pour suivre l'activité sur notre service et conserver certaines informations. Vous pouvez demander à votre navigateur de refuser tous les cookies ou d'indiquer quand un cookie est envoyé."
+
+msgid "Last updated:"
+msgstr "Dernière mise à jour :"
+
+# Risk Disclaimer Page (disclaimer.php)
+msgid "Important information regarding investment risks."
+msgstr "Informations importantes concernant les risques d'investissement."
+
+msgid "High Risk Warning"
+msgstr "Avertissement de risque élevé"
+
+msgid "Trading and investing carries a high level of risk and may not be suitable for all investors. You could lose some or all of your initial investment."
+msgstr "Le trading et l'investissement comportent un niveau de risque élevé et peuvent ne pas convenir à tous les investisseurs. Vous pourriez perdre une partie ou la totalité de votre investissement initial."
+
+msgid "General Advice Warning"
+msgstr "Avertissement de conseil général"
+
+msgid "The information provided on this website is for general information purposes only and does not constitute financial advice, investment advice, trading advice, or any other sort of advice. You should not treat any of the website's content as such. We do not recommend that any asset should be bought, sold, or held by you. Do conduct your own due diligence and consult your financial advisor before making any investment decisions."
+msgstr "Les informations fournies sur ce site web sont uniquement à titre d'information générale et ne constituent pas des conseils financiers, des conseils en investissement, des conseils en trading ou tout autre type de conseil. Vous ne devez pas traiter le contenu du site web comme tel. Nous ne recommandons pas l'achat, la vente ou la détention d'un actif quelconque. Effectuez votre propre diligence raisonnable et consultez votre conseiller financier avant de prendre toute décision d'investissement."
+
+msgid "Volatility Risks"
+msgstr "Risques de volatilité"
+
+msgid "The values of investments can fluctuate significantly due to market conditions. Past performance is not indicative of future results. The value of your investment can go down as well as up, and you may not get back the amount you invested."
+msgstr "La valeur des investissements peut fluctuer considérablement en raison des conditions du marché. Les performances passées ne sont pas indicatives des résultats futurs. La valeur de votre investissement peut baisser comme augmenter, et vous pourriez ne pas récupérer le montant investi."
+
+msgid "No Guarantees"
+msgstr "Aucune garantie"
+
+msgid "While we strive to ensure the accuracy of the information contained on this website, we do not guarantee the accuracy, reliability, or completeness of any information. We are not responsible for any errors or omissions or for the results obtained from the use of such information."
+msgstr "Bien que nous nous efforcions d'assurer l'exactitude des informations contenues sur ce site web, nous ne garantissons pas l'exactitude, la fiabilité ou l'exhaustivité de toute information. Nous ne sommes pas responsables des erreurs ou omissions ni des résultats obtenus à partir de l'utilisation de ces informations."
+
+msgid "User Responsibility"
+msgstr "Responsabilité de l'utilisateur"
+
+msgid "You acknowledge and agree that you are fully responsible for your own investment decisions and that you are aware of the risks associated with investing. You agree to hold the platform and its operators harmless from any and all losses, liabilities, or damages resulting from your investment activities."
+msgstr "Vous reconnaissez et acceptez que vous êtes entièrement responsable de vos propres décisions d'investissement et que vous êtes conscient des risques associés à l'investissement. Vous acceptez de dégager la plateforme et ses opérateurs de toute responsabilité pour toutes pertes, responsabilités ou dommages résultant de vos activités d'investissement."
+
+
+msgid "User Details"
+msgstr "Détails de l'utilisateur"
+
+msgid "User ID"
+msgstr "ID utilisateur"
+
+msgid "Registered IP"
+msgstr "IP enregistrée"
+
+msgid "Country"
+msgstr "Pays"
+
+msgid "KYC Status"
+msgstr "Statut KYC"
+
+msgid "Review KYC"
+msgstr "Examiner le KYC"
+
+msgid "Select Country"
+msgstr "Sélectionner le pays"
+
+msgid "Save"
+msgstr "Enregistrer"
+
+msgid "Balance Adjustment"
+msgstr "Ajustement du solde"
+
+msgid "Credit"
+msgstr "Crédit"
+
+msgid "Debit"
+msgstr "Débit"
+
+msgid "Set New Password"
+msgstr "Définir un nouveau mot de passe"
+
+msgid "Enter new password (min 6 characters)"
+msgstr "Entrez un nouveau mot de passe (min 6 caractères)"
+
+/* Admin Dashboard extras */
+msgid "Total:"
+msgstr "Total :"
+
+msgid "Awaiting review"
+msgstr "En attente d'examen"
+
+/* Admin Pending Deposits page */
+msgid "Date Submitted"
+msgstr "Date de soumission"
+
+msgid "ID: #"
+msgstr "ID : #"
+
+msgid "Gross Amount"
+msgstr "Montant brut"
+
+msgid "Net Credited"
+msgstr "Net crédité"
+
+msgid "Explain why this deposit is rejected..."
+msgstr "Expliquez pourquoi ce dépôt est rejeté..."
+
+msgid "User will see this reason."
+msgstr "L'utilisateur verra cette raison."
+
+msgid "Fee:"
+msgstr "Frais :"
+
+msgid "Net:"
+msgstr "Net :"
+
+/* Admin Pending Withdrawals page */
+msgid "Review payout requests and process securely."
+msgstr "Examinez les demandes de paiement et traitez-les en toute sécurité."
+
+msgid "Destination"
+msgstr "Destination"
+
+msgid "Processing"
+msgstr "En cours de traitement"
+
+msgid "Process Withdrawal"
+msgstr "Traiter le retrait"
+
+msgid "Ensure the user has sufficient balance and no active suspicious flags before processing."
+msgstr "Assurez-vous que l'utilisateur dispose d'un solde suffisant et qu'aucun drapeau suspect n'est actif avant de traiter."
+
+msgid "User Balance"
+msgstr "Solde de l'utilisateur"
+
+msgid "Payout Amount"
+msgstr "Montant du versement"
+
+msgid "Withdrawal Fee"
+msgstr "Frais de retrait"
+
+msgid "Net Payout"
+msgstr "Versement net"
+
+msgid "Destination Info"
+msgstr "Informations de destination"
+
+msgid "Approve Payout"
+msgstr "Approuver le versement"
+
+msgid "Explain why this withdrawal is rejected..."
+msgstr "Expliquez pourquoi ce retrait est rejeté..."
+
+msgid "Please provide a rejection reason"
+msgstr "Veuillez fournir un motif de rejet"
+
+msgid "Copy"
+msgstr "Copier"
+
+msgid "No pending withdrawals found."
+msgstr "Aucun retrait en attente trouvé."
+
+/* Admin Sidebar extras */
+msgid "All Transactions"
+msgstr "Toutes les transactions"
+
+msgid "In-Mail"
+msgstr "Messagerie interne"
+
+msgid "In Mail"
+msgstr "Messagerie interne"
+
+msgid "After entering payment details, wait for the QR code to generate before clicking "Add Method" or "Update Method"."
+msgstr "Après avoir saisi les détails de paiement, attendez que le code QR soit généré avant de cliquer sur « Ajouter une méthode » ou « Mettre à jour la méthode »."
+
+msgid "name@example.com"
+msgstr "nom@exemple.com"
+
+msgid "Too many failed login attempts. Please try again in %s minutes."
+msgstr "Trop d'échecs de tentatives de connexion ; veuillez réessayer dans %minutes% minutes."
+
+msgid "Page Not Found"
+msgstr "Page introuvable"
+
+msgid "The page you are looking for does not exist or has been moved."
+msgstr "La page que vous recherchez n'existe pas ou a été déplacée."
+
+msgid "The page you are looking for does not exist or has been moved. Please check the URL or navigate back to the homepage."
+msgstr "La page que vous recherchez n'existe pas ou a été déplacée. Veuillez vérifier l'URL ou revenir à la page d'accueil."
+
+msgid "Popular pages you might be looking for:"
+msgstr "Pages populaires que vous pourriez rechercher :"
+
+msgid "Terms"
+msgstr "Termes"
+
+msgid "Privacy"
+msgstr "Confidentialité"
+
+msgid "Professional investment platform with automated profit distribution and secure wallet management"
+msgstr "Plateforme d'investissement professionnelle avec distribution automatisée des bénéfices et gestion sécurisée des portefeuilles"
+
+msgid "Minimum withdrawal is"
+msgstr "Le retrait minimum est"
+
+msgid "Join me on this investment platform!"
+msgstr "Rejoins-moi sur cette plateforme d'investissement !"
+
+msgid "Back To Admin"
+msgstr "Retour à l'Admin"
+
+msgid "Admin Portal"
+msgstr "Portail Admin"

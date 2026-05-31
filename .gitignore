@@ -1,0 +1,68 @@
+
+# Node
+node_modules/
+
+# Composer (vendor dependencies)
+vendor/
+composer.phar
+
+# Environment files
+.env
+*.env
+
+# Logs and runtime artifacts
+/logs/*
+!/logs/.gitignore
+!/logs/.htaccess
+*.log
+
+/cache/*
+!/cache/
+!/cache/.htaccess
+cache/exchange-rates.php
+
+# Uploads: ignore all uploaded files but keep `.htaccess` and `.gitkeep` in any subfolder
+# Ignore everything under uploads recursively
+/uploads/**
+# Ensure the uploads directory and its subdirectories are not permanently excluded
+!/uploads/
+!/uploads/**/
+# Re-include any .htaccess and .gitkeep files located anywhere under uploads
+!/uploads/**/.htaccess
+!/uploads/**/.gitkeep
+
+# Traycer artifacts (local tooling)
+.traycer/
+
+# Build / distribution
+/dist/
+/build/
+
+# PHPUnit / test caches
+.phpunit.result.cache
+phpunit.xml.cache
+
+# IDEs and editors
+.idea/
+.vscode/
+*.suo
+*.user
+*.swp
+
+# OS files
+.DS_Store
+Thumbs.db
+
+tickets
+specs
+
+design-template
+
+test-db.php
+
+AGENTS.md
+
+.claude
+
+payload..ps1
+payload.ps1
