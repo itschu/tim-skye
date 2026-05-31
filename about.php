@@ -28,115 +28,117 @@ $company_story = [
 ];
 
 $values = [
-    ['icon' => 'fa-shield-halved', 'color' => 'text-neon-purple', 'title' => __('Security First'), 'description' => __('Bank-level encryption and best-practice security safeguards.')],
-    ['icon' => 'fa-lightbulb', 'color' => 'text-neon-cyan', 'title' => __('Innovation'), 'description' => __('Cutting-edge technology powering automated investments.')],
-    ['icon' => 'fa-handshake', 'color' => 'text-neon-pink', 'title' => __('Transparency'), 'description' => __('Clear fees, clear returns, and honest communication.')]
+    ['icon' => 'shield', 'title' => __('Security First'), 'description' => __('Bank-level encryption and best-practice security safeguards.')],
+    ['icon' => 'lightbulb', 'title' => __('Innovation'), 'description' => __('Cutting-edge technology powering automated investments.')],
+    ['icon' => 'handshake', 'title' => __('Transparency'), 'description' => __('Clear fees, clear returns, and honest communication.')]
 ];
 
 require_once ROOT . '/includes/public-header.php';
 ?>
 
 <main>
-    <section class="relative pt-32 pb-20 overflow-hidden">
-        <div class="absolute top-0 right-0 w-[500px] h-[500px] bg-neon-purple/20 blur-[120px] rounded-full -z-10 animate-blob"></div>
-        <div class="absolute bottom-0 left-0 w-[400px] h-[400px] bg-neon-cyan/10 blur-[100px] rounded-full -z-10 animate-blob animation-delay-2000"></div>
+    <!-- HERO -->
+    <section id="hero" style="min-height:60vh;">
+        <div class="hero-bg-img"></div>
+        <div class="hero-overlay"></div>
+        <div class="hero-grid-bg"></div>
+        <div class="hero-glow"></div>
 
-        <div class="max-w-7xl mx-auto px-6 lg:px-8 text-center relative z-10">
-            <h1 class="text-4xl md:text-6xl font-extrabold text-white mb-6" data-aos="fade-up">
-                <?php echo __('Empowering Your'); ?> <span class="text-glow-gradient"><?php echo __('Financial Future'); ?></span>
+        <div class="hero-left" style="z-index:2; position:relative;">
+            <div class="eyebrow fu"><?php echo __('Who We Are'); ?></div>
+            <h1 class="fu d1">
+                <?php echo __('Empowering Your'); ?> <em><?php echo __('Financial Future'); ?></em>
             </h1>
-            <p class="text-gray-400 max-w-2xl mx-auto leading-relaxed" data-aos="fade-up" data-aos-delay="100">
-                <?php echo __('We are building the most secure and accessible investment ecosystem for the modern world.'); ?>
-            </p>
-        </div>
-    </section>
-
-    <section class="py-20 bg-dark-900/50">
-        <div class="max-w-7xl mx-auto px-6 lg:px-8">
-            <div class="grid md:grid-cols-2 gap-12 items-center">
-
-                <div data-aos="fade-right">
-                    <h2 class="text-3xl font-bold text-white mb-6 flex items-center gap-3">
-                        <span class="w-10 h-10 rounded-lg bg-neon-purple/20 flex items-center justify-center text-neon-purple text-xl"><i class="fas fa-rocket"></i></span>
-                        <?php echo e($company_story['title']); ?>
-                    </h2>
-                    <div class="space-y-6 text-gray-400 leading-relaxed">
-                        <p><?php echo e($company_story['description']); ?></p>
-
-                        <div class="glass-panel p-6 rounded-2xl border-l-4 border-neon-cyan mt-6">
-                            <h4 class="text-white font-bold mb-2"><?php echo __('Our Mission'); ?></h4>
-                            <p class="text-sm italic"><?php echo e($company_story['mission']); ?></p>
-                        </div>
-
-                        <div class="glass-panel p-6 rounded-2xl border-l-4 border-neon-purple">
-                            <h4 class="text-white font-bold mb-2"><?php echo __('Our Vision'); ?></h4>
-                            <p class="text-sm italic"><?php echo e($company_story['vision']); ?></p>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="relative" data-aos="fade-left">
-                    <div class="absolute inset-0 bg-gradient-to-r from-neon-purple to-neon-cyan rounded-3xl blur-2xl opacity-20"></div>
-                    <div class="relative bg-dark-800 border border-gray-700 rounded-3xl p-8 overflow-hidden">
-                        <div class="grid grid-cols-2 gap-6">
-                            <div class="text-center p-6 bg-dark-900/50 rounded-2xl">
-                                <div class="text-3xl font-bold text-neon-cyan mb-1">2020</div>
-                                <div class="text-xs text-gray-500 uppercase"><?php echo __('Founded'); ?></div>
-                            </div>
-                            <div class="text-center p-6 bg-dark-900/50 rounded-2xl">
-                                <div class="text-3xl font-bold text-neon-purple">5M+</div>
-                                <div class="text-xs text-gray-500 uppercase"><?php echo __('Transactions'); ?></div>
-                            </div>
-                            <div class="text-center p-6 bg-dark-900/50 rounded-2xl">
-                                <div class="text-3xl font-bold text-white">24/7</div>
-                                <div class="text-xs text-gray-500 uppercase"><?php echo __('Support'); ?></div>
-                            </div>
-                            <div class="text-center p-6 bg-dark-900/50 rounded-2xl">
-                                <div class="text-3xl font-bold text-green-400">100%</div>
-                                <div class="text-xs text-gray-500 uppercase"><?php echo __('Transparency'); ?></div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
+            <p class="hero-sub fu d2"><?php echo __('We are building the most secure and accessible investment ecosystem for the modern world.'); ?></p>
+            <div class="btn-row fu d3">
+                <?php if ($is_logged_in): ?>
+                    <a href="/user/invest" class="btn-gold"><?php echo __('Start Investing'); ?> <svg width="13" height="13" viewBox="0 0 13 13" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M2 6.5h9M8 3l3.5 3.5L8 10" /></svg></a>
+                <?php else: ?>
+                    <a href="/register" class="btn-gold"><?php echo __('Get Started'); ?> <svg width="13" height="13" viewBox="0 0 13 13" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M2 6.5h9M8 3l3.5 3.5L8 10" /></svg></a>
+                <?php endif; ?>
+                <a href="/contact" class="btn-outline-sm"><?php echo __('Contact Us'); ?> →</a>
             </div>
         </div>
     </section>
 
-    <section class="py-24 relative">
-        <div class="max-w-7xl mx-auto px-6 lg:px-8">
-            <h2 class="text-3xl font-bold text-center text-white mb-16"><?php echo __('Our Core Values'); ?></h2>
+    <!-- ABOUT STORY -->
+    <section id="about">
+        <div class="about-img-wrap reveal">
+            <img class="about-img" src="https://images.unsplash.com/photo-1556761175-5973dc0f32e7?w=700&q=80&auto=format&fit=crop" alt="<?php echo __('Our team at work'); ?>" />
+            <div class="about-img-border"></div>
+            <div class="about-corner-tl"></div>
+            <div class="about-badge-img"><?php echo __('Since 2020'); ?></div>
+        </div>
+        <div class="about-text reveal">
+            <div class="section-tag"><?php echo e($company_story['title']); ?></div>
+            <h2 class="section-h"><?php echo __('A platform built on'); ?> <em><?php echo __('trust'); ?></em></h2>
+            <div class="about-hr"></div>
+            <p><?php echo e($company_story['description']); ?></p>
 
-            <div class="grid md:grid-cols-3 gap-8">
-                <?php $delay = 0;
-                foreach ($values as $val): ?>
-                    <div class="glass-panel p-8 rounded-3xl border border-gray-800 hover:border-neon-purple/50 transition-all duration-300 hover:-translate-y-2" data-aos="zoom-in-up" data-aos-delay="<?php echo $delay; ?>">
-                        <div class="w-14 h-14 rounded-xl bg-gray-800 flex items-center justify-center text-2xl <?php echo $val['color']; ?> mb-6 shadow-lg shadow-black/20">
-                            <i class="fas <?php echo $val['icon']; ?>"></i>
-                        </div>
-                        <h4 class="text-xl font-bold text-white mb-3"><?php echo e($val['title']); ?></h4>
-                        <p class="text-gray-400 leading-relaxed"><?php echo e($val['description']); ?></p>
-                    </div>
-                <?php $delay += 100;
-                endforeach; ?>
+            <div class="about-hr" style="margin:1.2rem 0;"></div>
+            <p><strong><?php echo __('Mission:'); ?></strong> <?php echo e($company_story['mission']); ?></p>
+            <p><strong><?php echo __('Vision:'); ?></strong> <?php echo e($company_story['vision']); ?></p>
+
+            <div class="creds">
+                <div>
+                    <div class="cred-val">2020</div>
+                    <div class="cred-lbl"><?php echo __('Founded'); ?></div>
+                </div>
+                <div>
+                    <div class="cred-val">400+</div>
+                    <div class="cred-lbl"><?php echo __('Active Clients'); ?></div>
+                </div>
+                <div>
+                    <div class="cred-val">24/7</div>
+                    <div class="cred-lbl"><?php echo __('Support'); ?></div>
+                </div>
             </div>
         </div>
     </section>
 
-    <section class="py-20 text-center relative overflow-hidden bg-gradient-to-b from-dark-900 to-black">
-        <div class="max-w-4xl mx-auto px-6 relative z-10" data-aos="zoom-in">
-            <h2 class="text-3xl md:text-5xl font-bold text-white mb-6"><?php echo __('Ready to get started?'); ?></h2>
-            <p class="text-gray-400 mb-8"><?php echo __('Join thousands of investors using our platform to grow their wealth.'); ?></p>
+    <!-- VALUES -->
+    <section id="services">
+        <div class="svc-header">
+            <div>
+                <div class="section-tag"><?php echo __('Our Principles'); ?></div>
+                <h2 class="section-h"><?php echo __('Core '); ?><em><?php echo __('Values'); ?></em></h2>
+            </div>
+        </div>
 
-            <?php if (!$is_logged_in): ?>
-                <a href="/register" class="inline-block px-10 py-4 bg-neon-purple text-white font-bold rounded-full hover:bg-neon-cyan transition-colors shadow-lg shadow-neon-purple/30">
-                    <?php echo __('Join Us Today'); ?>
-                </a>
-            <?php else: ?>
-                <a href="/user/invest" class="inline-block px-10 py-4 bg-neon-cyan text-dark-900 font-bold rounded-full hover:bg-white transition-colors shadow-lg">
-                    <?php echo __('View Investment Plans'); ?>
-                </a>
-            <?php endif; ?>
+        <div class="svc-grid">
+            <?php $delay = 0; foreach ($values as $i => $val): ?>
+                <div class="svc-card reveal" style="transition-delay:<?php echo $delay * 0.12; ?>s">
+                    <div class="svc-num"><?php echo sprintf('%02d', $i + 1); ?></div>
+                    <div class="svc-icon">
+                        <?php if ($val['icon'] === 'shield'): ?>
+                            <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.2"><path d="M10 2L4 5v5c0 5 2.5 7.5 6 8 3.5-.5 6-3 6-8V5l-6-3z"/></svg>
+                        <?php elseif ($val['icon'] === 'lightbulb'): ?>
+                            <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.2"><path d="M10 2a5 5 0 0 1 5 5c0 2-1.5 3.5-2 5h-6c-.5-1.5-2-3-2-5a5 5 0 0 1 5-5zM7 14h6M8 17h4"/></svg>
+                        <?php else: ?>
+                            <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.2"><path d="M4 10h12M4 14h12M4 6h12"/></svg>
+                        <?php endif; ?>
+                    </div>
+                    <div class="svc-name"><?php echo e($val['title']); ?></div>
+                    <p class="svc-desc"><?php echo e($val['description']); ?></p>
+                </div>
+            <?php $delay++; endforeach; ?>
+        </div>
+    </section>
+
+    <!-- CTA -->
+    <section id="cta">
+        <div class="cta-glow"></div>
+        <div class="cta-body">
+            <div class="section-tag" style="justify-content:center; margin-bottom:1.3rem"><?php echo __('Get Started Today'); ?></div>
+            <h2 class="cta-h"><?php echo __('Ready to grow your'); ?> <em><?php echo __('wealth?'); ?></em></h2>
+            <p class="cta-sub"><?php echo __('Join thousands of investors already growing their wealth through our platform.'); ?></p>
+            <div class="btn-row" style="justify-content:center;">
+                <?php if ($is_logged_in): ?>
+                    <a href="/user/invest" class="btn-gold"><?php echo __('Start Investing'); ?> <svg width="13" height="13" viewBox="0 0 13 13" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M2 6.5h9M8 3l3.5 3.5L8 10" /></svg></a>
+                <?php else: ?>
+                    <a href="/register" class="btn-gold"><?php echo __('Create Free Account'); ?> <svg width="13" height="13" viewBox="0 0 13 13" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M2 6.5h9M8 3l3.5 3.5L8 10" /></svg></a>
+                <?php endif; ?>
+            </div>
         </div>
     </section>
 </main>

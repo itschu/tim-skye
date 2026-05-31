@@ -69,32 +69,6 @@ $full_title = 'Login - ' . e($site_name);
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><?php echo __('Login'); ?> - <?php echo e($site_name); ?></title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    fontFamily: {
-                        sans: ['"Plus Jakarta Sans"', 'sans-serif']
-                    },
-                    colors: {
-                        dark: {
-                            900: '#0B0F19',
-                            800: '#111827',
-                            700: '#1F2937'
-                        },
-                        neon: {
-                            purple: '#8b5cf6',
-                            cyan: '#06b6d4'
-                        }
-                    }
-                }
-            }
-        }
-    </script>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
-    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet" />
 
     <?php
     // Build current URL and select an image for social previews
@@ -102,7 +76,6 @@ $full_title = 'Login - ' . e($site_name);
     $current_url = $protocol . '://' . ($_SERVER['HTTP_HOST'] ?? '') . ($_SERVER['REQUEST_URI'] ?? '/');
     $og_image = '';
     if (!empty($favicon_path)) {
-        // If the favicon path is already an absolute URL, use it directly.
         if (filter_var($favicon_path, FILTER_VALIDATE_URL) || preg_match('#^https?://#i', $favicon_path)) {
             $og_image = $favicon_path;
         } else {
@@ -118,126 +91,71 @@ $full_title = 'Login - ' . e($site_name);
         <meta name="keywords" content="<?php echo e($meta_keywords); ?>" />
     <?php endif; ?>
 
-    <!-- SEO: canonical and robots -->
     <link rel="canonical" href="<?php echo e($current_url); ?>" />
     <meta name="robots" content="index, follow" />
 
-    <!-- Open Graph / Facebook -->
     <meta property="og:site_name" content="<?php echo e($site_name); ?>" />
     <meta property="og:title" content="<?php echo e($full_title); ?>" />
     <?php if (!empty($meta_description)): ?>
-        <meta property="og:description" content="<?php echo e($meta_description); ?>" /><?php endif; ?>
+        <meta property="og:description" content="<?php echo e($meta_description); ?>" />
+    <?php endif; ?>
     <meta property="og:type" content="website" />
     <meta property="og:url" content="<?php echo e($current_url); ?>" />
     <?php if (!empty($og_image)): ?>
-        <meta property="og:image" content="<?php echo e($og_image); ?>" /><?php endif; ?>
+        <meta property="og:image" content="<?php echo e($og_image); ?>" />
+    <?php endif; ?>
 
-    <!-- Twitter Card -->
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content="<?php echo e($full_title); ?>" />
     <?php if (!empty($meta_description)): ?>
-        <meta name="twitter:description" content="<?php echo e($meta_description); ?>" /><?php endif; ?>
+        <meta name="twitter:description" content="<?php echo e($meta_description); ?>" />
+    <?php endif; ?>
     <?php if (!empty($og_image)): ?>
-        <meta name="twitter:image" content="<?php echo e($og_image); ?>" /><?php endif; ?>
+        <meta name="twitter:image" content="<?php echo e($og_image); ?>" />
+    <?php endif; ?>
 
     <link rel="icon" type="image/png" href="<?php echo e(SITE_ICON); ?>">
-    <style>
-        body {
-            background-color: #0B0F19;
-            color: #fff;
-        }
 
-        .form-input {
-            background: #111827;
-            border: 1px solid #374151;
-            color: white;
-            transition: all 0.3s;
-        }
+    <!-- Fonts & Styles -->
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400;1,600&family=DM+Mono:wght@300;400&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet" />
+    <link href="/assets/css/public-style.css?hash=<?php echo filemtime(ROOT . '/assets/css/public-style.css'); ?>" rel="stylesheet" />
 
-        .form-input:focus {
-            outline: none;
-            border-color: #8b5cf6;
-            box-shadow: 0 0 0 2px rgba(139, 92, 246, 0.2);
-        }
-
-        /* Blob Animation */
-        @keyframes blob {
-            0% {
-                transform: translate(0px, 0px) scale(1);
-            }
-
-            33% {
-                transform: translate(30px, -50px) scale(1.1);
-            }
-
-            66% {
-                transform: translate(-20px, 20px) scale(0.9);
-            }
-
-            100% {
-                transform: translate(0px, 0px) scale(1);
-            }
-        }
-
-        .animate-blob {
-            animation: blob 7s infinite;
-        }
-
-        .animation-delay-2000 {
-            animation-delay: 2s;
-        }
-    </style>
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.13.3/dist/cdn.min.js"></script>
 </head>
 
-<body class="h-screen overflow-hidden flex">
+<body class="auth-page">
 
-    <div class="hidden lg:flex w-1/2 relative overflow-hidden bg-dark-900 items-center justify-center">
-        <div class="absolute inset-0 bg-gradient-to-br from-neon-purple/20 to-dark-900 z-0"></div>
-        <div class="absolute top-[-20%] left-[-20%] w-[800px] h-[800px] bg-neon-purple/10 blur-[120px] rounded-full animate-blob"></div>
-        <div class="absolute bottom-[-20%] right-[-20%] w-[800px] h-[800px] bg-neon-cyan/10 blur-[120px] rounded-full animate-blob animation-delay-2000"></div>
-
-        <div class="relative z-10 text-center px-12" data-aos="fade-up" data-aos-duration="1000">
+    <div class="auth-left">
+        <div class="auth-left-bg"></div>
+        <div class="auth-left-overlay"></div>
+        <div class="auth-left-glow"></div>
+        <div class="auth-left-inner">
             <?php if ($site_logo && file_exists(ROOT . '/' . $site_logo)): ?>
-                <div class="mb-6 inline-flex items-center justify-center w-64">
-                    <img src="/<?php echo e($site_logo); ?>" alt="<?php echo e($site_name); ?>" class="object-contain p-1">
-                </div>
-            <?php endif ?>
-            <h2 class="text-5xl font-extrabold mb-6 tracking-tight">
-                <?php echo __('Welcome Back'); ?>
-            </h2>
-            <p class="text-gray-400 text-lg leading-relaxed">
-                <?php echo __('Access your dashboard, manage your investments, and track your growth in real-time.'); ?>
-            </p>
+                <img src="/<?php echo e($site_logo); ?>" alt="<?php echo e($site_name); ?>" style="height:40px; width:auto; margin-bottom:1.5rem; opacity:0.9;">
+            <?php else: ?>
+                <div class="logo" style="margin-bottom:1.5rem;"><?php echo e($site_name); ?><em>.</em></div>
+            <?php endif; ?>
+            <h2><?php echo __('Welcome'); ?> <em><?php echo __('Back'); ?></em></h2>
+            <p><?php echo __('Access your dashboard, manage your investments, and track your growth in real-time.'); ?></p>
         </div>
     </div>
 
-    <div class="w-full lg:w-1/2 bg-dark-900 flex flex-col h-full relative z-10">
+    <div class="auth-right">
+        <div class="auth-top-bar">
+            <a href="/" class="auth-back" title="<?php echo __('Back to Home'); ?>">←</a>
 
-        <div class="absolute top-6 left-6 z-20 flex items-center gap-4">
-            <a href="/" class="w-10 h-10 rounded-full bg-dark-800 border border-gray-700 flex items-center justify-center text-gray-400 hover:text-white hover:border-neon-purple transition-all" title="<?php echo __('Back to Home'); ?>">
-                <i class="fas fa-arrow-left"></i>
-            </a>
-        </div>
-
-        <!-- Language Switcher / Google Translate -->
-        <div class="absolute top-6 right-6 z-20">
             <?php if (is_google_translate_enabled()): ?>
-                <!-- Google Translate Widget -->
-                <div class="flex items-center">
-                    <?php render_google_translate_widget('auth'); ?>
-                </div>
+                <div style="display:none;"><?php render_google_translate_widget('auth'); ?></div>
             <?php else: ?>
-                <!-- Local Language Switcher -->
-                <div x-data="{ langOpen: false }" @click.away="langOpen = false">
+                <div class="relative" x-data="{ langOpen: false }" @click.away="langOpen = false">
                     <form method="POST" action="/actions/switch-language-public.php" id="authLangForm">
                         <input type="hidden" name="redirect" value="<?php echo e($current_page); ?>">
                         <input type="hidden" name="lang" id="authSelectedLang" value="<?php echo e($current_lang); ?>">
                         <button type="button"
-                            class="flex items-center gap-2 text-sm font-medium text-gray-300 hover:text-white transition-all py-2 px-3 rounded-xl bg-dark-800/80 border border-gray-700 hover:border-neon-cyan/50 backdrop-blur-sm"
+                            style="background:none;border:none;color:var(--muted-light);font-family:'DM Mono',monospace;font-size:0.65rem;letter-spacing:0.12em;text-transform:uppercase;cursor:pointer;display:flex;align-items:center;gap:0.4rem;"
                             @click="langOpen = !langOpen">
-                            <i class="fas fa-globe text-neon-cyan"></i>
-                            <span class="hidden sm:inline"><?php echo e($current_lang_label); ?></span>
-                            <i class="fas fa-chevron-down text-xs transition-transform" :class="{ 'rotate-180': langOpen }"></i>
+                            <span><?php echo e($current_lang_label); ?></span>
+                            <span style="font-size:0.5rem;transition:transform 0.2s;" :style="langOpen ? 'transform:rotate(180deg)' : ''">▼</span>
                         </button>
                         <div x-show="langOpen"
                             x-transition:enter="transition ease-out duration-200"
@@ -246,18 +164,12 @@ $full_title = 'Login - ' . e($site_name);
                             x-transition:leave="transition ease-in duration-150"
                             x-transition:leave-start="opacity-100 transform scale-100 translate-y-0"
                             x-transition:leave-end="opacity-0 transform scale-95 translate-y-2"
-                            class="absolute right-0 mt-2 w-44 bg-dark-800/95 backdrop-blur-xl rounded-xl border border-gray-700 shadow-xl overflow-hidden z-50"
-                            style="display: none;"
+                            style="display:none;position:absolute;right:0;top:120%;min-width:140px;background:var(--bg-card);border:0.5px solid var(--border);padding:0.4rem 0;z-index:300;"
                             @click="langOpen = false">
                             <?php foreach ($languages as $code => $label): ?>
                                 <button type="button"
-                                    class="w-full text-left px-4 py-2.5 text-sm flex items-center gap-3 hover:bg-white/5 transition-colors <?php echo $code === $current_lang ? 'text-neon-cyan bg-neon-cyan/10' : 'text-gray-300'; ?>"
+                                    style="display:block;width:100%;text-align:left;padding:0.4rem 0.8rem;background:none;border:none;color:<?php echo $code === $current_lang ? 'var(--gold)' : 'var(--muted-light)'; ?>;font-family:'Outfit',sans-serif;font-size:0.8rem;cursor:pointer;"
                                     @click="document.getElementById('authSelectedLang').value = '<?php echo e($code); ?>'; document.getElementById('authLangForm').submit();">
-                                    <?php if ($code === $current_lang): ?>
-                                        <i class="fas fa-check text-xs w-4"></i>
-                                    <?php else: ?>
-                                        <span class="w-4"></span>
-                                    <?php endif; ?>
                                     <?php echo e($label); ?>
                                 </button>
                             <?php endforeach; ?>
@@ -267,155 +179,105 @@ $full_title = 'Login - ' . e($site_name);
             <?php endif; ?>
         </div>
 
-        <div class="flex-1 overflow-y-auto">
-            <div class="min-h-full flex items-center justify-center p-6 sm:p-12">
-                <div class="w-full max-w-md space-y-8" data-aos="fade-left" data-aos-duration="800">
+        <div class="auth-form-wrap">
+            <div class="auth-card">
+                <h2><?php echo __('Sign In'); ?></h2>
+                <p class="auth-lead"><?php echo __('Enter your credentials to continue'); ?></p>
 
-                    <div class="text-center">
-                        <a href="/" class="inline-block lg:hidden mb-2 text-2xl font-bold text-white hover:text-neon-cyan transition-colors">
-                            <?php if ($site_logo && file_exists(ROOT . '/' . $site_logo)): ?>
-                                <img src="/<?php echo e($site_logo); ?>" alt="<?php echo e($site_name); ?>" class="mx-auto h-12 object-contain">
-                            <?php else: ?>
-                                <?php echo e($site_name); ?>
-                            <?php endif; ?>
-                        </a>
-                        <h2 class="text-3xl font-bold text-white"><?php echo __('Sign In'); ?></h2>
-                        <p class="text-gray-500 mt-2"><?php echo __('Enter your credentials to continue'); ?></p>
+                <?php if ($error): ?>
+                    <div x-data="{ show: true }" x-show="show" x-transition class="alert alert-red">
+                        <span><?php echo e($error); ?></span>
+                        <button @click="show = false" class="alert-close">✕</button>
                     </div>
+                <?php endif; ?>
 
-                    <?php if ($error): ?>
-                        <div x-data="{ show: true }" x-show="show" x-transition class="bg-red-500/10 border border-red-500/50 text-red-200 px-4 py-3 rounded-xl flex items-start gap-3 text-sm">
-                            <i class="fas fa-exclamation-circle mt-0.5"></i>
-                            <span class="flex-1"><?php echo e($error); ?></span>
-                            <button @click="show = false" class="text-red-300 hover:text-red-100 transition-colors">
-                                <i class="fas fa-times"></i>
-                            </button>
-                        </div>
-                    <?php endif; ?>
+                <?php if ($is_locked_out): ?>
+                    <div class="alert alert-red">
+                        <span><?php echo sprintf(__('Too many failed login attempts. Please try again in %s minutes.'), $lockout_minutes_remaining); ?></span>
+                    </div>
+                <?php endif; ?>
 
-                    <?php if ($is_locked_out): ?>
-                        <div class="bg-red-500/10 border border-red-500/50 text-red-200 px-4 py-3 rounded-xl flex items-start gap-3 text-sm">
-                            <i class="fas fa-lock mt-0.5"></i>
-                            <span class="flex-1"><?php echo sprintf(__('Too many failed login attempts. Please try again in %s minutes.'), $lockout_minutes_remaining); ?></span>
-                        </div>
-                    <?php endif; ?>
-
-                    <?php if ($show_resend_form): ?>
-                        <div x-data="{ show: true }" x-show="show" x-transition class="bg-blue-500/10 border border-blue-500/50 text-blue-200 px-4 py-3 rounded-xl text-sm">
-                            <div class="flex items-start gap-2 mb-2">
-                                <p class="flex-1"><?php echo __('Didn\'t receive the email? Enter your email below to resend the verification link.'); ?></p>
-                                <button @click="show = false" class="text-blue-300 hover:text-blue-100 transition-colors">
-                                    <i class="fas fa-times"></i>
-                                </button>
-                            </div>
-                            <form action="/actions/resend-verification" method="POST" class="flex gap-2">
+                <?php if ($show_resend_form): ?>
+                    <div x-data="{ show: true }" x-show="show" x-transition class="alert alert-blue">
+                        <div style="width:100%;">
+                            <p style="margin-bottom:0.75rem;"><?php echo __('Didn\'t receive the email? Enter your email below to resend the verification link.'); ?></p>
+                            <form action="/actions/resend-verification" method="POST" style="display:flex;gap:0.5rem;">
                                 <input type="hidden" name="csrf_token" value="<?php echo csrf_token(); ?>">
-                                <input type="email" name="email" placeholder="<?php echo __('Enter your email'); ?>" required class="flex-1 bg-dark-900 border border-gray-600 rounded-lg px-3 py-2 text-sm text-white focus:border-neon-cyan focus:outline-none">
-                                <button type="submit" class="bg-neon-cyan hover:bg-cyan-500 text-dark-900 font-semibold px-4 py-2 rounded-lg text-sm transition-colors">
-                                    <?php echo __('Resend'); ?>
-                                </button>
+                                <input type="email" name="email" placeholder="<?php echo __('Enter your email'); ?>" required style="flex:1;background:rgba(255,255,255,0.03);border:0.5px solid var(--border);padding:0.6rem 0.8rem;color:var(--txt);font-family:'Outfit',sans-serif;font-size:0.85rem;outline:none;">
+                                <button type="submit" class="btn-gold-sm" style="border:none;"><?php echo __('Resend'); ?></button>
                             </form>
                         </div>
+                        <button @click="show = false" class="alert-close">✕</button>
+                    </div>
+                <?php endif; ?>
+
+                <?php if ($registered): ?>
+                    <div x-data="{ show: true }" x-show="show" x-transition class="alert alert-green">
+                        <span><?php echo $verify_required ? __('Registration successful! Please check your email to verify your account before logging in.') : __('Registration successful! Please sign in.'); ?></span>
+                        <button @click="show = false" class="alert-close">✕</button>
+                    </div>
+                <?php endif; ?>
+
+                <?php if ($verified): ?>
+                    <div x-data="{ show: true }" x-show="show" x-transition class="alert alert-green">
+                        <span><?php echo __('Your email has been verified! You can now log in.'); ?></span>
+                        <button @click="show = false" class="alert-close">✕</button>
+                    </div>
+                <?php endif; ?>
+
+                <?php if ($logout): ?>
+                    <div x-data="{ show: true }" x-show="show" x-transition class="alert alert-blue">
+                        <span><?php echo __('You have been logged out successfully.'); ?></span>
+                        <button @click="show = false" class="alert-close">✕</button>
+                    </div>
+                <?php endif; ?>
+
+                <form x-data="{ loading: false }" @submit="loading = true" action="/actions/login-submit" method="POST">
+                    <input type="hidden" name="csrf_token" value="<?php echo csrf_token(); ?>">
+                    <?php if (!empty($_SESSION['redirect_after_login'])): ?>
+                        <input type="hidden" name="redirect" value="<?php echo e($_SESSION['redirect_after_login']); ?>">
                     <?php endif; ?>
 
-                    <?php if ($registered): ?>
-                        <div x-data="{ show: true }" x-show="show" x-transition class="bg-green-500/10 border border-green-500/50 text-green-200 px-4 py-3 rounded-xl flex items-start gap-3 text-sm">
-                            <i class="fas fa-check-circle mt-0.5"></i>
-                            <span class="flex-1"><?php echo $verify_required ? __('Registration successful! Please check your email to verify your account before logging in.') : __('Registration successful! Please sign in.'); ?></span>
-                            <button @click="show = false" class="text-green-300 hover:text-green-100 transition-colors">
-                                <i class="fas fa-times"></i>
-                            </button>
+                    <div class="auth-ff">
+                        <label><?php echo __('Email Address'); ?></label>
+                        <div class="input-wrap">
+                            <span class="input-icon">✉</span>
+                            <input type="email" name="email" placeholder="<?php echo __('name@example.com'); ?>" required <?php echo $is_locked_out ? 'disabled' : ''; ?>>
                         </div>
-                    <?php endif; ?>
-
-                    <?php if ($verified): ?>
-                        <div x-data="{ show: true }" x-show="show" x-transition class="bg-green-500/10 border border-green-500/50 text-green-200 px-4 py-3 rounded-xl flex items-start gap-3 text-sm">
-                            <i class="fas fa-check-circle mt-0.5"></i>
-                            <span class="flex-1"><?php echo __('Your email has been verified! You can now log in.'); ?></span>
-                            <button @click="show = false" class="text-green-300 hover:text-green-100 transition-colors">
-                                <i class="fas fa-times"></i>
-                            </button>
-                        </div>
-                    <?php endif; ?>
-
-                    <?php if ($logout): ?>
-                        <div x-data="{ show: true }" x-show="show" x-transition class="bg-blue-500/10 border border-blue-500/50 text-blue-200 px-4 py-3 rounded-xl flex items-start gap-3 text-sm">
-                            <i class="fas fa-info-circle mt-0.5"></i>
-                            <span class="flex-1"><?php echo __('You have been logged out successfully.'); ?></span>
-                            <button @click="show = false" class="text-blue-300 hover:text-blue-100 transition-colors">
-                                <i class="fas fa-times"></i>
-                            </button>
-                        </div>
-                    <?php endif; ?>
-
-                    <form x-data="{ loading: false }" @submit="loading = true" action="/actions/login-submit" method="POST" class="space-y-6">
-                        <input type="hidden" name="csrf_token" value="<?php echo csrf_token(); ?>">
-                        <?php if (!empty($_SESSION['redirect_after_login'])): ?>
-                            <input type="hidden" name="redirect" value="<?php echo e($_SESSION['redirect_after_login']); ?>">
-                        <?php endif; ?>
-
-                        <div>
-                            <label for="email" class="block text-xs font-bold text-gray-400 uppercase mb-2 ml-1"><?php echo __('Email Address'); ?></label>
-                            <div class="relative">
-                                <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-gray-500">
-                                    <i class="fas fa-envelope"></i>
-                                </div>
-                                <input type="email" class="form-input w-full rounded-xl py-3 pl-11 pr-4" id="email" name="email" placeholder="<?php echo __('name@example.com'); ?>" required>
-                            </div>
-                        </div>
-
-                        <div>
-                            <div class="flex justify-between items-center mb-2">
-                                <label for="password" class="block text-xs font-bold text-gray-400 uppercase ml-1"><?php echo __('Password'); ?></label>
-                            </div>
-                            <div class="relative" x-data="{ show: false }">
-                                <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-gray-500">
-                                    <i class="fas fa-lock"></i>
-                                </div>
-                                <input :type="show ? 'text' : 'password'" class="form-input w-full rounded-xl py-3 pl-11 pr-12" id="password" name="password" placeholder="<?php echo __('••••••••'); ?>" required>
-                                <button type="button" @click="show = !show" class="absolute inset-y-0 right-0 pr-4 flex items-center text-gray-500 hover:text-gray-300 transition-colors">
-                                    <i class="fas" :class="show ? 'fa-eye-slash' : 'fa-eye'"></i>
-                                </button>
-                            </div>
-                        </div>
-
-                        <div class="flex items-center justify-between">
-                            <div class="flex items-center">
-                                <input id="remember_me" name="remember_me" type="checkbox" class="h-4 w-4 rounded bg-dark-800 border-gray-600 text-neon-purple focus:ring-neon-purple focus:ring-offset-dark-900">
-                                <label for="remember_me" class="ml-2 block text-sm text-gray-400"><?php echo __('Remember me'); ?></label>
-                            </div>
-                            <a href="/reset-password" class="text-sm font-medium text-neon-purple hover:text-neon-cyan transition-colors"><?php echo __('Forgot Password?'); ?></a>
-                        </div>
-
-                        <button type="submit" <?php echo $is_locked_out ? 'disabled' : ''; ?> :disabled="loading" class="w-full py-3.5 rounded-xl font-bold text-white bg-gradient-to-r from-neon-purple to-blue-600 hover:from-purple-500 hover:to-blue-500 shadow-lg shadow-purple-900/50 transition-all transform hover:-translate-y-0.5 <?php echo $is_locked_out ? 'cursor-not-allowed opacity-50' : ''; ?>">
-                            <span x-show="!loading"><?php echo __('Sign In'); ?></span>
-                            <span x-show="loading" style="display:none"><i class="fas fa-spinner fa-spin me-2"></i> <?php echo __('Processing…'); ?></span>
-                        </button>
-                    </form>
-
-                    <div class="text-center pt-2">
-                        <p class="text-gray-500">
-                            <?php echo __('Don\'t have an account?'); ?>
-                            <a href="/register" class="text-white hover:text-neon-cyan font-bold transition-colors ml-1"><?php echo __('Create free account'); ?></a>
-                        </p>
                     </div>
 
-                </div>
+                    <div class="auth-ff">
+                        <label><?php echo __('Password'); ?></label>
+                        <div class="input-wrap" x-data="{ show: false }">
+                            <span class="input-icon">🔒</span>
+                            <input :type="show ? 'text' : 'password'" name="password" placeholder="••••••••" required <?php echo $is_locked_out ? 'disabled' : ''; ?>>
+                            <button type="button" @click="show = !show" class="toggle-pass" aria-label="Toggle password">
+                                <svg x-show="!show" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                                <svg x-show="show" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:none;"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1.5rem;">
+                        <label style="display:flex;align-items:center;gap:0.4rem;font-size:0.8rem;color:var(--muted-light);cursor:pointer;">
+                            <input type="checkbox" name="remember_me" style="accent-color:var(--gold);">
+                            <?php echo __('Remember me'); ?>
+                        </label>
+                        <a href="/reset-password" style="font-size:0.78rem;color:var(--gold);text-decoration:none;"><?php echo __('Forgot Password?'); ?></a>
+                    </div>
+
+                    <button type="submit" <?php echo $is_locked_out ? 'disabled' : ''; ?> :disabled="loading" class="auth-btn">
+                        <span x-show="!loading"><?php echo __('Sign In'); ?></span>
+                        <span x-show="loading" style="display:none;"><?php echo __('Processing…'); ?></span>
+                    </button>
+                </form>
+
+                <p class="auth-footer-text">
+                    <?php echo __('Don\'t have an account?'); ?> <a href="/register"><?php echo __('Create free account'); ?></a>
+                </p>
             </div>
         </div>
     </div>
-
-    <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.13.3/dist/cdn.min.js" defer></script>
-    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            AOS.init({
-                once: true,
-                duration: 800,
-                easing: 'ease-in-out',
-            });
-        });
-    </script>
 
     <?php require_once ROOT . '/includes/auth-footer.php'; ?>
 

@@ -4433,3 +4433,432 @@ msgstr "Retour à l'Admin"
 
 msgid "Admin Portal"
 msgstr "Portail Admin"
+
+msgid "A platform built on"
+msgstr "Une plateforme construite sur"
+
+msgid "Active Clients"
+msgstr "Clients actifs"
+
+msgid "Back"
+msgstr "Retour"
+
+msgid "Business Owner, Nigeria"
+msgstr "Chef d'entreprise, Nigeria"
+
+msgid "Cannot be changed after registration"
+msgstr "Ne peut pas être modifié après l'inscription"
+
+msgid "Capital preservation is the foundation. We never risk more than 2% per trade and employ dynamic stop-loss strategies on every position."
+msgstr "La préservation du capital est la base. Nous ne risquons jamais plus de 2 % par trade et utilisons des stratégies de stop-loss dynamiques sur chaque position."
+
+msgid "Check your inbox"
+msgstr "Vérifiez votre boîte de réception"
+
+msgid "Choose your"
+msgstr "Choisissez votre"
+
+msgid "Client Testimonials"
+msgstr "Témoignages clients"
+
+msgid "Confirm New Password"
+msgstr "Confirmer le nouveau mot de passe"
+
+msgid "Core"
+msgstr "Core"
+
+msgid "Core "
+msgstr "Core "
+
+msgid "Currency markets"
+msgstr "Marchés des devises"
+
+msgid "Dedicated Client Support"
+msgstr "Support client dédié"
+
+msgid "Didn\\'t receive the email? Enter your email below to resend the verification link."
+msgstr "Vous n'avez pas reçu l'e-mail ? Entrez votre adresse ci-dessous pour renvoyer le lien de vérification."
+
+msgid "Doctor, Ghana"
+msgstr "Médecin, Ghana"
+
+msgid "Don\\'t have an account?"
+msgstr "Vous n'avez pas de compte ?"
+
+msgid "Eight consecutive years of profitable trading, with a 92% win rate across 2024. Numbers don\\'t lie — our history speaks for itself."
+msgstr "Huit années consécutives de trading rentable, avec un taux de réussite de 92 % en 2024. Les chiffres ne mentent pas — notre historique parle de lui-même."
+
+msgid "Elite Forex Investment Solutions"
+msgstr "Solutions d'investissement Forex d'élite"
+
+msgid "Enquire Now"
+msgstr "Renseignez-vous maintenant"
+
+msgid "Enter a new password for your account."
+msgstr "Entrez un nouveau mot de passe pour votre compte."
+
+msgid "Enter your email and we will send you a reset link."
+msgstr "Entrez votre e-mail et nous vous enverrons un lien de réinitialisation."
+
+msgid "Error Code:"
+msgstr "Code d'erreur :"
+
+msgid "Every trade is logged and shared with clients. No smoke, no mirrors — live account access so you can verify every result in real time."
+msgstr "Chaque trade est enregistré et partagé avec les clients. Pas de fumée, pas de miroirs — accès au compte en direct pour vérifier chaque résultat en temps réel."
+
+msgid "Everything you need to know about investing with us. Can\\'t find the answer?"
+msgstr "Tout ce que vous devez savoir sur l'investissement avec nous. Vous ne trouvez pas la réponse ?"
+
+msgid "FX Mentorship"
+msgstr "Mentorat FX"
+
+msgid "Forgot Password"
+msgstr "Mot de passe oublié"
+
+msgid "Freelancer, Canada"
+msgstr "Freelancer, Canada"
+
+msgid "Frequently Asked"
+msgstr "Questions fréquentes"
+
+msgid "From conservative income to aggressive compounding, your investment plan is shaped around your timeline, risk tolerance, and targets."
+msgstr "D'un revenu conservateur à une capitalisation agressive, votre plan d'investissement est conçu selon votre horizon, votre tolérance au risque et vos objectifs."
+
+msgid "Fully Transparent Operations"
+msgstr "Opérations pleinement transparentes"
+
+msgid "Fully managed trading where Tim executes on your behalf. Your capital, his expertise — with complete transparency and regular reporting."
+msgstr "Trading entièrement géré où Tim exécute pour vous. Votre capital, son expertise — avec une transparence totale et des rapports réguliers."
+
+msgid "Get In Touch"
+msgstr "Nous contacter"
+
+msgid "Get Started Today"
+msgstr "Commencez aujourd'hui"
+
+msgid "Go to Dashboard"
+msgstr "Aller au tableau de bord"
+
+msgid "Have questions about a package or want a custom arrangement? Our team responds within 24 hours."
+msgstr "Vous avez des questions sur un forfait ou souhaitez un arrangement personnalisé ? Notre équipe répond dans les 24 heures."
+
+msgid "How can we help?"
+msgstr "Comment pouvons-nous vous aider ?"
+
+msgid "I have tried several managed forex services and none come close to Tim\\'s level of professionalism. Reporting is impeccable, returns are consistent, and he actually picks up the phone when you call."
+msgstr "J'ai essayé plusieurs services de forex gérés et aucun n'approche le niveau de professionnalisme de Tim. Les rapports sont impeccables, les rendements constants, et il décroche vraiment le téléphone quand vous appelez."
+
+msgid "I was skeptical at first, but Tim\\'s transparency won me over immediately. Full access to trade history, weekly updates, and my Growth account has returned 19% this month. Absolutely remarkable."
+msgstr "J'étais sceptique au début, mais la transparence de Tim m'a immédiatement convaincu. Accès complet à l'historique des trades, mises à jour hebdomadaires, et mon compte Growth a rapporté 19 % ce mois-ci. Absolument remarquable."
+
+msgid "If that email exists in our system, you will receive a reset link shortly. Links expire in 1 hour."
+msgstr "Si cet e-mail existe dans notre système, vous recevrez un lien de réinitialisation sous peu. Les liens expirent dans 1 heure."
+
+msgid "In a market full of noise, Tim Skye\\'s approach is built on discipline, data, and decades of earned instinct. Here\\'s why thousands of investors choose SeamlessFX."
+msgstr "Dans un marché plein de bruit, l'approche de Tim Skye est fondée sur la discipline, les données et des décennies d'instinct affûté. Voici pourquoi des milliers d'investisseurs choisissent SeamlessFX."
+
+msgid "Investor, South Africa"
+msgstr "Investisseur, Afrique du Sud"
+
+msgid "John Doe"
+msgstr "Jean Dupont"
+
+msgid "Join Now"
+msgstr "Rejoignez maintenant"
+
+msgid "Join hundreds of investors already growing their wealth through SeamlessFX. Drop your email and we\\'ll reach out within 24 hours to discuss your plan."
+msgstr "Rejoignez des centaines d'investisseurs qui font déjà croître leur patrimoine via SeamlessFX. Laissez votre e-mail et nous vous contacterons dans les 24 heures pour discuter de votre plan."
+
+msgid "Join the"
+msgstr "Rejoignez le"
+
+msgid "Join thousands of investors already growing their wealth through our platform."
+msgstr "Rejoignez des milliers d'investisseurs qui font déjà croître leur patrimoine via notre plateforme."
+
+msgid "Let\\'s talk"
+msgstr "Parlons-en"
+
+msgid "Live Signals & Analysis"
+msgstr "Signaux et analyses en direct"
+
+msgid "Managed FX account"
+msgstr "Compte FX géré"
+
+msgid "Managed Forex Accounts"
+msgstr "Comptes Forex gérés"
+
+msgid "Maximum deposit"
+msgstr "Dépôt maximum"
+
+msgid "Minimum deposit"
+msgstr "Dépôt minimum"
+
+msgid "Minimum:"
+msgstr "Minimum :"
+
+msgid "Mission:"
+msgstr "Mission :"
+
+msgid "Most Popular"
+msgstr "Le plus populaire"
+
+msgid "Need immediate assistance?"
+msgstr "Besoin d'assistance immédiate ?"
+
+msgid "No spam. Capital at risk — past performance does not guarantee future results."
+msgstr "Pas de spam. Capital à risque — les performances passées ne garantissent pas les résultats futurs."
+
+msgid "One-on-one coaching for aspiring traders. Learn Tim\\'s proven system from setup identification to full trade management."
+msgstr "Coaching individuel pour les traders en herbe. Apprenez le système éprouvé de Tim, de l'identification des setups à la gestion complète des trades."
+
+msgid "Our Principles"
+msgstr "Nos principes"
+
+msgid "Our team at work"
+msgstr "Notre équipe au travail"
+
+msgid "Page Not Found"
+msgstr "Page introuvable"
+
+msgid "Popular pages you might be looking for:"
+msgstr "Pages populaires que vous pourriez rechercher :"
+
+msgid "Portfolio Diversification"
+msgstr "Diversification de portefeuille"
+
+msgid "Portfolio Growth — 12 Months"
+msgstr "Croissance du portefeuille — 12 mois"
+
+msgid "Precision in every pip. Discipline in every decision."
+msgstr "Précision à chaque pip. Discipline à chaque décision."
+
+msgid "Priority access to Tim and his team. Monthly reviews, account updates, and direct communication — always in your corner."
+msgstr "Accès prioritaire à Tim et son équipe. Revues mensuelles, mises à jour de compte et communication directe — toujours à vos côtés."
+
+msgid "Privacy"
+msgstr "Confidentialité"
+
+msgid "Professional investment platform with automated profit distribution and secure wallet management"
+msgstr "Plateforme d'investissement professionnelle avec distribution automatisée des profits et gestion sécurisée des portefeuilles"
+
+msgid "Proven Track Record"
+msgstr "Historique prouvé"
+
+msgid "Questions"
+msgstr "Questions"
+
+msgid "ROI Target"
+msgstr "Objectif de ROI"
+
+msgid "Reach out"
+msgstr "Contactez-nous"
+
+msgid "Ready to grow your"
+msgstr "Prêt à faire croître votre"
+
+msgid "Real results. Real clients. Real growth."
+msgstr "Résultats réels. Clients réels. Croissance réelle."
+
+msgid "Real-time trade signals with full entry, stop, and target levels. Backed by Tim\\'s daily market commentary and flow tracking."
+msgstr "Signaux de trading en temps réel avec niveaux d'entrée, stop et cible complets. Soutenu par les commentaires quotidiens de Tim sur le marché et le suivi des flux."
+
+msgid "Recovery"
+msgstr "Récupération"
+
+msgid "Refresh Page"
+msgstr "Rafraîchir la page"
+
+msgid "Registration is currently unavailable. Please contact support."
+msgstr "L'inscription est actuellement indisponible. Veuillez contacter le support."
+
+msgid "Remember your password?"
+msgstr "Vous souvenez-vous de votre mot de passe ?"
+
+msgid "Request ID:"
+msgstr "ID de demande :"
+
+msgid "Retired Executive, USA"
+msgstr "Cadre retraité, USA"
+
+msgid "Revolution"
+msgstr "Révolution"
+
+msgid "Risk Disclosure"
+msgstr "Divulgation des risques"
+
+msgid "SeamlessFX changed how I think about passive income. I started with the Starter plan six months ago and upgraded to Elite after seeing consistent results. Tim is the real deal — disciplined and communicative."
+msgstr "SeamlessFX a changé ma vision du revenu passif. J'ai commencé avec le plan Starter il y a six mois et suis passé à Elite après des résultats constants. Tim est authentique — discipliné et communicatif."
+
+msgid "Select your country"
+msgstr "Sélectionnez votre pays"
+
+msgid "Server Error"
+msgstr "Erreur serveur"
+
+msgid "Services"
+msgstr "Services"
+
+msgid "Since 2020"
+msgstr "Depuis 2020"
+
+msgid "Software Engineer, UK"
+msgstr "Ingénieur logiciel, UK"
+
+msgid "Something Went Wrong"
+msgstr "Quelque chose s'est mal passé"
+
+msgid "Something went wrong on our end. Please try again later."
+msgstr "Un problème est survenu de notre côté. Veuillez réessayer plus tard."
+
+msgid "Strategic allocation across multiple currency pairs and strategies to reduce exposure and optimise risk-adjusted returns."
+msgstr "Allocation stratégique sur plusieurs paires de devises et stratégies pour réduire l'exposition et optimiser les rendements ajustés au risque."
+
+msgid "Strict Risk Management"
+msgstr "Gestion stricte des risques"
+
+msgid "Structured Investment Plans"
+msgstr "Plans d'investissement structurés"
+
+msgid "Tailored to Your Goals"
+msgstr "Adapté à vos objectifs"
+
+msgid "Tell us about your inquiry..."
+msgstr "Parlez-nous de votre demande..."
+
+msgid "Terms"
+msgstr "Conditions"
+
+msgid "The Elite package is worth every penny. I have a direct line to Tim, weekly withdrawal options, and a custom strategy built around my retirement timeline. This is the kind of service you\\'d expect from a private bank."
+msgstr "Le forfait Elite vaut chaque centime. J'ai une ligne directe avec Tim, des options de retrait hebdomadaires et une stratégie personnalisée autour de mon horizon de retraite. C'est le genre de service que vous attendriez d'une banque privée."
+
+msgid "The edge that sets"
+msgstr "L'avantage qui nous distingue"
+
+msgid "The information provided on this website is for general information purposes only and does not constitute financial advice, investment advice, trading advice, or any other sort of advice. You should not treat any of the website\\'s content as such. We do not recommend that any asset should be bought, sold, or held by you. Do conduct your own due diligence and consult your financial advisor before making any investment decisions."
+msgstr "Les informations fournies sur ce site sont uniquement à titre informatif et ne constituent pas des conseils financiers, des conseils en investissement, des conseils en trading ou tout autre type de conseil. Vous ne devez pas traiter le contenu du site comme tel. Nous ne recommandons l'achat, la vente ou la détention d'aucun actif. Effectuez votre propre diligence raisonnable et consultez votre conseiller financier avant toute décision d'investissement."
+
+msgid "The page you are looking for does not exist or has been moved."
+msgstr "La page que vous recherchez n'existe pas ou a été déplacée."
+
+msgid "The page you are looking for does not exist or has been moved. Please check the URL or navigate back to the homepage."
+msgstr "La page que vous recherchez n'existe pas ou a été déplacée. Veuillez vérifier l'URL ou revenir à la page d'accueil."
+
+msgid "Tier %02d"
+msgstr "Niveau %02d"
+
+msgid "Tiered packages designed to match your risk appetite and financial goals — from conservative growth to aggressive compounding."
+msgstr "Forfaits échelonnés conçus pour correspondre à votre appétit pour le risque et vos objectifs financiers — d'une croissance conservatrice à une capitalisation agressive."
+
+msgid "Tim Skye delivers precision-engineered forex investment solutions for investors who demand consistent, verifiable returns — backed by eight years of live market execution."
+msgstr "Tim Skye propose des solutions d'investissement forex de précision pour les investisseurs exigeant des rendements constants et vérifiables — soutenus par huit années d'exécution sur le marché réel."
+
+msgid "Too many failed login attempts. Please try again in %s minutes."
+msgstr "Trop de tentatives de connexion échouées. Veuillez réessayer dans %s minutes."
+
+msgid "Traded Across"
+msgstr "Tradé sur"
+
+msgid "Trading charts and market data"
+msgstr "Graphiques de trading et données de marché"
+
+msgid "Transparent reporting"
+msgstr "Rapports transparents"
+
+msgid "Values"
+msgstr "Valeurs"
+
+msgid "Vision:"
+msgstr "Vision :"
+
+msgid "We are experiencing a technical issue on our end. Our team has been notified and is working to fix the problem."
+msgstr "Nous rencontrons un problème technique de notre côté. Notre équipe a été informée et travaille à le résoudre."
+
+msgid "We are here to help you 24/7. Choose the method that works best for you."
+msgstr "Nous sommes là pour vous aider 24h/24 et 7j/7. Choisissez la méthode qui vous convient le mieux."
+
+msgid "We will help you get back into your account safely and securely."
+msgstr "Nous vous aiderons à retrouver l'accès à votre compte en toute sécurité."
+
+msgid "Wealth grown."
+msgstr "Patrimoine développé."
+
+msgid "Welcome"
+msgstr "Bienvenue"
+
+msgid "What I appreciate most is the education alongside the returns. Tim explains his reasoning behind trades, which has made me a better investor overall. I\\'m up 31% this quarter and learning every week."
+msgstr "Ce que j'apprécie le plus, c'est l'éducation en plus des rendements. Tim explique son raisonnement derrière les trades, ce qui a fait de moi un meilleur investisseur. Je suis en hausse de 31 % ce trimestre et j'apprends chaque semaine."
+
+msgid "What We Offer"
+msgstr "Ce que nous offrons"
+
+msgid "What our investors"
+msgstr "Ce que disent nos investisseurs"
+
+msgid "White-Glove Client Service"
+msgstr "Service client sur mesure"
+
+msgid "Who We Are"
+msgstr "Qui nous sommes"
+
+msgid "Why SeamlessFX"
+msgstr "Pourquoi SeamlessFX"
+
+msgid "Win Rate — 2024"
+msgstr "Taux de réussite — 2024"
+
+msgid "Years Active Trading"
+msgstr "Années de trading actif"
+
+msgid "You\\'re not a ticket number. Elite clients have direct access to Tim, monthly performance calls, and priority account management."
+msgstr "Vous n'êtes pas un numéro de ticket. Les clients Elite ont un accès direct à Tim, des appels de performance mensuels et une gestion de compte prioritaire."
+
+msgid "Your capital should be"
+msgstr "Votre capital devrait être"
+
+msgid "Your email address"
+msgstr "Votre adresse e-mail"
+
+msgid "anytime"
+msgstr "à tout moment"
+
+msgid "john@example.com"
+msgstr "jean@exemple.com"
+
+msgid "last month"
+msgstr "le mois dernier"
+
+msgid "mastered."
+msgstr "maîtrisé."
+
+msgid "name@example.com"
+msgstr "nom@exemple.com"
+
+msgid "over 6 months"
+msgstr "plus de 6 mois"
+
+msgid "package"
+msgstr "forfait"
+
+msgid "say"
+msgstr "disent"
+
+msgid "strategy"
+msgstr "stratégie"
+
+msgid "this month"
+msgstr "ce mois-ci"
+
+msgid "this quarter"
+msgstr "ce trimestre"
+
+msgid "trust"
+msgstr "font confiance"
+
+msgid "us apart"
+msgstr "nous distingue"
+
+msgid "wealth?"
+msgstr "patrimoine ?"
+
+msgid "working for you."
+msgstr "travailler pour vous."

@@ -418,9 +418,6 @@ msgstr "Invest Now"
 msgid "My Portfolio"
 msgstr "My Portfolio"
 
-msgid "Referrals"
-msgstr "Referrals"
-
 msgid "Support"
 msgstr "Support"
 
@@ -481,9 +478,6 @@ msgstr "ROI"
 msgid "Duration"
 msgstr "Duration"
 
-msgid "days"
-msgstr "days"
-
 msgid "Select a plan to see details"
 msgstr "Select a plan to see details"
 
@@ -502,12 +496,6 @@ msgstr "Here's your portfolio performance."
 
 msgid "Total Balance"
 msgstr "Total Balance"
-
-msgid "Deposit"
-msgstr "Deposit"
-
-msgid "Withdraw"
-msgstr "Withdraw"
 
 msgid "Total Profit"
 msgstr "Total Profit"
@@ -599,9 +587,6 @@ msgstr "Progress"
 msgid "Day"
 msgstr "Day"
 
-msgid "of"
-msgstr "of"
-
 msgid "NEXT PAYOUT"
 msgstr "NEXT PAYOUT"
 
@@ -653,10 +638,6 @@ msgstr "Profit"
 msgid "Due"
 msgstr "Due"
 
-# Invest page
-msgid "Invest Now"
-msgstr "Invest Now"
-
 msgid "Investment Market"
 msgstr "Investment Market"
 
@@ -678,9 +659,6 @@ msgstr "Projected Net Profit"
 msgid "Based on"
 msgstr "Based on"
 
-msgid "ROI"
-msgstr "ROI"
-
 msgid "Available Plans"
 msgstr "Available Plans"
 
@@ -695,12 +673,6 @@ msgstr "Daily"
 
 msgid "Min Deposit"
 msgstr "Min Deposit"
-
-msgid "Duration"
-msgstr "Duration"
-
-msgid "Days"
-msgstr "Days"
 
 msgid "Capital Return"
 msgstr "Capital Return"
@@ -723,9 +695,6 @@ msgstr "Confirm Investment"
 msgid "Investment Amount"
 msgstr "Investment Amount"
 
-msgid "Plan"
-msgstr "Plan"
-
 msgid "Amount to Invest"
 msgstr "Amount to Invest"
 
@@ -743,10 +712,6 @@ msgstr "Investment plan with guaranteed returns"
 
 msgid "Select a plan"
 msgstr "Select a plan"
-
-# My Portfolio page
-msgid "My Portfolio"
-msgstr "My Portfolio"
 
 msgid "Portfolio Overview"
 msgstr "Portfolio Overview"
@@ -791,18 +756,6 @@ msgstr "This Week"
 msgid "This Month"
 msgstr "This Month"
 
-msgid "Details"
-msgstr "Details"
-
-msgid "Date"
-msgstr "Date"
-
-msgid "Status"
-msgstr "Status"
-
-msgid "Amount"
-msgstr "Amount"
-
 msgid "No Transactions Found"
 msgstr "No Transactions Found"
 
@@ -822,9 +775,6 @@ msgstr "Contact Support"
 msgid "Personal Details"
 msgstr "Personal Details"
 
-msgid "Security"
-msgstr "Security"
-
 msgid "KYC Verification"
 msgstr "KYC Verification"
 
@@ -839,18 +789,6 @@ msgstr "Save Changes"
 
 msgid "Security Settings"
 msgstr "Security Settings"
-
-msgid "Change Password"
-msgstr "Change Password"
-
-msgid "Current Password"
-msgstr "Current Password"
-
-msgid "New Password"
-msgstr "New Password"
-
-msgid "Confirm Password"
-msgstr "Confirm Password"
 
 msgid "Update Password"
 msgstr "Update Password"
@@ -891,20 +829,11 @@ msgstr "Hold your ID next to your face. Ensure good lighting."
 msgid "Submit Documents"
 msgstr "Submit Documents"
 
-msgid "Uploaded Documents"
-msgstr "Uploaded Documents"
-
 msgid "Your documents are under review. This usually takes 1-2 business days."
 msgstr "Your documents are under review. This usually takes 1-2 business days."
 
 msgid "Not Verified"
 msgstr "Not Verified"
-
-msgid "Verified"
-msgstr "Verified"
-
-msgid "Rejected"
-msgstr "Rejected"
 
 msgid "Not Submitted"
 msgstr "Not Submitted"
@@ -933,18 +862,6 @@ msgstr "En cours"
 msgid "No active investments to display"
 msgstr "No active investments to display"
 
-msgid "Active Investments"
-msgstr "Active Investments"
-
-msgid "History & Archive"
-msgstr "History & Archive"
-
-msgid "Manage"
-msgstr "Manage"
-
-msgid "No Active Investments"
-msgstr "No Active Investments"
-
 msgid "Start investing to build your portfolio."
 msgstr "Start investing to build your portfolio."
 
@@ -957,14 +874,8 @@ msgstr "Date Ended"
 msgid "Initial Capital"
 msgstr "Initial Capital"
 
-msgid "Total Return"
-msgstr "Total Return"
-
 msgid "No History"
 msgstr "No History"
-
-msgid "Your completed investments will appear here."
-msgstr "Your completed investments will appear here."
 
 msgid "Manage Investment"
 msgstr "Manage Investment"
@@ -981,24 +892,15 @@ msgstr "End Date"
 msgid "Profit Earned"
 msgstr "Profit Earned"
 
-msgid "Close"
-msgstr "Close"
-
 msgid "Cancel Investment"
 msgstr "Cancel Investment"
 
 msgid "Asset Mix"
 msgstr "Asset Mix"
 
-msgid "Progress"
-msgstr "Progress"
-
 # Header / Navigation
 msgid "Home"
 msgstr "Home"
-
-msgid "Invest"
-msgstr "Invest"
 
 msgid "Wallet"
 msgstr "Wallet"
@@ -1012,36 +914,11 @@ msgstr "No Investment Plans Available"
 msgid "Please check back later for new investment opportunities."
 msgstr "Please check back later for new investment opportunities."
 
-msgid "My Portfolio"
-msgstr "My Portfolio"
-
-msgid "Portfolio Overview"
-msgstr "Portfolio Overview"
-
-msgid "Track and manage your investments"
-msgstr "Track and manage your investments"
-
-msgid "Total Net Worth"
-msgstr "Total Net Worth"
-
 msgid "Total equity across all active plans"
 msgstr "Total equity across all active plans"
 
-msgid "Active Capital"
-msgstr "Active Capital"
-
-msgid "Active Plans"
-msgstr "Active Plans"
-
-msgid "Running"
-msgstr "Running"
-
 msgid "Failed to update profile. Please try again later."
 msgstr "Failed to update profile. Please try again later."
-
-# Referrals page
-msgid "Referral Program"
-msgstr "Referral Program"
 
 msgid "Invite friends and earn commissions"
 msgstr "Invite friends and earn commissions"
@@ -1222,23 +1099,11 @@ msgstr "Max size 5MB (JPG/PNG)"
 msgid "Confirm Deposit"
 msgstr "Confirm Deposit"
 
-msgid "Recent Deposits"
-msgstr "Recent Deposits"
-
 msgid "No Payment Methods Available"
 msgstr "No Payment Methods Available"
 
 msgid "Please check back later for available deposit options."
 msgstr "Please check back later for available deposit options."
-
-msgid "Method"
-msgstr "Method"
-
-msgid "Pending"
-msgstr "Pending"
-
-msgid "Completed"
-msgstr "Completed"
 
 # Withdrawal Page
 msgid "Withdraw Funds"
@@ -1246,9 +1111,6 @@ msgstr "Withdraw Funds"
 
 msgid "Transfer your earnings to your external account"
 msgstr "Transfer your earnings to your external account"
-
-msgid "Available Balance"
-msgstr "Available Balance"
 
 msgid "1. Select Withdrawal Method"
 msgstr "1. Select Withdrawal Method"
@@ -1343,9 +1205,6 @@ msgstr "Transaction Summary"
 msgid "Requested Amount"
 msgstr "Requested Amount"
 
-msgid "Processing Fee"
-msgstr "Processing Fee"
-
 msgid "Net Receivable"
 msgstr "Net Receivable"
 
@@ -1376,23 +1235,8 @@ msgstr "Secure Transaction"
 msgid "Recent Withdrawals"
 msgstr "Recent Withdrawals"
 
-msgid "Fee"
-msgstr "Fee"
-
 msgid "Net Amount"
 msgstr "Net Amount"
-
-msgid "Method"
-msgstr "Method"
-
-msgid "Approved"
-msgstr "Approved"
-
-msgid "Pending"
-msgstr "Pending"
-
-msgid "Rejected"
-msgstr "Rejected"
 
 msgid "No withdrawals yet."
 msgstr "No withdrawals yet."
@@ -1520,9 +1364,6 @@ msgstr "Your platform's receiving wallet address"
 msgid "This is where user withdrawals will be sent from"
 msgstr "This is where user withdrawals will be sent from"
 
-msgid "Bank Name"
-msgstr "Bank Name"
-
 msgid "Account holder name"
 msgstr "Account holder name"
 
@@ -1562,14 +1403,8 @@ msgstr "Registered account name"
 msgid "Provider Name"
 msgstr "Provider Name"
 
-msgid "Wallet ID / Email"
-msgstr "Wallet ID / Email"
-
 msgid "Your platform's wallet ID or email"
 msgstr "Your platform's wallet ID or email"
-
-msgid "Instructions"
-msgstr "Instructions"
 
 msgid "Instructions for users on how to process this withdrawal method"
 msgstr "Instructions for users on how to process this withdrawal method"
@@ -1613,9 +1448,6 @@ msgstr "User not found or banned"
 
 msgid "Document not found or already processed"
 msgstr "Document not found or already processed"
-
-msgid "Rejection reason is required"
-msgstr "Rejection reason is required"
 
 msgid "Deposit approved and wallet credited"
 msgstr "Deposit approved and wallet credited"
@@ -1718,9 +1550,6 @@ msgstr "Maximum amount must be greater than or equal to minimum amount"
 
 msgid "Invalid payout interval"
 msgstr "Invalid payout interval"
-
-msgid "Invalid status"
-msgstr "Invalid status"
 
 msgid "Cannot delete plan with active investments. Archive it instead."
 msgstr "Cannot delete plan with active investments. Archive it instead."
@@ -1887,12 +1716,6 @@ msgstr "Invalid post-registration action."
 msgid "Post-registration settings updated successfully."
 msgstr "Post-registration settings updated successfully."
 
-msgid "Invalid withdrawal methods format."
-msgstr "Invalid withdrawal methods format."
-
-msgid "Each withdrawal method must have a name and type."
-msgstr "Each withdrawal method must have a name and type."
-
 # Admin Dashboard
 msgid "ADMIN"
 msgstr "ADMIN"
@@ -1911,9 +1734,6 @@ msgstr "Investment Plans"
 
 msgid "Pending Deposits"
 msgstr "Pending Deposits"
-
-msgid "Pending Withdrawals"
-msgstr "Pending Withdrawals"
 
 msgid "KYC Review"
 msgstr "KYC Review"
@@ -1939,17 +1759,8 @@ msgstr "Awaiting document review"
 msgid "Total Users"
 msgstr "Total Users"
 
-msgid "Active Investments"
-msgstr "Active Investments"
-
 msgid "Platform Balance"
 msgstr "Platform Balance"
-
-msgid "Total Payouts"
-msgstr "Total Payouts"
-
-msgid "Recent Activity"
-msgstr "Recent Activity"
 
 msgid "Latest pending actions"
 msgstr "Latest pending actions"
@@ -2002,33 +1813,14 @@ msgstr "days ago"
 msgid "Admin Panel"
 msgstr "Admin Panel"
 
-# Admin Dashboard Additional Translations
-msgid "Dashboard"
-msgstr "Dashboard"
-
 msgid "Admin Dashboard"
 msgstr "Admin Dashboard"
-
-msgid "Pending"
-msgstr "Pending"
 
 msgid "New"
 msgstr "New"
 
-msgid "Deposit Request"
-msgstr "Deposit Request"
-
-msgid "Withdrawal Request"
-msgstr "Withdrawal Request"
-
 msgid "KYC Document"
 msgstr "KYC Document"
-
-msgid "Profile"
-msgstr "Profile"
-
-msgid "Logout"
-msgstr "Logout"
 
 # Admin Pending Deposits
 msgid "Review and approve manual deposit requests."
@@ -2046,17 +1838,11 @@ msgstr "Export"
 msgid "Review Needed"
 msgstr "Review Needed"
 
-msgid "Review"
-msgstr "Review"
-
 msgid "Review Deposit"
 msgstr "Review Deposit"
 
 msgid "Verify the payment proof before approving."
 msgstr "Verify the payment proof before approving."
-
-msgid "Payment Method"
-msgstr "Payment Method"
 
 msgid "Submitted"
 msgstr "Submitted"
@@ -2070,26 +1856,17 @@ msgstr "Rejection Reason"
 msgid "Required if rejecting..."
 msgstr "Required if rejecting..."
 
-msgid "Cancel"
-msgstr "Cancel"
-
 msgid "Approve"
 msgstr "Approve"
 
 msgid "Showing"
 msgstr "Showing"
 
-msgid "of"
-msgstr "of"
-
 msgid "entries"
 msgstr "entries"
 
 msgid "Prev"
 msgstr "Prev"
-
-msgid "Next"
-msgstr "Next"
 
 msgid "No pending deposits found."
 msgstr "No pending deposits found."
@@ -2214,9 +1991,6 @@ msgstr "account. Click the button below to proceed. This link will expire in"
 msgid "minutes."
 msgstr "minutes."
 
-msgid "Reset Password"
-msgstr "Reset Password"
-
 msgid "If you did not request a password reset, please contact support immediately."
 msgstr "If you did not request a password reset, please contact support immediately."
 
@@ -2268,9 +2042,6 @@ msgstr "Deposit Submitted"
 msgid "We have received your deposit request. Your funds are currently under review and will be processed shortly."
 msgstr "We have received your deposit request. Your funds are currently under review and will be processed shortly."
 
-msgid "Amount"
-msgstr "Amount"
-
 msgid "Under Review"
 msgstr "Under Review"
 
@@ -2279,12 +2050,6 @@ msgstr "Deposit Approved"
 
 msgid "Your deposit has been approved and credited to your account."
 msgstr "Your deposit has been approved and credited to your account."
-
-msgid "Fee"
-msgstr "Fee"
-
-msgid "Method"
-msgstr "Method"
 
 msgid "Deposit Not Approved"
 msgstr "Deposit Not Approved"
@@ -2305,9 +2070,6 @@ msgstr "Your withdrawal request has been received and is under review."
 msgid "Requested"
 msgstr "Requested"
 
-msgid "Status"
-msgstr "Status"
-
 msgid "Withdrawal Approved"
 msgstr "Withdrawal Approved"
 
@@ -2316,9 +2078,6 @@ msgstr "Your withdrawal has been approved and is being processed. Please allow s
 
 msgid "Fees"
 msgstr "Fees"
-
-msgid "Net"
-msgstr "Net"
 
 msgid "Withdrawal Not Approved"
 msgstr "Withdrawal Not Approved"
@@ -2336,9 +2095,6 @@ msgstr "Investment Created"
 msgid "Your investment has been created and scheduled for payout according to the plan terms."
 msgstr "Your investment has been created and scheduled for payout according to the plan terms."
 
-msgid "Plan"
-msgstr "Plan"
-
 msgid "Next Payout"
 msgstr "Next Payout"
 
@@ -2351,9 +2107,6 @@ msgstr "Your investment ({{investment_reference}}) has reached completion. The f
 msgid "Principal"
 msgstr "Principal"
 
-msgid "Total Profit"
-msgstr "Total Profit"
-
 msgid "Completed On"
 msgstr "Completed On"
 
@@ -2362,12 +2115,6 @@ msgstr "Investment Cancelled"
 
 msgid "Your investment ({{investment_reference}}) has been cancelled. The refund amount and any penalties applied are listed below."
 msgstr "Your investment ({{investment_reference}}) has been cancelled. The refund amount and any penalties applied are listed below."
-
-msgid "Original Amount"
-msgstr "Original Amount"
-
-msgid "Penalty"
-msgstr "Penalty"
 
 msgid "Refund"
 msgstr "Refund"
@@ -2403,9 +2150,6 @@ msgstr "A profit payout has been credited to your account for investment {{inves
 
 msgid "Payout"
 msgstr "Payout"
-
-msgid "Date"
-msgstr "Date"
 
 msgid "Referral Bonus Credited"
 msgstr "Referral Bonus Credited"
@@ -2493,10 +2237,6 @@ msgstr "Automated Payouts"
 msgid "Scheduled profit distribution to your wallet"
 msgstr "Scheduled profit distribution to your wallet"
 
-# Landing Page - Investment Plans
-msgid "Investment Plans"
-msgstr "Investment Plans"
-
 msgid "Hourly"
 msgstr "Hourly"
 
@@ -2530,10 +2270,6 @@ msgstr "Choose a plan that fits your goals and activate it."
 
 msgid "Watch your portfolio grow and withdraw earnings."
 msgstr "Watch your portfolio grow and withdraw earnings."
-
-# Standalone step title used in How-It-Works
-msgid "Profit"
-msgstr "Profit"
 
 # Landing Page - Testimonials
 msgid "Trusted by Investors"
@@ -2762,10 +2498,6 @@ msgstr "Enter your email address to receive a reset link."
 msgid "Remembered your password?"
 msgstr "Remembered your password?"
 
-# Action Files - Flash Messages
-msgid "Invalid security token. Please try again."
-msgstr "Invalid security token. Please try again."
-
 msgid "Please enter both email and password."
 msgstr "Please enter both email and password."
 
@@ -2841,9 +2573,6 @@ msgstr "New contact form submission"
 msgid "From"
 msgstr "From"
 
-msgid "Submitted"
-msgstr "Submitted"
-
 msgid "IP"
 msgstr "IP"
 
@@ -2896,7 +2625,7 @@ msgstr "Notifications"
 msgid "Cron"
 msgstr "Cron"
 
-/* Admin Settings - Site tab */
+# Admin Settings - Site tab
 msgid "Site Configuration"
 msgstr "Site Configuration"
 
@@ -2969,7 +2698,7 @@ msgstr "This HTML snippet will be injected into all footers. Leave empty to disa
 msgid "Save Site Settings"
 msgstr "Save Site Settings"
 
-/* Admin Settings - SEO tab */
+# Admin Settings - SEO tab
 msgid "SEO Settings"
 msgstr "SEO Settings"
 
@@ -3000,7 +2729,7 @@ msgstr "Choose the default theme mode for public pages"
 msgid "Save SEO Settings"
 msgstr "Save SEO Settings"
 
-/* Admin Settings - Payment tab */
+# Admin Settings - Payment tab
 msgid "Payment Method Management"
 msgstr "Payment Method Management"
 
@@ -3013,20 +2742,11 @@ msgstr "Edit"
 msgid "Delete"
 msgstr "Delete"
 
-msgid "Network"
-msgstr "Network"
-
-msgid "Address"
-msgstr "Address"
-
 msgid "QR code generated"
 msgstr "QR code generated"
 
 msgid "Bank"
 msgstr "Bank"
-
-msgid "Account"
-msgstr "Account"
 
 msgid "Number"
 msgstr "Number"
@@ -3049,9 +2769,6 @@ msgstr "Method Name"
 msgid "e.g., USDT (TRC20), Bank Transfer"
 msgstr "e.g., USDT (TRC20), Bank Transfer"
 
-msgid "Type"
-msgstr "Type"
-
 msgid "Select Type"
 msgstr "Select Type"
 
@@ -3073,9 +2790,6 @@ msgstr "e.g., TRC20, ERC20, BEP20"
 msgid "The blockchain network for this cryptocurrency"
 msgstr "The blockchain network for this cryptocurrency"
 
-msgid "Wallet Address"
-msgstr "Wallet Address"
-
 msgid "Enter wallet address"
 msgstr "Enter wallet address"
 
@@ -3091,23 +2805,14 @@ msgstr "Bank Transfer Fields"
 msgid "e.g., Chase Bank"
 msgstr "e.g., Chase Bank"
 
-msgid "Account Name"
-msgstr "Account Name"
-
 msgid "e.g., John Doe"
 msgstr "e.g., John Doe"
-
-msgid "Account Number"
-msgstr "Account Number"
 
 msgid "Enter account number"
 msgstr "Enter account number"
 
 msgid "e.g., M-Pesa, MTN Mobile Money"
 msgstr "e.g., M-Pesa, MTN Mobile Money"
-
-msgid "Phone Number"
-msgstr "Phone Number"
 
 msgid "e.g., +254712345678"
 msgstr "e.g., +254712345678"
@@ -3145,7 +2850,7 @@ msgstr "Save Deposit Fee"
 msgid "Save Payment Methods"
 msgstr "Save Payment Methods"
 
-/* Admin Settings - Referral tab */
+# Admin Settings - Referral tab
 msgid "Referral Configuration"
 msgstr "Referral Configuration"
 
@@ -3188,10 +2893,6 @@ msgstr "\"On Registration\" requires Fixed bonus type because there is no transa
 msgid "Save Referral Settings"
 msgstr "Save Referral Settings"
 
-/* Admin Settings - Withdrawal tab */
-msgid "Withdrawal Fee Configuration"
-msgstr "Withdrawal Fee Configuration"
-
 msgid "Withdrawal Fee (Percentage)"
 msgstr "Withdrawal Fee (Percentage)"
 
@@ -3210,25 +2911,10 @@ msgstr "Fee Calculation:"
 msgid "The withdrawal fee is calculated as the maximum of the percentage-based fee and the minimum fee amount."
 msgstr "The withdrawal fee is calculated as the maximum of the percentage-based fee and the minimum fee amount."
 
-msgid "Save Fee Settings"
-msgstr "Save Fee Settings"
-
-msgid "Withdrawal Methods"
-msgstr "Withdrawal Methods"
-
 msgid "Enable or disable the available withdrawal methods for users. Icons are automatically displayed based on method type."
 msgstr "Enable or disable the available withdrawal methods for users. Icons are automatically displayed based on method type."
 
-msgid "Enabled"
-msgstr "Enabled"
-
-msgid "Disabled"
-msgstr "Disabled"
-
-msgid "Save Changes"
-msgstr "Save Changes"
-
-/* Admin Settings - KYC tab */
+# Admin Settings - KYC tab
 msgid "KYC Configuration"
 msgstr "KYC Configuration"
 
@@ -3283,7 +2969,7 @@ msgstr "When enabled, users can close the KYC banner. When disabled, the banner 
 msgid "Save KYC Settings"
 msgstr "Save KYC Settings"
 
-/* Admin Settings - Cancellation tab */
+# Admin Settings - Cancellation tab
 msgid "Investment Cancellation Policy"
 msgstr "Investment Cancellation Policy"
 
@@ -3341,7 +3027,7 @@ msgstr "Cancellation is blocked — the first payout date has passed."
 msgid "Select the platform base currency. Changing this will trigger an immediate exchange rate refresh."
 msgstr "Select the platform base currency. Changing this will trigger an immediate exchange rate refresh."
 
-/* Admin Settings - Registration tab */
+# Admin Settings - Registration tab
 msgid "Email Verification"
 msgstr "Email Verification"
 
@@ -3384,7 +3070,7 @@ msgstr "Investment Page"
 msgid "Save Post-Registration Settings"
 msgstr "Save Post-Registration Settings"
 
-/* Admin Settings - Notifications tab */
+# Admin Settings - Notifications tab
 msgid "Bulk Notification Settings"
 msgstr "Bulk Notification Settings"
 
@@ -3406,9 +3092,6 @@ msgstr "Registration Welcome Email"
 msgid "Send welcome email after registration"
 msgstr "Send welcome email after registration"
 
-msgid "Password Reset"
-msgstr "Password Reset"
-
 msgid "Send password reset emails"
 msgstr "Send password reset emails"
 
@@ -3421,14 +3104,8 @@ msgstr "Deposit Notifications"
 msgid "User Notifications"
 msgstr "User Notifications"
 
-msgid "Deposit Submitted"
-msgstr "Deposit Submitted"
-
 msgid "Notify user when deposit is submitted"
 msgstr "Notify user when deposit is submitted"
-
-msgid "Deposit Approved"
-msgstr "Deposit Approved"
 
 msgid "Notify user when deposit is approved"
 msgstr "Notify user when deposit is approved"
@@ -3460,9 +3137,6 @@ msgstr "Withdrawal Submitted"
 msgid "Notify user when withdrawal is submitted"
 msgstr "Notify user when withdrawal is submitted"
 
-msgid "Withdrawal Approved"
-msgstr "Withdrawal Approved"
-
 msgid "Notify user when withdrawal is approved"
 msgstr "Notify user when withdrawal is approved"
 
@@ -3484,26 +3158,14 @@ msgstr "Save Withdrawal Notification Settings"
 msgid "Investment Notifications"
 msgstr "Investment Notifications"
 
-msgid "Investment Created"
-msgstr "Investment Created"
-
 msgid "Notify user when investment is created"
 msgstr "Notify user when investment is created"
-
-msgid "Investment Completed"
-msgstr "Investment Completed"
 
 msgid "Notify user when investment completes"
 msgstr "Notify user when investment completes"
 
-msgid "Investment Cancelled"
-msgstr "Investment Cancelled"
-
 msgid "Notify user when investment is cancelled"
 msgstr "Notify user when investment is cancelled"
-
-msgid "Profit Payout"
-msgstr "Profit Payout"
 
 msgid "Notify user on each profit payout"
 msgstr "Notify user on each profit payout"
@@ -3538,16 +3200,13 @@ msgstr "Save KYC Notification Settings"
 msgid "Referral Notifications"
 msgstr "Referral Notifications"
 
-msgid "Referral Bonus Credited"
-msgstr "Referral Bonus Credited"
-
 msgid "Notify user when referral bonus is credited"
 msgstr "Notify user when referral bonus is credited"
 
 msgid "Save Referral Notification Settings"
 msgstr "Save Referral Notification Settings"
 
-/* Admin Settings - Cron tab */
+# Admin Settings - Cron tab
 msgid "Cron Job Management"
 msgstr "Cron Job Management"
 
@@ -3590,24 +3249,18 @@ msgstr "About Cron Jobs:"
 msgid "The cron job processes pending investments and calculates profits. This should run every minute. If the process is taking too long, a lock file is created to prevent concurrent execution."
 msgstr "The cron job processes pending investments and calculates profits. This should run every minute. If the process is taking too long, a lock file is created to prevent concurrent execution."
 
-/* Admin Plans page */
+# Admin Plans page
 msgid "Manage active and archived investment plans."
 msgstr "Manage active and archived investment plans."
 
 msgid "Create New Plan"
 msgstr "Create New Plan"
 
-msgid "Active Plans"
-msgstr "Active Plans"
-
 msgid "No active investment plans."
 msgstr "No active investment plans."
 
 msgid "Plan Name"
 msgstr "Plan Name"
-
-msgid "ROI"
-msgstr "ROI"
 
 msgid "Limits"
 msgstr "Limits"
@@ -3632,9 +3285,6 @@ msgstr "Every %d wk"
 
 msgid "Every %d mo"
 msgstr "Every %d mo"
-
-msgid "Compounding"
-msgstr "Compounding"
 
 msgid "Archived Plans"
 msgstr "Archived Plans"
@@ -3681,9 +3331,6 @@ msgstr "Min Amount"
 msgid "Max Amount"
 msgstr "Max Amount"
 
-msgid "Payout Schedule"
-msgstr "Payout Schedule"
-
 msgid "Custom"
 msgstr "Custom"
 
@@ -3698,9 +3345,6 @@ msgstr "Minutes"
 
 msgid "Hours"
 msgstr "Hours"
-
-msgid "Days"
-msgstr "Days"
 
 msgid "Weeks"
 msgstr "Weeks"
@@ -3744,7 +3388,7 @@ msgstr "Save Plan"
 msgid "Are you sure you want to delete this plan?"
 msgstr "Are you sure you want to delete this plan?"
 
-/* Admin Investments page */
+# Admin Investments page
 msgid "Manage and monitor all user investments."
 msgstr "Manage and monitor all user investments."
 
@@ -3765,9 +3409,6 @@ msgstr "Investor"
 
 msgid "Plan Details"
 msgstr "Plan Details"
-
-msgid "Profit Earned"
-msgstr "Profit Earned"
 
 msgid "No investments found."
 msgstr "No investments found."
@@ -3799,36 +3440,15 @@ msgstr "Net Profit Earned"
 msgid "Payout Interval"
 msgstr "Payout Interval"
 
-msgid "Capital Return"
-msgstr "Capital Return"
-
-msgid "Yes"
-msgstr "Yes"
-
 msgid "No"
 msgstr "No"
 
 msgid "View Full Details"
 msgstr "View Full Details"
 
-/* Admin Transactions page */
+# Admin Transactions page
 msgid "View all financial transactions across the platform."
 msgstr "View all financial transactions across the platform."
-
-msgid "All"
-msgstr "All"
-
-msgid "Deposits"
-msgstr "Deposits"
-
-msgid "Withdrawals"
-msgstr "Withdrawals"
-
-msgid "Profits"
-msgstr "Profits"
-
-msgid "Referrals"
-msgstr "Referrals"
 
 msgid "Search by user, email, or ID..."
 msgstr "Search by user, email, or ID..."
@@ -3836,27 +3456,18 @@ msgstr "Search by user, email, or ID..."
 msgid "Transaction ID"
 msgstr "Transaction ID"
 
-msgid "No transactions found."
-msgstr "No transactions found."
-
 msgid "Transaction Details"
 msgstr "Transaction Details"
 
 msgid "Transaction processed via platform"
 msgstr "Transaction processed via platform"
 
-/* Admin KYC Review page */
+# Admin KYC Review page
 msgid "Review and verify user identity documents."
 msgstr "Review and verify user identity documents."
 
-msgid "Action"
-msgstr "Action"
-
 msgid "All KYC documents have been reviewed!"
 msgstr "All KYC documents have been reviewed!"
-
-msgid "Selfie"
-msgstr "Selfie"
 
 msgid "User Information"
 msgstr "User Information"
@@ -3867,7 +3478,7 @@ msgstr "ID / Passport"
 msgid "Confirm Rejection"
 msgstr "Confirm Rejection"
 
-/* Admin In-Mail page */
+# Admin In-Mail page
 msgid "Internal Messaging"
 msgstr "Internal Messaging"
 
@@ -3946,7 +3557,7 @@ msgstr "Please select at least one valid recipient"
 msgid "An error occurred while sending the message"
 msgstr "An error occurred while sending the message"
 
-/* Admin Users page */
+# Admin Users page
 msgid "User Management"
 msgstr "User Management"
 
@@ -3974,29 +3585,14 @@ msgstr "Settings"
 msgid "Admin"
 msgstr "Admin"
 
-msgid "Settings"
-msgstr "Settings"
-
 msgid "All Roles"
 msgstr "All Roles"
-
-msgid "All Status"
-msgstr "All Status"
 
 msgid "Banned"
 msgstr "Banned"
 
 msgid "All KYC"
 msgstr "All KYC"
-
-msgid "Not Submitted"
-msgstr "Not Submitted"
-
-msgid "Approved"
-msgstr "Approved"
-
-msgid "Rejected"
-msgstr "Rejected"
 
 msgid "Clear Filters"
 msgstr "Clear Filters"
@@ -4009,9 +3605,6 @@ msgstr "Balance"
 
 msgid "Role"
 msgstr "Role"
-
-msgid "KYC"
-msgstr "KYC"
 
 msgid "No users found."
 msgstr "No users found."
@@ -4098,12 +3691,6 @@ msgstr "A world where everyone can build wealth through simple, reliable investi
 
 msgid "Founded"
 msgstr "Founded"
-
-msgid "Transactions"
-msgstr "Transactions"
-
-msgid "Support"
-msgstr "Support"
 
 msgid "Transparency"
 msgstr "Transparency"
@@ -4273,7 +3860,6 @@ msgstr "User Responsibility"
 msgid "You acknowledge and agree that you are fully responsible for your own investment decisions and that you are aware of the risks associated with investing. You agree to hold the platform and its operators harmless from any and all losses, liabilities, or damages resulting from your investment activities."
 msgstr "You acknowledge and agree that you are fully responsible for your own investment decisions and that you are aware of the risks associated with investing. You agree to hold the platform and its operators harmless from any and all losses, liabilities, or damages resulting from your investment activities."
 
-
 msgid "User Details"
 msgstr "User Details"
 
@@ -4283,17 +3869,11 @@ msgstr "User ID"
 msgid "Registered IP"
 msgstr "Registered IP"
 
-msgid "Country"
-msgstr "Country"
-
 msgid "KYC Status"
 msgstr "KYC Status"
 
 msgid "Review KYC"
 msgstr "Review KYC"
-
-msgid "Select Country"
-msgstr "Select Country"
 
 msgid "Save"
 msgstr "Save"
@@ -4307,20 +3887,17 @@ msgstr "Credit"
 msgid "Debit"
 msgstr "Debit"
 
-msgid "Set New Password"
-msgstr "Set New Password"
-
 msgid "Enter new password (min 6 characters)"
 msgstr "Enter new password (min 6 characters)"
 
-/* Admin Dashboard extras */
+# Admin Dashboard extras
 msgid "Total:"
 msgstr "Total:"
 
 msgid "Awaiting review"
 msgstr "Awaiting review"
 
-/* Admin Pending Deposits page */
+# Admin Pending Deposits page
 msgid "Date Submitted"
 msgstr "Date Submitted"
 
@@ -4345,27 +3922,8 @@ msgstr "Fee:"
 msgid "Net:"
 msgstr "Net:"
 
-/* Admin Pending Withdrawals page */
-msgid "Review payout requests and process securely."
-msgstr "Review payout requests and process securely."
-
-msgid "Destination"
-msgstr "Destination"
-
-msgid "Processing"
-msgstr "Processing"
-
-msgid "Process Withdrawal"
-msgstr "Process Withdrawal"
-
-msgid "Ensure the user has sufficient balance and no active suspicious flags before processing."
-msgstr "Ensure the user has sufficient balance and no active suspicious flags before processing."
-
 msgid "User Balance"
 msgstr "User Balance"
-
-msgid "Payout Amount"
-msgstr "Payout Amount"
 
 msgid "Withdrawal Fee"
 msgstr "Withdrawal Fee"
@@ -4385,13 +3943,10 @@ msgstr "Explain why this withdrawal is rejected..."
 msgid "Please provide a rejection reason"
 msgstr "Please provide a rejection reason"
 
-msgid "Copy"
-msgstr "Copy"
-
 msgid "No pending withdrawals found."
 msgstr "No pending withdrawals found."
 
-/* Admin Sidebar extras */
+# Admin Sidebar extras
 msgid "All Transactions"
 msgstr "All Transactions"
 
@@ -4415,3 +3970,478 @@ msgstr "Back To Admin"
 
 msgid "Admin Portal"
 msgstr "Admin Portal"
+# Redesign missing translations (auto-added)
+msgid "A platform built on"
+msgstr "A platform built on"
+
+msgid "Active Clients"
+msgstr "Active Clients"
+
+msgid "All packages include managed trading, monthly ROI payouts, and dedicated support. Select the tier that aligns with your goals."
+msgstr "All packages include managed trading, monthly ROI payouts, and dedicated support. Select the tier that aligns with your goals."
+
+msgid "Assets Under Management"
+msgstr "Assets Under Management"
+
+msgid "Back"
+msgstr "Back"
+
+msgid "Back to Sign In"
+msgstr "Back to Sign In"
+
+msgid "Business Owner, Nigeria"
+msgstr "Business Owner, Nigeria"
+
+msgid "Cannot be changed after registration"
+msgstr "Cannot be changed after registration"
+
+msgid "Capital preservation is the foundation. We never risk more than 2% per trade and employ dynamic stop-loss strategies on every position."
+msgstr "Capital preservation is the foundation. We never risk more than 2% per trade and employ dynamic stop-loss strategies on every position."
+
+msgid "Check your inbox"
+msgstr "Check your inbox"
+
+msgid "Choose your"
+msgstr "Choose your"
+
+msgid "Client Testimonials"
+msgstr "Client Testimonials"
+
+msgid "Confirm New Password"
+msgstr "Confirm New Password"
+
+msgid "Core"
+msgstr "Core"
+
+msgid "Core "
+msgstr "Core "
+
+msgid "Currency markets"
+msgstr "Currency markets"
+
+msgid "Dedicated Client Support"
+msgstr "Dedicated Client Support"
+
+msgid "Didn\\'t receive the email? Enter your email below to resend the verification link."
+msgstr "Didn\\'t receive the email? Enter your email below to resend the verification link."
+
+msgid "Doctor, Ghana"
+msgstr "Doctor, Ghana"
+
+msgid "Don\\'t have an account?"
+msgstr "Don\\'t have an account?"
+
+msgid "Eight consecutive years of profitable trading, with a 92% win rate across 2024. Numbers don\\'t lie — our history speaks for itself."
+msgstr "Eight consecutive years of profitable trading, with a 92% win rate across 2024. Numbers don\\'t lie — our history speaks for itself."
+
+msgid "Elite Forex Investment Solutions"
+msgstr "Elite Forex Investment Solutions"
+
+msgid "Enquire Now"
+msgstr "Enquire Now"
+
+msgid "Enter a new password for your account."
+msgstr "Enter a new password for your account."
+
+msgid "Enter your email and we will send you a reset link."
+msgstr "Enter your email and we will send you a reset link."
+
+msgid "Error Code:"
+msgstr "Error Code:"
+
+msgid "Every trade is logged and shared with clients. No smoke, no mirrors — live account access so you can verify every result in real time."
+msgstr "Every trade is logged and shared with clients. No smoke, no mirrors — live account access so you can verify every result in real time."
+
+msgid "Everything you need to know about investing with us. Can\\'t find the answer?"
+msgstr "Everything you need to know about investing with us. Can\\'t find the answer?"
+
+msgid "FX Mentorship"
+msgstr "FX Mentorship"
+
+msgid "Forgot Password"
+msgstr "Forgot Password"
+
+msgid "Freelancer, Canada"
+msgstr "Freelancer, Canada"
+
+msgid "Frequently Asked"
+msgstr "Frequently Asked"
+
+msgid "From conservative income to aggressive compounding, your investment plan is shaped around your timeline, risk tolerance, and targets."
+msgstr "From conservative income to aggressive compounding, your investment plan is shaped around your timeline, risk tolerance, and targets."
+
+msgid "Fully Transparent Operations"
+msgstr "Fully Transparent Operations"
+
+msgid "Fully managed trading where Tim executes on your behalf. Your capital, his expertise — with complete transparency and regular reporting."
+msgstr "Fully managed trading where Tim executes on your behalf. Your capital, his expertise — with complete transparency and regular reporting."
+
+msgid "Get In Touch"
+msgstr "Get In Touch"
+
+msgid "Get Started Today"
+msgstr "Get Started Today"
+
+msgid "Go to Dashboard"
+msgstr "Go to Dashboard"
+
+msgid "Have questions about a package or want a custom arrangement? Our team responds within 24 hours."
+msgstr "Have questions about a package or want a custom arrangement? Our team responds within 24 hours."
+
+msgid "How can we help?"
+msgstr "How can we help?"
+
+msgid "I have tried several managed forex services and none come close to Tim\\'s level of professionalism. Reporting is impeccable, returns are consistent, and he actually picks up the phone when you call."
+msgstr "I have tried several managed forex services and none come close to Tim\\'s level of professionalism. Reporting is impeccable, returns are consistent, and he actually picks up the phone when you call."
+
+msgid "I was skeptical at first, but Tim\\'s transparency won me over immediately. Full access to trade history, weekly updates, and my Growth account has returned 19% this month. Absolutely remarkable."
+msgstr "I was skeptical at first, but Tim\\'s transparency won me over immediately. Full access to trade history, weekly updates, and my Growth account has returned 19% this month. Absolutely remarkable."
+
+msgid "If that email exists in our system, you will receive a reset link shortly. Links expire in 1 hour."
+msgstr "If that email exists in our system, you will receive a reset link shortly. Links expire in 1 hour."
+
+msgid "In a market full of noise, Tim Skye\\'s approach is built on discipline, data, and decades of earned instinct. Here\\'s why thousands of investors choose SeamlessFX."
+msgstr "In a market full of noise, Tim Skye\\'s approach is built on discipline, data, and decades of earned instinct. Here\\'s why thousands of investors choose SeamlessFX."
+
+msgid "Investor, South Africa"
+msgstr "Investor, South Africa"
+
+msgid "John Doe"
+msgstr "John Doe"
+
+msgid "Join Now"
+msgstr "Join Now"
+
+msgid "Join hundreds of investors already growing their wealth through SeamlessFX. Drop your email and we\\'ll reach out within 24 hours to discuss your plan."
+msgstr "Join hundreds of investors already growing their wealth through SeamlessFX. Drop your email and we\\'ll reach out within 24 hours to discuss your plan."
+
+msgid "Join the"
+msgstr "Join the"
+
+msgid "Join thousands of investors already growing their wealth through our platform."
+msgstr "Join thousands of investors already growing their wealth through our platform."
+
+msgid "Let\\'s talk"
+msgstr "Let\\'s talk"
+
+msgid "Live Signals & Analysis"
+msgstr "Live Signals & Analysis"
+
+msgid "Managed FX account"
+msgstr "Managed FX account"
+
+msgid "Managed Forex Accounts"
+msgstr "Managed Forex Accounts"
+
+msgid "Maximum deposit"
+msgstr "Maximum deposit"
+
+msgid "Minimum deposit"
+msgstr "Minimum deposit"
+
+msgid "Minimum:"
+msgstr "Minimum:"
+
+msgid "Mission:"
+msgstr "Mission:"
+
+msgid "Most Popular"
+msgstr "Most Popular"
+
+msgid "Need immediate assistance?"
+msgstr "Need immediate assistance?"
+
+msgid "No spam. Capital at risk — past performance does not guarantee future results."
+msgstr "No spam. Capital at risk — past performance does not guarantee future results."
+
+msgid "One-on-one coaching for aspiring traders. Learn Tim\\'s proven system from setup identification to full trade management."
+msgstr "One-on-one coaching for aspiring traders. Learn Tim\\'s proven system from setup identification to full trade management."
+
+msgid "Our Principles"
+msgstr "Our Principles"
+
+msgid "Our team at work"
+msgstr "Our team at work"
+
+msgid "Page Not Found"
+msgstr "Page Not Found"
+
+msgid "Popular pages you might be looking for:"
+msgstr "Popular pages you might be looking for:"
+
+msgid "Portfolio Diversification"
+msgstr "Portfolio Diversification"
+
+msgid "Portfolio Growth — 12 Months"
+msgstr "Portfolio Growth — 12 Months"
+
+msgid "Precision in every pip. Discipline in every decision."
+msgstr "Precision in every pip. Discipline in every decision."
+
+msgid "Priority access to Tim and his team. Monthly reviews, account updates, and direct communication — always in your corner."
+msgstr "Priority access to Tim and his team. Monthly reviews, account updates, and direct communication — always in your corner."
+
+msgid "Privacy"
+msgstr "Privacy"
+
+msgid "Professional investment platform with automated profit distribution and secure wallet management"
+msgstr "Professional investment platform with automated profit distribution and secure wallet management"
+
+msgid "Proven Track Record"
+msgstr "Proven Track Record"
+
+msgid "Questions"
+msgstr "Questions"
+
+msgid "ROI Target"
+msgstr "ROI Target"
+
+msgid "Reach out"
+msgstr "Reach out"
+
+msgid "Ready to grow your"
+msgstr "Ready to grow your"
+
+msgid "Real results. Real clients. Real growth."
+msgstr "Real results. Real clients. Real growth."
+
+msgid "Real-time trade signals with full entry, stop, and target levels. Backed by Tim\\'s daily market commentary and flow tracking."
+msgstr "Real-time trade signals with full entry, stop, and target levels. Backed by Tim\\'s daily market commentary and flow tracking."
+
+msgid "Recovery"
+msgstr "Recovery"
+
+msgid "Refresh Page"
+msgstr "Refresh Page"
+
+msgid "Registration is currently unavailable. Please contact support."
+msgstr "Registration is currently unavailable. Please contact support."
+
+msgid "Remember your password?"
+msgstr "Remember your password?"
+
+msgid "Request ID:"
+msgstr "Request ID:"
+
+msgid "Retired Executive, USA"
+msgstr "Retired Executive, USA"
+
+msgid "Revolution"
+msgstr "Revolution"
+
+msgid "Risk Disclosure"
+msgstr "Risk Disclosure"
+
+msgid "SeamlessFX changed how I think about passive income. I started with the Starter plan six months ago and upgraded to Elite after seeing consistent results. Tim is the real deal — disciplined and communicative."
+msgstr "SeamlessFX changed how I think about passive income. I started with the Starter plan six months ago and upgraded to Elite after seeing consistent results. Tim is the real deal — disciplined and communicative."
+
+msgid "Select your country"
+msgstr "Select your country"
+
+msgid "Server Error"
+msgstr "Server Error"
+
+msgid "Services"
+msgstr "Services"
+
+msgid "Since 2020"
+msgstr "Since 2020"
+
+msgid "Software Engineer, UK"
+msgstr "Software Engineer, UK"
+
+msgid "Something Went Wrong"
+msgstr "Something Went Wrong"
+
+msgid "Something went wrong on our end. Please try again later."
+msgstr "Something went wrong on our end. Please try again later."
+
+msgid "Strategic allocation across multiple currency pairs and strategies to reduce exposure and optimise risk-adjusted returns."
+msgstr "Strategic allocation across multiple currency pairs and strategies to reduce exposure and optimise risk-adjusted returns."
+
+msgid "Strict Risk Management"
+msgstr "Strict Risk Management"
+
+msgid "Structured Investment Plans"
+msgstr "Structured Investment Plans"
+
+msgid "Tailored to Your Goals"
+msgstr "Tailored to Your Goals"
+
+msgid "Tell us about your inquiry..."
+msgstr "Tell us about your inquiry..."
+
+msgid "Terms"
+msgstr "Terms"
+
+msgid "The Elite package is worth every penny. I have a direct line to Tim, weekly withdrawal options, and a custom strategy built around my retirement timeline. This is the kind of service you\\'d expect from a private bank."
+msgstr "The Elite package is worth every penny. I have a direct line to Tim, weekly withdrawal options, and a custom strategy built around my retirement timeline. This is the kind of service you\\'d expect from a private bank."
+
+msgid "The edge that sets"
+msgstr "The edge that sets"
+
+msgid "The information provided on this website is for general information purposes only and does not constitute financial advice, investment advice, trading advice, or any other sort of advice. You should not treat any of the website\\'s content as such. We do not recommend that any asset should be bought, sold, or held by you. Do conduct your own due diligence and consult your financial advisor before making any investment decisions."
+msgstr "The information provided on this website is for general information purposes only and does not constitute financial advice, investment advice, trading advice, or any other sort of advice. You should not treat any of the website\\'s content as such. We do not recommend that any asset should be bought, sold, or held by you. Do conduct your own due diligence and consult your financial advisor before making any investment decisions."
+
+msgid "The page you are looking for does not exist or has been moved."
+msgstr "The page you are looking for does not exist or has been moved."
+
+msgid "The page you are looking for does not exist or has been moved. Please check the URL or navigate back to the homepage."
+msgstr "The page you are looking for does not exist or has been moved. Please check the URL or navigate back to the homepage."
+
+msgid "Tier %02d"
+msgstr "Tier %02d"
+
+msgid "Tiered packages designed to match your risk appetite and financial goals — from conservative growth to aggressive compounding."
+msgstr "Tiered packages designed to match your risk appetite and financial goals — from conservative growth to aggressive compounding."
+
+msgid "Tim Skye delivers precision-engineered forex investment solutions for investors who demand consistent, verifiable returns — backed by eight years of live market execution."
+msgstr "Tim Skye delivers precision-engineered forex investment solutions for investors who demand consistent, verifiable returns — backed by eight years of live market execution."
+
+msgid "Too many failed login attempts. Please try again in %s minutes."
+msgstr "Too many failed login attempts. Please try again in %s minutes."
+
+msgid "Traded Across"
+msgstr "Traded Across"
+
+msgid "Trading charts and market data"
+msgstr "Trading charts and market data"
+
+msgid "Transparent reporting"
+msgstr "Transparent reporting"
+
+msgid "Values"
+msgstr "Values"
+
+msgid "Vision:"
+msgstr "Vision:"
+
+msgid "We are experiencing a technical issue on our end. Our team has been notified and is working to fix the problem."
+msgstr "We are experiencing a technical issue on our end. Our team has been notified and is working to fix the problem."
+
+msgid "We are here to help you 24/7. Choose the method that works best for you."
+msgstr "We are here to help you 24/7. Choose the method that works best for you."
+
+msgid "We will help you get back into your account safely and securely."
+msgstr "We will help you get back into your account safely and securely."
+
+msgid "Wealth grown."
+msgstr "Wealth grown."
+
+msgid "Welcome"
+msgstr "Welcome"
+
+msgid "What I appreciate most is the education alongside the returns. Tim explains his reasoning behind trades, which has made me a better investor overall. I\\'m up 31% this quarter and learning every week."
+msgstr "What I appreciate most is the education alongside the returns. Tim explains his reasoning behind trades, which has made me a better investor overall. I\\'m up 31% this quarter and learning every week."
+
+msgid "What We Offer"
+msgstr "What We Offer"
+
+msgid "What our investors"
+msgstr "What our investors"
+
+msgid "White-Glove Client Service"
+msgstr "White-Glove Client Service"
+
+msgid "Who We Are"
+msgstr "Who We Are"
+
+msgid "Why SeamlessFX"
+msgstr "Why SeamlessFX"
+
+msgid "Win Rate — 2024"
+msgstr "Win Rate — 2024"
+
+msgid "Years Active Trading"
+msgstr "Years Active Trading"
+
+msgid "You\\'re not a ticket number. Elite clients have direct access to Tim, monthly performance calls, and priority account management."
+msgstr "You\\'re not a ticket number. Elite clients have direct access to Tim, monthly performance calls, and priority account management."
+
+msgid "Your capital should be"
+msgstr "Your capital should be"
+
+msgid "Your email address"
+msgstr "Your email address"
+
+msgid "anytime"
+msgstr "anytime"
+
+msgid "john@example.com"
+msgstr "john@example.com"
+
+msgid "last month"
+msgstr "last month"
+
+msgid "mastered."
+msgstr "mastered."
+
+msgid "name@example.com"
+msgstr "name@example.com"
+
+msgid "over 6 months"
+msgstr "over 6 months"
+
+msgid "package"
+msgstr "package"
+
+msgid "say"
+msgstr "say"
+
+msgid "strategy"
+msgstr "strategy"
+
+msgid "this month"
+msgstr "this month"
+
+msgid "this quarter"
+msgstr "this quarter"
+
+msgid "trust"
+msgstr "trust"
+
+msgid "us apart"
+msgstr "us apart"
+
+msgid "wealth?"
+msgstr "wealth?"
+
+msgid "working for you."
+msgstr "working for you."
+
+# Redesign missing translations (auto-added)
+msgid "Amara N."
+msgstr "Amara N."
+
+msgid "Daniel F."
+msgstr "Daniel F."
+
+msgid "FXCM"
+msgstr "FXCM"
+
+msgid "IC Markets"
+msgstr "IC Markets"
+
+msgid "James O."
+msgstr "James O."
+
+msgid "Marcus T."
+msgstr "Marcus T."
+
+msgid "MetaTrader 4"
+msgstr "MetaTrader 4"
+
+msgid "MetaTrader 5"
+msgstr "MetaTrader 5"
+
+msgid "Pepperstone"
+msgstr "Pepperstone"
+
+msgid "Rashida K."
+msgstr "Rashida K."
+
+msgid "Yemi M."
+msgstr "Yemi M."
+
+msgid "cTrader"
+msgstr "cTrader"
