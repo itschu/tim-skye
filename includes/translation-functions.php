@@ -293,7 +293,7 @@ function translate_via_api($text, $target_lang)
 }
 
 // Append a msgid/msgstr pair to a .po file, avoiding duplicates
-function append_to_po($po_path, $msgid, $msgstr)
+function append_to_po(string $po_path, string $msgid, string $msgstr): bool
 {
     try {
         if (!is_string($po_path) || trim($po_path) === '') {
@@ -338,7 +338,7 @@ function append_to_po($po_path, $msgid, $msgstr)
     }
 }
 
-function __($text, $useApi = false)  // Using __ instead of _ to avoid conflict with gettext's _()
+function __(string $text, $useApi = false)  // Using __ instead of _ to avoid conflict with gettext's _()
 {
     // If Google Translate is enabled, return text as-is for client-side translation
     if (is_google_translate_enabled()) {
@@ -660,7 +660,6 @@ function get_google_translate_languages()
         'ff' => 'Fulani',
         'lg' => 'Ganda',
         'ln' => 'Lingala',
-        'ny' => 'Chichewa',
         'om' => 'Oromo',
         'rw' => 'Kinyarwanda',
         'tn' => 'Setswana',

@@ -523,7 +523,7 @@ require_once ROOT . '/includes/admin-header.php';
             <!-- Delete Form (submit from sheet footer delete button) -->
             <form id="deleteForm" action="/admin/actions/plan-delete" method="POST" style="display:none">
                 <input type="hidden" name="csrf_token" value="<?php echo csrf_token(); ?>">
-                <input type="hidden" name="plan_id" value="">
+                <input type="hidden" name="plan_id" :value="currentPlan?.id">
             </form>
         </div>
     </template>
