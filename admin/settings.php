@@ -78,6 +78,7 @@ $cancellation_block_after_waiting = isset($all_settings['cancellation_block_afte
 // Post-Registration Settings
 $post_registration_action = isset($all_settings['post_registration_action']) ? $all_settings['post_registration_action'] : 'dashboard';
 $require_email_verification = isset($all_settings['require_email_verification']) ? $all_settings['require_email_verification'] : 'no';
+$require_referral_code = isset($all_settings['require_referral_code']) ? $all_settings['require_referral_code'] : 'no';
 
 // Email Notification Settings - User Account
 $email_user_registration = isset($all_settings['email_user_registration']) ? $all_settings['email_user_registration'] : 'yes';
@@ -1164,6 +1165,48 @@ require_once ROOT . '/includes/admin-header.php';
                                 <div class="d-flex gap-2">
                                     <button type="submit" class="btn btn-accent">
                                         <i class="fas fa-save"></i> <?php echo __('Save Email Verification Settings'); ?>
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+
+                    <!-- Referral Code Requirement Settings -->
+                    <div class="card border-subtle mb-4" style="background-color: var(--bg-card);">
+                        <div class="card-body p-4">
+                            <h6 class="card-title mb-4 text-white"><?php echo __('Referral Code Requirement'); ?></h6>
+                            <form action="/admin/actions/settings-update" method="POST">
+                                <input type="hidden" name="csrf_token" value="<?php echo csrf_token(); ?>">
+                                <input type="hidden" name="section" value="registration">
+                                <input type="hidden" name="redirect_tab" value="" x-bind:value="currentTab">
+
+                                <div class="mb-4">
+                                    <label class="form-label text-muted-custom small fw-medium mb-3">
+                                        <i class="fas fa-user-tag text-info"></i> <?php echo __('Require Referral Code'); ?>
+                                    </label>
+                                    <p class="small mb-3" style="color: #a1a1aa;"><?php echo __('When enabled, new users must provide a valid referral code to complete registration.'); ?></p>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="require_referral_code" id="referral_req_yes" value="yes" <?php echo $require_referral_code === 'yes' ? 'checked' : ''; ?>>
+                                        <label class="form-check-label" for="referral_req_yes">
+                                            <i class="fas fa-check-circle text-success"></i> <?php echo __('Yes, require a valid referral code'); ?>
+                                        </label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="require_referral_code" id="referral_req_no" value="no" <?php echo $require_referral_code === 'no' ? 'checked' : ''; ?>>
+                                        <label class="form-check-label" for="referral_req_no">
+                                            <i class="fas fa-times-circle text-danger"></i> <?php echo __('No, referral code is optional'); ?>
+                                        </label>
+                                    </div>
+                                </div>
+
+                                <div class="alert alert-info mb-4" role="alert" x-transition.opacity>
+                                    <i class="fas fa-circle-info"></i> <strong><?php echo __('Note:'); ?></strong>
+                                    <?php echo __('When enabled, users who do not provide a valid referral code during registration will be rejected. The registration form will clearly indicate that a referral code is required.'); ?>
+                                </div>
+
+                                <div class="d-flex gap-2">
+                                    <button type="submit" class="btn btn-accent">
+                                        <i class="fas fa-save"></i> <?php echo __('Save Referral Requirement Settings'); ?>
                                     </button>
                                 </div>
                             </form>

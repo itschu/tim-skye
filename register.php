@@ -31,6 +31,7 @@ $all_countries      = get_countries();
 $message = $_SESSION['message'] ?? null;
 $error = $_SESSION['error'] ?? null;
 unset($_SESSION['message'], $_SESSION['error']);
+$require_referral_code = get_setting('require_referral_code', 'no');
 
 $meta_description = isset($page_description) && $page_description ? $page_description : $site_description;
 $meta_keywords = isset($page_keywords) && $page_keywords ? $page_keywords : $site_keywords;
@@ -221,10 +222,10 @@ $full_title = 'Create Account - ' . e($site_name);
                         </div>
 
                         <div class="auth-ff">
-                            <label><?php echo __('Referral Code (Optional)'); ?></label>
+                            <label><?php echo $require_referral_code === 'yes' ? __('Referral Code (Required)') : __('Referral Code (Optional)'); ?></label>
                             <div class="input-wrap">
                                 <span class="input-icon">🎁</span>
-                                <input type="text" name="referral_code" value="<?php echo e($referral_code); ?>" <?php echo $referral_code ? 'readonly' : ''; ?>>
+                                <input type="text" name="referral_code" value="<?php echo e($referral_code); ?>" <?php echo $referral_code ? 'readonly' : ''; ?> <?php echo $require_referral_code === 'yes' ? 'required' : ''; ?>>
                             </div>
                         </div>
 

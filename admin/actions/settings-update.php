@@ -482,18 +482,31 @@ function handleCancellationSettings()
  */
 function handleRegistrationSettings()
 {
-    $post_registration_action = sanitize_input($_POST['post_registration_action'] ?? '');
+    // Update post-registration action only if submitted
+    if (isset($_POST['post_registration_action'])) {
+        $post_registration_action = sanitize_input($_POST['post_registration_action']);
 
-    // Validate action
-    if (!in_array($post_registration_action, ['dashboard', 'deposit', 'invest'])) {
-        $_SESSION['error'] = __('Invalid post-registration action.');
-        return;
+        if (!in_array($post_registration_action, ['dashboard', 'deposit', 'invest'])) {
+            $_SESSION['error'] = __('Invalid post-registration action.');
+            return;
+        }
+
+        update_setting('post_registration_action', $post_registration_action);
     }
 
-    // Update setting
-    update_setting('post_registration_action', $post_registration_action);
+    // Update referral code requirement only if submitted
+    if (isset($_POST['require_referral_code'])) {
+        $require_referral_code = sanitize_input($_POST['require_referral_code']);
 
-    $_SESSION['success'] = __('Post-registration settings updated successfully.');
+        if (!in_array($require_referral_code, ['yes', 'no'])) {
+            $_SESSION['error'] = __('Invalid referral code requirement setting.');
+            return;
+        }
+
+        update_setting('require_referral_code', $require_referral_code);
+    }
+
+    $_SESSION['success'] = __('Registration settings updated successfully.');
 }
 
 /**

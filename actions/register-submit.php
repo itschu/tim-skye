@@ -112,6 +112,15 @@ try {
     exit;
 }
 
+// Check if referral code is required
+$require_referral_code = get_setting('require_referral_code', 'no');
+
+if ($require_referral_code === 'yes' && empty($referral_code)) {
+    $_SESSION['error'] = __('A valid referral code is required to complete registration.');
+    header('Location: /register');
+    exit;
+}
+
 // Validate referral code if provided
 $referrer_id = null;
 if (!empty($referral_code)) {
