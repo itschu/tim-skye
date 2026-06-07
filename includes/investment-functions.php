@@ -62,6 +62,13 @@ function create_investment($user_id, $plan_id, $amount)
         return false;
     }
     $plan = $plan[0];
+
+    // Validate country eligibility
+    $user_country = db_query("SELECT country FROM users WHERE id = ?", [$user_id])[0]['country'] ?? null;
+    if (!empty($plan['country']) && $plan['country'] !== $user_country) {
+        return false;
+    }
+
     $min = (float)$plan['min_amount'];
     $max = (float)$plan['max_amount'];
     if ($amount < $min || ($max > 0 && $amount > $max)) {

@@ -20,9 +20,15 @@ $page_description = get_setting('home_page_description', get_setting('site_descr
 $page_keywords = get_setting('home_page_keywords', get_setting('site_keywords', 'investment,crypto,investments,finance'));
 
 // 1. FETCH PLANS: Prioritize Featured first, then by ROI
+// Only show global plans to visitors; logged-in users also see their country-specific plans
 $plans = [];
 try {
-    $result = db_query("SELECT * FROM investment_plans ORDER BY is_featured DESC, roi_percentage ASC LIMIT 3", []);
+    if ($is_logged_in) {
+        $user_country = db_query("SELECT country FROM users WHERE id = ?", [$_SESSION['user_id']])[0]['country'] ?? null;
+        $result = db_query("SELECT * FROM investment_plans WHERE status = 'active' AND (country IS NULL OR country = '' OR country = ?) ORDER BY is_featured DESC, roi_percentage ASC LIMIT 3", [$user_country]);
+    } else {
+        $result = db_query("SELECT * FROM investment_plans WHERE status = 'active' AND (country IS NULL OR country = '') ORDER BY is_featured DESC, roi_percentage ASC LIMIT 3", []);
+    }
     if (is_array($result)) {
         $plans = $result;
     }

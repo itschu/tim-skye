@@ -78,9 +78,11 @@ CREATE TABLE `investment_plans` (
   `updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   `waiting_period_value` INT NOT NULL DEFAULT 0,
   `waiting_period_unit` ENUM('seconds','minutes','hours','days','weeks') NOT NULL DEFAULT 'days',
+  `country` varchar(2) DEFAULT NULL COMMENT 'ISO 3166-1 alpha-2 country code; NULL = global plan',
   PRIMARY KEY (`id`),
   KEY `status` (`status`),
-  KEY `is_featured` (`is_featured`)
+  KEY `is_featured` (`is_featured`),
+  KEY `idx_country` (`country`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------

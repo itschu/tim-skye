@@ -15,6 +15,10 @@ $plans = db_query($query, []);
 $active_plans = [];
 $archived_plans = [];
 
+// Get countries for the country selector
+$accepted_countries = get_accepted_countries();
+$all_countries = get_countries();
+
 foreach ($plans as $plan) {
     if ($plan['status'] === 'active') {
         $active_plans[] = $plan;
@@ -47,7 +51,8 @@ require_once ROOT . '/includes/admin-header.php';
                 status: 'active',
                 is_featured: 0,
                 waiting_period_value: 0,
-                waiting_period_unit: 'days'
+                waiting_period_unit: 'days',
+                country: ''
             };
         } else {
             this.currentPlan = JSON.parse(JSON.stringify(plan));
@@ -62,6 +67,7 @@ require_once ROOT . '/includes/admin-header.php';
             }
             if (typeof this.currentPlan.waiting_period_value === 'undefined') this.currentPlan.waiting_period_value = 0;
             if (typeof this.currentPlan.waiting_period_unit === 'undefined') this.currentPlan.waiting_period_unit = 'days';
+            if (typeof this.currentPlan.country === 'undefined' || this.currentPlan.country === null) this.currentPlan.country = '';
         }
         this.sheetOpen = true;
         document.body.style.overflow = 'hidden';
@@ -132,6 +138,7 @@ require_once ROOT . '/includes/admin-header.php';
                                 <th><?php echo __('Duration'); ?></th>
                                 <th><?php echo __('Limits'); ?></th>
                                 <th><?php echo __('Interval'); ?></th>
+                                <th><?php echo __('Country'); ?></th>
                                 <th></th>
                             </tr>
                         </thead>
@@ -201,6 +208,13 @@ require_once ROOT . '/includes/admin-header.php';
                                         </span>
                                     </td>
                                     <td>
+                                        <?php if (empty($plan['country'])): ?>
+                                            <span class="badge bg-success"><?php echo __('Global'); ?></span>
+                                        <?php else: ?>
+                                            <span class="badge bg-info text-dark"><?php echo e($all_countries[$plan['country']] ?? $plan['country']); ?></span>
+                                        <?php endif; ?>
+                                    </td>
+                                    <td>
                                         <i class="fa-solid fa-gear text-muted-custom" style="font-size:16px;"></i>
                                     </td>
                                 </tr>
@@ -234,6 +248,7 @@ require_once ROOT . '/includes/admin-header.php';
                                 <th><?php echo __('Duration'); ?></th>
                                 <th><?php echo __('Limits'); ?></th>
                                 <th><?php echo __('Interval'); ?></th>
+                                <th><?php echo __('Country'); ?></th>
                                 <th></th>
                             </tr>
                         </thead>
@@ -298,6 +313,13 @@ require_once ROOT . '/includes/admin-header.php';
                                                 <?php echo $interval_labels[$plan['payout_interval']] ?? ucfirst($plan['payout_interval']); ?>
                                             <?php endif; ?>
                                         </span>
+                                    </td>
+                                    <td>
+                                        <?php if (empty($plan['country'])): ?>
+                                            <span class="badge bg-success"><?php echo __('Global'); ?></span>
+                                        <?php else: ?>
+                                            <span class="badge bg-info text-dark"><?php echo e($all_countries[$plan['country']] ?? $plan['country']); ?></span>
+                                        <?php endif; ?>
                                     </td>
                                     <td>
                                         <i class="fa-solid fa-chevron-right text-muted-custom" style="font-size:16px;"></i>
@@ -509,6 +531,17 @@ require_once ROOT . '/includes/admin-header.php';
                                 <option value="active"><?php echo __('Active'); ?></option>
                                 <option value="archived"><?php echo __('Archived'); ?></option>
                             </select>
+                        </div>
+
+                        <div class="mb-4">
+                            <label class="form-label small text-muted-custom fw-bold"><?php echo __('Country'); ?></label>
+                            <select name="country" class="form-select-custom" x-model="currentPlan.country">
+                                <option value=""><?php echo __('Global (All Countries)'); ?></option>
+                                <?php foreach ($accepted_countries as $code): ?>
+                                    <option value="<?php echo e($code); ?>"><?php echo e($all_countries[$code] ?? $code); ?></option>
+                                <?php endforeach; ?>
+                            </select>
+                            <div class="form-text small text-muted-custom mt-2"><?php echo __('Leave empty to make this plan available globally.'); ?></div>
                         </div>
                     </div>
                 </template>

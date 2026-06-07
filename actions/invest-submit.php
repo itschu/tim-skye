@@ -72,10 +72,13 @@ if ($amount <= 0) {
     exit;
 }
 
-// Check if plan exists and is active
-$plan = db_query("SELECT * FROM investment_plans WHERE id = ? AND status = 'active'", [$plan_id]);
+// Get user's country for plan eligibility check
+$user_country = db_query("SELECT country FROM users WHERE id = ?", [$user_id])[0]['country'] ?? null;
+
+// Check if plan exists and is active and eligible for user's country
+$plan = db_query("SELECT * FROM investment_plans WHERE id = ? AND status = 'active' AND (country IS NULL OR country = '' OR country = ?)", [$plan_id, $user_country]);
 if (empty($plan)) {
-    $_SESSION['error'] = __('Selected plan is not available');
+    $_SESSION['error'] = __('Selected plan is not available in your country');
     header('Location: /user/invest');
     exit;
 }

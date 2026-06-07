@@ -35,6 +35,7 @@ $is_featured = isset($_POST['is_featured']) ? 1 : 0;
 $status = sanitize_input($_POST['status'] ?? 'active');
 $waiting_period_value = intval($_POST['waiting_period_value'] ?? 0);
 $waiting_period_unit = sanitize_input($_POST['waiting_period_unit'] ?? 'days');
+$country = sanitize_input($_POST['country'] ?? '');
 
 // Validate required fields
 if (empty($name) || empty($payout_interval)) {
@@ -139,6 +140,18 @@ if (!in_array($waiting_period_unit, ['seconds', 'minutes', 'hours', 'days', 'wee
     $waiting_period_unit = 'days';
 }
 
+// Validate country: empty string = global; otherwise must be a valid accepted country code
+if ($country !== '') {
+    $accepted_countries = get_accepted_countries();
+    if (!in_array($country, $accepted_countries, true)) {
+        $_SESSION['error'] = __('Invalid country selected');
+        header('Location: /admin/plans');
+        exit;
+    }
+} else {
+    $country = null; // Store NULL for global plans in database
+}
+
 try {
     // Insert new plan (id is auto-generated)
     $insert_id = db_insert(
@@ -158,6 +171,7 @@ try {
             'status' => $status,
             'waiting_period_value' => $waiting_period_value,
             'waiting_period_unit' => $waiting_period_unit,
+            'country' => $country,
             'created_at' => date('Y-m-d H:i:s'),
             'updated_at' => date('Y-m-d H:i:s')
         ]

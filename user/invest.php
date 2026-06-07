@@ -13,8 +13,12 @@ $user_id = $_SESSION['user_id'];
 $currency_symbol = get_currency_symbol();
 
 $plan_id = isset($_GET['plan']) ? intval($_GET['plan']) : null;
-$plan = $plan_id ? db_query("SELECT * FROM investment_plans WHERE id = ? AND status = 'active'", [$plan_id])[0] ?? null : null;
-$plans = db_query("SELECT * FROM investment_plans WHERE status = 'active' ORDER BY min_amount ASC", []);
+
+// Get user's country for filtering plans
+$user_country = db_query("SELECT country FROM users WHERE id = ?", [$user_id])[0]['country'] ?? null;
+
+$plan = $plan_id ? db_query("SELECT * FROM investment_plans WHERE id = ? AND status = 'active' AND (country IS NULL OR country = '' OR country = ?)", [$plan_id, $user_country])[0] ?? null : null;
+$plans = db_query("SELECT * FROM investment_plans WHERE status = 'active' AND (country IS NULL OR country = '' OR country = ?) ORDER BY min_amount ASC", [$user_country]);
 $available = get_available_balance($user_id);
 
 // Get user's balance
