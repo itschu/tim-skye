@@ -141,7 +141,7 @@ function create_investment($user_id, $plan_id, $amount)
         $data = [
             'user_id' => $user_id,
             'plan_id' => $plan_id,
-            'amount' => number_format((float)$amount, 2, '.', ''),
+            'amount' => number_format((float)$amount, 15, '.', ''),
             'start_date' => $start_date,
             'end_date' => $end_date,
             'next_payout_date' => $next_payout_date,
@@ -192,7 +192,7 @@ function calculate_profit($investment_id)
     // Treat ROI as the percentage earned per payout interval. Do NOT divide by duration or interval count.
     $per = $amount * ($roi / 100.0);
 
-    return round($per, 2);
+    return $per;
 }
 
 /**
@@ -367,7 +367,7 @@ function credit_profit($investment_id)
         $chosen_next_ts = max($advanced_next_ts, $min_next_ts);
         $next = date('Y-m-d H:i:s', $chosen_next_ts);
 
-        db_update('investments', ['total_profit_earned' => number_format($new_total, 2, '.', ''), 'next_payout_date' => $next], 'id = ?', [$investment_id]);
+        db_update('investments', ['total_profit_earned' => number_format($new_total, 15, '.', ''), 'next_payout_date' => $next], 'id = ?', [$investment_id]);
         $db->commit();
 
         // Send profit payout email notification (if enabled)
@@ -640,7 +640,7 @@ FROM investments i JOIN investment_plans p ON i.plan_id = p.id WHERE i.id = ?", 
 
         // Update investment with final profit and set next_payout_date to end_date to prevent double-crediting
         db_update('investments', [
-            'total_profit_earned' => number_format($total_profit_earned, 2, '.', ''),
+            'total_profit_earned' => number_format($total_profit_earned, 15, '.', ''),
             'next_payout_date' => $inv['end_date']
         ], 'id = ?', [$investment_id]);
 
@@ -808,14 +808,14 @@ function cancel_investment($investment_id, $user_id)
 
         // Record penalty transaction
         if ($penalty > 0) {
-            create_transaction($user_id, 'cancellation_penalty', number_format($penalty, 2, '.', ''), 'completed', "Cancellation penalty for investment #$investment_id");
+            create_transaction($user_id, 'cancellation_penalty', number_format($penalty, 15, '.', ''), 'completed', "Cancellation penalty for investment #$investment_id");
         }
 
         // Update investment to cancelled and clear next payout to avoid further processing
         db_update('investments', [
             'status' => 'cancelled',
             'next_payout_date' => null,
-            'total_profit_earned' => number_format($total_profit_earned, 2, '.', '')
+            'total_profit_earned' => number_format($total_profit_earned, 15, '.', '')
         ], 'id = ?', [$investment_id]);
         $db->commit();
         return ['refund' => $refund, 'penalty' => $penalty];

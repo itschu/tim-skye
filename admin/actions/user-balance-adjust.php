@@ -33,7 +33,7 @@ if (!is_numeric($amount_raw) || floatval($amount_raw) <= 0) {
     exit;
 }
 
-$amount = round(floatval($amount_raw), 2);
+$amount = floatval($amount_raw);
 
 if (!in_array($type, ['credit', 'debit'])) {
     echo json_encode(['success' => false, 'message' => __('Invalid adjustment type')]);

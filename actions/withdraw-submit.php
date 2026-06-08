@@ -219,9 +219,9 @@ try {
     // Create withdrawal record
     $withdrawal_id = db_insert('withdrawals', [
         'user_id' => $user_id,
-        'amount' => number_format($amount, 2, '.', ''),
-        'fee_amount' => number_format($fee_amount, 2, '.', ''),
-        'net_amount' => number_format($net_amount, 2, '.', ''),
+        'amount' => number_format($amount, 15, '.', ''),
+        'fee_amount' => number_format($fee_amount, 15, '.', ''),
+        'net_amount' => number_format($net_amount, 15, '.', ''),
         'payment_method' => $method,
         'account_details' => json_encode($account_details),
         'status' => 'pending',

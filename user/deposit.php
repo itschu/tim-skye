@@ -767,7 +767,7 @@ $recent_deposits = db_query("SELECT * FROM deposits WHERE user_id = ? ORDER BY c
                 // Manually set form values before submission (x-model doesn't sync reliably on programmatic submit)
                 const form = this.$refs.depositFormHidden;
                 form.querySelector('input[name="payment_method"]').value = this.selectedMethod;
-                form.querySelector('input[name="amount"]').value = this.numericAmount.toFixed(2);
+                form.querySelector('input[name="amount"]').value = this.numericAmount;
                 form.querySelector('input[name="local_currency_amount"]').value = this.hasLocalCurrency ? this.localAmount : '';
 
                 // Copy file from visible input to hidden form

@@ -52,7 +52,7 @@ function get_available_balance($user_id)
 {
     $balance = get_user_balance($user_id);
     $locked = get_locked_balance($user_id);
-    return round($balance - $locked, 2);
+    return $balance - $locked;
 }
 
 /**
@@ -86,7 +86,7 @@ function create_transaction($user_id, $type, $amount, $status = 'pending', $deta
     $data = [
         'user_id' => $user_id,
         'type' => $type,
-        'amount' => number_format((float)$amount, 2, '.', ''),
+        'amount' => number_format((float)$amount, 15, '.', ''),
         'status' => $status,
         'details' => $details,
         'source_id' => $source_id,
@@ -126,7 +126,7 @@ function credit_wallet($user_id, $amount, $type, $details = null, $existing_db =
             $db->beginTransaction();
         }
         $stmt = $db->prepare("UPDATE users SET balance = balance + ? WHERE id = ?");
-        $stmt->execute([number_format((float)$amount, 2, '.', ''), $user_id]);
+        $stmt->execute([number_format((float)$amount, 15, '.', ''), $user_id]);
         $tx_id = create_transaction($user_id, $type, $amount, 'completed', $details);
         if (!$is_nested) {
             $db->commit();
@@ -170,7 +170,7 @@ function debit_wallet($user_id, $amount, $type, $details = null, $existing_db = 
             $db->beginTransaction();
         }
         $stmt = $db->prepare("UPDATE users SET balance = balance - ? WHERE id = ?");
-        $stmt->execute([number_format((float)$amount, 2, '.', ''), $user_id]);
+        $stmt->execute([number_format((float)$amount, 15, '.', ''), $user_id]);
         $tx_id = create_transaction($user_id, $type, $amount, 'completed', $details);
         if (!$is_nested) {
             $db->commit();

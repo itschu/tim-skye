@@ -121,13 +121,13 @@ try {
     // Persist deposit request (store gross amount, and record fee/net)
     $deposit_data = [
         'user_id' => $user_id,
-        'amount' => number_format($amount, 2, '.', ''), // gross amount
-        'fee_amount' => number_format($fee_amount, 2, '.', ''),
-        'net_amount' => number_format($net_amount, 2, '.', ''),
+        'amount' => number_format($amount, 15, '.', ''), // gross amount
+        'fee_amount' => number_format($fee_amount, 15, '.', ''),
+        'net_amount' => number_format($net_amount, 15, '.', ''),
         'payment_method' => $payment_method,
         'proof_path' => $proof_path,
         'status' => 'pending',
-        'local_currency_amount' => $local_currency_amount ? number_format($local_currency_amount, 2, '.', '') : null,
+        'local_currency_amount' => $local_currency_amount ? number_format($local_currency_amount, 15, '.', '') : null,
         'local_currency_code' => $local_currency_code,
         'exchange_rate_used' => $exchange_rate_used ? number_format($exchange_rate_used, 8, '.', '') : null,
         'created_at' => date('Y-m-d H:i:s'),

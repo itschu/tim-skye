@@ -54,7 +54,7 @@ try {
         $existing_tx_id = $existing_tx[0]['id'];
         // Debit balance directly within transaction
         $stmt = $db->prepare("UPDATE users SET balance = balance - ? WHERE id = ?");
-        $stmt->execute([number_format((float)$withdrawal['amount'], 2, '.', ''), $withdrawal['user_id']]);
+        $stmt->execute([number_format((float)$withdrawal['amount'], 15, '.', ''), $withdrawal['user_id']]);
 
         // Update existing transaction to completed
         db_update('transactions', [
@@ -67,12 +67,12 @@ try {
     } else {
         // Backward compat: inline debit and create transaction within the current DB transaction
         $stmt = $db->prepare("UPDATE users SET balance = balance - ? WHERE id = ?");
-        $stmt->execute([number_format((float)$withdrawal['amount'], 2, '.', ''), $withdrawal['user_id']]);
+        $stmt->execute([number_format((float)$withdrawal['amount'], 15, '.', ''), $withdrawal['user_id']]);
 
         $tx_data = [
             'user_id' => $withdrawal['user_id'],
             'type' => 'withdrawal',
-            'amount' => number_format((float)$withdrawal['amount'], 2, '.', ''),
+            'amount' => number_format((float)$withdrawal['amount'], 15, '.', ''),
             'status' => 'completed',
             'details' => 'Withdrawal #' . $withdrawal_id . ' approved',
             'source_id' => $withdrawal_id,
