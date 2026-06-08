@@ -53,6 +53,22 @@ $waiting_period_value = intval($_POST['waiting_period_value'] ?? 0);
 $waiting_period_unit = sanitize_input($_POST['waiting_period_unit'] ?? 'days');
 $country = sanitize_input($_POST['country'] ?? '');
 
+// Convert display amounts (local currency) to USD when provided
+if (isset($_POST['display_min_amount']) || isset($_POST['display_max_amount'])) {
+    $display_min = floatval($_POST['display_min_amount'] ?? 0);
+    $display_max = floatval($_POST['display_max_amount'] ?? 0);
+    if ($country !== '') {
+        $local_currency = get_user_local_currency($country);
+        if ($local_currency) {
+            $rate = get_rate_for_currency($local_currency);
+            if ($rate && $rate > 0) {
+                $min_amount = $display_min / $rate;
+                $max_amount = $display_max / $rate;
+            }
+        }
+    }
+}
+
 // Validate required fields
 if (empty($name) || empty($payout_interval)) {
     $_SESSION['error'] = __('Name and payout interval are required');

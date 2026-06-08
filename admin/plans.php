@@ -30,10 +30,29 @@ foreach ($plans as $plan) {
 require_once ROOT . '/includes/admin-header.php';
 ?>
 
+<script>
+window.countryCurrencyData = <?php
+    $country_currency_js = [];
+    foreach ($accepted_countries as $code) {
+        $cc = get_user_local_currency($code);
+        if ($cc) {
+            $country_currency_js[$code] = [
+                'currency_code' => $cc,
+                'symbol' => get_currency_symbol($cc),
+                'rate' => get_rate_for_currency($cc)
+            ];
+        }
+    }
+    echo json_encode($country_currency_js);
+?>;
+</script>
+
 <div class="container-fluid p-3 p-md-4" x-data="{ 
     sheetOpen: false,
     isEdit: false,
     currentPlan: null,
+    displayMinAmount: 0,
+    displayMaxAmount: 0,
     openSheet(plan = null) {
         this.isEdit = plan !== null;
         if (plan === null) {
@@ -54,6 +73,8 @@ require_once ROOT . '/includes/admin-header.php';
                 waiting_period_unit: 'days',
                 country: ''
             };
+            this.displayMinAmount = 0;
+            this.displayMaxAmount = 0;
         } else {
             this.currentPlan = JSON.parse(JSON.stringify(plan));
             if (typeof this.currentPlan.payout_interval_value === 'undefined' && typeof this.currentPlan.payout_interval_days !== 'undefined') {
@@ -68,6 +89,15 @@ require_once ROOT . '/includes/admin-header.php';
             if (typeof this.currentPlan.waiting_period_value === 'undefined') this.currentPlan.waiting_period_value = 0;
             if (typeof this.currentPlan.waiting_period_unit === 'undefined') this.currentPlan.waiting_period_unit = 'days';
             if (typeof this.currentPlan.country === 'undefined' || this.currentPlan.country === null) this.currentPlan.country = '';
+            // Convert stored USD amounts to local currency for display
+            let rate = this.getExchangeRate();
+            if (rate && rate > 0) {
+                this.displayMinAmount = this.convertUsdToLocal(this.currentPlan.min_amount || 0);
+                this.displayMaxAmount = this.convertUsdToLocal(this.currentPlan.max_amount || 0);
+            } else {
+                this.displayMinAmount = this.currentPlan.min_amount || 0;
+                this.displayMaxAmount = this.currentPlan.max_amount || 0;
+            }
         }
         this.sheetOpen = true;
         document.body.style.overflow = 'hidden';
@@ -75,7 +105,31 @@ require_once ROOT . '/includes/admin-header.php';
     closeSheet() {
         this.sheetOpen = false;
         document.body.style.overflow = '';
-        setTimeout(() => { this.currentPlan = null; }, 200);
+        setTimeout(() => { this.currentPlan = null; this.displayMinAmount = 0; this.displayMaxAmount = 0; }, 200);
+    },
+    getCurrencySymbol() {
+        if (!this.currentPlan || !this.currentPlan.country) return '<?php echo e(get_currency_symbol(get_currency_code())); ?>';
+        let data = window.countryCurrencyData[this.currentPlan.country];
+        return data ? data.symbol : '<?php echo e(get_currency_symbol(get_currency_code())); ?>';
+    },
+    getExchangeRate() {
+        if (!this.currentPlan || !this.currentPlan.country) return null;
+        let data = window.countryCurrencyData[this.currentPlan.country];
+        return data ? (data.rate || null) : null;
+    },
+    convertUsdToLocal(usd) {
+        let rate = this.getExchangeRate();
+        if (rate && rate > 0) {
+            return parseFloat((parseFloat(usd) * rate).toFixed(2));
+        }
+        return parseFloat(parseFloat(usd).toFixed(2));
+    },
+    convertLocalToUsd(local) {
+        let rate = this.getExchangeRate();
+        if (rate && rate > 0) {
+            return parseFloat((parseFloat(local) / rate).toFixed(15));
+        }
+        return parseFloat(parseFloat(local).toFixed(15));
     },
     waitingExceedsDuration() {
         if (!this.currentPlan || this.currentPlan.waiting_period_value <= 0) return false;
@@ -170,8 +224,17 @@ require_once ROOT . '/includes/admin-header.php';
                                     </td>
                                     <td>
                                         <div class="text-mono small">
-                                            <div><?php echo format_money($plan['min_amount']); ?></div>
-                                            <div class="text-muted"><?php echo format_money($plan['max_amount']); ?></div>
+                                            <?php
+                                            $plan_country = $plan['country'] ?? null;
+                                            $plan_currency_code = $plan_country ? get_user_local_currency($plan_country) : null;
+                                            $plan_rate = $plan_currency_code ? get_rate_for_currency($plan_currency_code) : null;
+                                            $plan_symbol = $plan_currency_code ? get_currency_symbol($plan_currency_code) : get_currency_symbol();
+
+                                            $display_min = $plan_rate ? ($plan['min_amount'] * $plan_rate) : $plan['min_amount'];
+                                            $display_max = $plan_rate ? ($plan['max_amount'] * $plan_rate) : $plan['max_amount'];
+                                            ?>
+                                            <div><?php echo $plan_symbol . number_format($display_min, 2); ?></div>
+                                            <div class="text-muted"><?php echo $plan_symbol . number_format($display_max, 2); ?></div>
                                         </div>
                                     </td>
                                     <td>
@@ -280,8 +343,17 @@ require_once ROOT . '/includes/admin-header.php';
                                     </td>
                                     <td>
                                         <div class="text-mono small text-muted">
-                                            <div><?php echo format_money($plan['min_amount']); ?></div>
-                                            <div><?php echo format_money($plan['max_amount']); ?></div>
+                                            <?php
+                                            $plan_country = $plan['country'] ?? null;
+                                            $plan_currency_code = $plan_country ? get_user_local_currency($plan_country) : null;
+                                            $plan_rate = $plan_currency_code ? get_rate_for_currency($plan_currency_code) : null;
+                                            $plan_symbol = $plan_currency_code ? get_currency_symbol($plan_currency_code) : get_currency_symbol();
+
+                                            $display_min = $plan_rate ? ($plan['min_amount'] * $plan_rate) : $plan['min_amount'];
+                                            $display_max = $plan_rate ? ($plan['max_amount'] * $plan_rate) : $plan['max_amount'];
+                                            ?>
+                                            <div><?php echo $plan_symbol . number_format($display_min, 2); ?></div>
+                                            <div><?php echo $plan_symbol . number_format($display_max, 2); ?></div>
                                         </div>
                                     </td>
                                     <td>
@@ -396,6 +468,12 @@ require_once ROOT . '/includes/admin-header.php';
                         currentPlan.is_compounding = 0;
                     }
 
+                    var dMin = parseFloat(this.displayMinAmount) || 0;
+                    var dMax = parseFloat(this.displayMaxAmount) || 0;
+                    if (dMax > 0 && dMin > dMax) {
+                        alert(<?php echo htmlspecialchars(json_encode(__('Minimum amount cannot exceed maximum amount')), ENT_QUOTES, 'UTF-8'); ?>); return;
+                    }
+
                     form.submit();
                 }).call(this, event)">
 
@@ -428,16 +506,18 @@ require_once ROOT . '/includes/admin-header.php';
                             <div class="col-6">
                                 <label class="form-label small text-muted-custom fw-bold"><?php echo __('Min Amount'); ?></label>
                                 <div class="input-group nowrap">
-                                    <span class="input-group-text bg-black border-subtle text-muted-custom"><?php echo get_currency_symbol(get_currency_code()); ?></span>
-                                    <input type="number" name="min_amount" class="form-control-custom" step="0.01" min="0" x-model="currentPlan.min_amount">
+                                    <span class="input-group-text bg-black border-subtle text-muted-custom" x-text="getCurrencySymbol()"></span>
+                                    <input type="number" class="form-control-custom" step="0.01" min="0" x-model="displayMinAmount">
                                 </div>
+                                <input type="hidden" name="display_min_amount" :value="displayMinAmount">
                             </div>
                             <div class="col-6">
                                 <label class="form-label small text-muted-custom fw-bold"><?php echo __('Max Amount'); ?></label>
                                 <div class="input-group nowrap">
-                                    <span class="input-group-text bg-black border-subtle text-muted-custom"><?php echo get_currency_symbol(get_currency_code()); ?></span>
-                                    <input type="number" name="max_amount" class="form-control-custom" step="0.01" min="0" x-model="currentPlan.max_amount">
+                                    <span class="input-group-text bg-black border-subtle text-muted-custom" x-text="getCurrencySymbol()"></span>
+                                    <input type="number" class="form-control-custom" step="0.01" min="0" x-model="displayMaxAmount">
                                 </div>
+                                <input type="hidden" name="display_max_amount" :value="displayMaxAmount">
                             </div>
                         </div>
 
