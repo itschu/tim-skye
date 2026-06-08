@@ -64,16 +64,35 @@ try {
     $users = db_query("SELECT * FROM users WHERE id = ? AND status = 'active'", [$_SESSION['user_id']]);
 
     if (empty($users)) {
-        // User not found or banned
-        session_unset();
-        session_destroy();
-        setcookie(session_name(), '', time() - 3600, '/');
-        header('Location: /login');
-        exit;
+        // User not found or banned — preserve session in case it's a transient read failure
+        http_response_code(503);
+        die('Account data temporarily unavailable. Please refresh the page in a moment.');
     }
 
     // Store user data in global for page access
     $GLOBALS['current_user'] = $users[0];
+} catch (PDOException $e) {
+    error_log("Auth DB error: " . $e->getMessage());
+
+    $sqlState = $e->getCode();
+    $errorInfo = $e->errorInfo;
+    $driverCode = $errorInfo[1] ?? null;
+
+    // Known transient database error SQLSTATE codes and driver codes
+    $transientStates = ['HY000', '40001', '08S01', '08001', '08004'];
+    $transientDriverCodes = [2002, 2006, 1205];
+
+    $isTransient = in_array($sqlState, $transientStates, true)
+        || in_array($driverCode, $transientDriverCodes, true);
+
+    if ($isTransient) {
+        // Preserve the session — user can retry once service recovers
+        http_response_code(503);
+        die('Service temporarily unavailable. Please refresh the page in a moment.');
+    }
+
+    // Non-transient DB errors: fall through to generic Exception handling
+    throw $e;
 } catch (Exception $e) {
     error_log("Auth error: " . $e->getMessage());
     session_unset();
