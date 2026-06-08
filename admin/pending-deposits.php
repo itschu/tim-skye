@@ -33,10 +33,10 @@ $total_count = $total_row[0]['count'] ?? 0;
 $total_pages = ceil($total_count / $per_page);
 
 // Get pending deposits with search filter and pagination
-$list_query = "SELECT d.*, u.name, u.email, u.profile_picture FROM deposits d 
-               JOIN users u ON d.user_id = u.id 
+$list_query = "SELECT d.*, u.name, u.email, u.profile_picture, u.country FROM deposits d
+               JOIN users u ON d.user_id = u.id
                WHERE " . $where . "
-               ORDER BY d.created_at DESC 
+               ORDER BY d.created_at DESC
                LIMIT ? OFFSET ?";
 $list_params = array_merge($params, [$per_page, $offset]);
 $deposits = db_query($list_query, $list_params);
@@ -156,6 +156,14 @@ $deposits = db_query($list_query, $list_params);
                                             <?php echo __('Fee:'); ?> <?php echo format_money($dep['fee_amount']); ?> &middot; <?php echo __('Net:'); ?> <?php echo format_money($dep['net_amount']); ?>
                                         </div>
                                     <?php endif; ?>
+                                    <?php if (!empty($dep['local_currency_amount']) && !empty($dep['local_currency_code'])): ?>
+                                        <div class="small text-secondary mt-1">
+                                            <?php echo $dep['local_currency_code'] . ' ' . number_format($dep['local_currency_amount'], 2); ?>
+                                            <?php if (!empty($dep['exchange_rate_used'])): ?>
+                                                <span class="text-muted">@ <?php echo number_format($dep['exchange_rate_used'], 4); ?></span>
+                                            <?php endif; ?>
+                                        </div>
+                                    <?php endif; ?>
                                 </td>
                                 <td class="text-secondary small"><span class="font-mono text-xs"><?php echo time_ago($dep['created_at']); ?></span></td>
                                 <td><span class="status-pill status-pending"><i class="fa-solid fa-clock-rotate-left"></i> <?php echo __('Pending'); ?></span></td>
@@ -253,6 +261,15 @@ $deposits = db_query($list_query, $list_params);
                             <div class="d-flex justify-content-between align-items-center mb-2">
                                 <span class="text-muted-custom small"><?php echo __('Gross Amount'); ?></span>
                                 <span class="font-mono" x-text="selected?.amount ? currencySymbol + parseFloat(selected.amount).toFixed(2) : ''"></span>
+                            </div>
+                        </div>
+                        <div class="mb-3" x-show="selected?.local_currency_amount && selected?.local_currency_code">
+                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                <span class="text-muted-custom small"><?php echo __('User Local Amount'); ?></span>
+                                <span class="text-end text-white">
+                                    <span class="font-mono" x-text="(selected?.local_currency_code ? selected.local_currency_code + ' ' : '') + (selected?.local_currency_amount ? parseFloat(selected.local_currency_amount).toFixed(2) : '')"></span>
+                                    <span class="text-muted small" x-show="selected?.exchange_rate_used" x-text="'@ ' + parseFloat(selected.exchange_rate_used).toFixed(4)"></span>
+                                </span>
                             </div>
                         </div>
                         <div class="mb-3" x-show="selected?.fee_amount && parseFloat(selected.fee_amount) > 0">

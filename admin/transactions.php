@@ -33,7 +33,7 @@ if ($type_filter === 'all' || $type_filter === 'deposit') {
         $pending_deposit_params = [$search_term, $search_term, $search_term];
     }
 
-    $pending_deposit_sql = "SELECT 
+    $pending_deposit_sql = "SELECT
             d.id,
             d.user_id,
             'deposit' as type,
@@ -43,7 +43,11 @@ if ($type_filter === 'all' || $type_filter === 'deposit') {
             d.created_at,
             u.name as user_name,
             u.email as user_email,
-            u.profile_picture
+            u.profile_picture,
+            u.country,
+            d.local_currency_amount,
+            d.local_currency_code,
+            d.exchange_rate_used
         FROM deposits d
         JOIN users u ON d.user_id = u.id
         WHERE " . implode(" AND ", $pending_deposit_where) . "
@@ -93,7 +97,7 @@ $tx_count_result = db_query($tx_count_sql, $tx_params);
 $tx_count = $tx_count_result[0]['count'] ?? 0;
 
 // Get transactions
-$tx_sql = "SELECT 
+$tx_sql = "SELECT
         t.id,
         t.user_id,
         t.type,
@@ -103,14 +107,37 @@ $tx_sql = "SELECT
         t.created_at,
         u.name as user_name,
         u.email as user_email,
-        u.profile_picture
-    FROM transactions t 
-    JOIN users u ON t.user_id = u.id 
-    {$tx_where_clause} 
-    ORDER BY t.created_at DESC 
+        u.profile_picture,
+        u.country
+    FROM transactions t
+    JOIN users u ON t.user_id = u.id
+    {$tx_where_clause}
+    ORDER BY t.created_at DESC
     LIMIT ? OFFSET ?";
 $tx_query_params = array_merge($tx_params, [$per_page, $offset]);
 $transactions = db_query($tx_sql, $tx_query_params);
+
+// Compute local currency for non-investment transaction types on-the-fly
+foreach ($transactions as &$tx) {
+    if ($tx['type'] === 'investment') {
+        continue;
+    }
+    $tx['local_currency_code'] = null;
+    $tx['local_currency_amount'] = null;
+    $tx['exchange_rate_used'] = null;
+    if (!empty($tx['country'])) {
+        $local_code = get_user_local_currency($tx['country']);
+        if ($local_code) {
+            $rate = get_rate_for_currency($local_code);
+            if ($rate) {
+                $tx['local_currency_code'] = $local_code;
+                $tx['local_currency_amount'] = $tx['amount'] * $rate;
+                $tx['exchange_rate_used'] = $rate;
+            }
+        }
+    }
+}
+unset($tx);
 
 // If showing deposits, merge pending deposits with transaction deposits
 if ($type_filter === 'deposit' || $type_filter === 'all') {
@@ -295,6 +322,14 @@ require_once ROOT . '/includes/admin-header.php';
                                 </td>
                                 <td class="text-mono fw-medium <?php echo in_array($tx['type'], ['deposit', 'profit', 'referral', 'bonus']) ? 'text-success' : 'text-danger'; ?> small">
                                     <?php echo in_array($tx['type'], ['deposit', 'profit', 'referral', 'bonus']) ? '+' : ''; ?><?php echo format_money($tx['amount']); ?>
+                                    <?php if (!empty($tx['local_currency_amount']) && !empty($tx['local_currency_code']) && $tx['type'] !== 'investment'): ?>
+                                        <div class="small text-secondary mt-1">
+                                            <?php echo $tx['local_currency_code'] . ' ' . number_format($tx['local_currency_amount'], 2); ?>
+                                            <?php if (!empty($tx['exchange_rate_used'])): ?>
+                                                <span class="text-muted">@ <?php echo number_format($tx['exchange_rate_used'], 4); ?></span>
+                                            <?php endif; ?>
+                                        </div>
+                                    <?php endif; ?>
                                 </td>
                                 <td>
                                     <div class="d-flex align-items-center gap-2">
@@ -397,6 +432,11 @@ require_once ROOT . '/includes/admin-header.php';
                     <div class="col-6">
                         <label class="text-muted-custom small d-block mb-1"><?php echo __('Amount'); ?></label>
                         <span class="text-mono text-white small" x-text="selectedTx?.display_amount || '---'"></span>
+                    </div>
+                    <div class="col-6" x-show="selectedTx?.local_currency_amount && selectedTx?.local_currency_code && selectedTx?.type !== 'investment'">
+                        <label class="text-muted-custom small d-block mb-1"><?php echo __('User Local Amount'); ?></label>
+                        <span class="text-mono text-white small" x-text="(selectedTx?.local_currency_code || '') + ' ' + (selectedTx?.local_currency_amount ? parseFloat(selectedTx.local_currency_amount).toFixed(2) : '')"></span>
+                        <span class="text-muted small" x-show="selectedTx?.exchange_rate_used" x-text="'@ ' + parseFloat(selectedTx.exchange_rate_used).toFixed(4)"></span>
                     </div>
                     <div class="col-6">
                         <label class="text-muted-custom small d-block mb-1"><?php echo __('Type'); ?></label>

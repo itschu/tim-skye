@@ -31,10 +31,10 @@ $total_count = $total_row[0]['count'] ?? 0;
 $total_pages = ceil($total_count / $per_page);
 
 // Get pending withdrawals with search and pagination
-$sql = "SELECT w.*, u.name, u.email, u.balance, u.profile_picture FROM withdrawals w 
-        JOIN users u ON w.user_id = u.id 
-        WHERE " . $where . " 
-        ORDER BY w.created_at DESC 
+$sql = "SELECT w.*, u.name, u.email, u.balance, u.profile_picture, u.country FROM withdrawals w
+        JOIN users u ON w.user_id = u.id
+        WHERE " . $where . "
+        ORDER BY w.created_at DESC
         LIMIT ? OFFSET ?";
 $list_params = array_merge($params, [$per_page, $offset]);
 $withdrawals = db_query($sql, $list_params);
@@ -92,6 +92,21 @@ foreach ($withdrawals as $w) {
             $destination_full = ['Details' => $w['account_details'] ?? ''];
     }
 
+    // Compute local currency amount on-the-fly
+    $local_currency_code = null;
+    $local_currency_amount = null;
+    $exchange_rate_used = null;
+    if (!empty($w['country'])) {
+        $local_currency_code = get_user_local_currency($w['country']);
+        if ($local_currency_code) {
+            $rate = get_rate_for_currency($local_currency_code);
+            if ($rate) {
+                $local_currency_amount = $w['amount'] * $rate;
+                $exchange_rate_used = $rate;
+            }
+        }
+    }
+
     $js_withdrawals[] = [
         'id' => $w['id'],
         'username' => $w['name'],
@@ -105,6 +120,9 @@ foreach ($withdrawals as $w) {
         'net_amount' => format_money($w['net_amount']),
         'date' => date('M j, Y H:i', strtotime($w['created_at'])),
         'user_balance' => format_money($w['balance']),
+        'local_currency_code' => $local_currency_code,
+        'local_currency_amount' => $local_currency_amount !== null ? number_format($local_currency_amount, 2) : null,
+        'exchange_rate_used' => $exchange_rate_used,
     ];
 }
 $withdrawals_js = json_encode($js_withdrawals, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
@@ -243,6 +261,10 @@ $all_count = db_query("SELECT COUNT(*) as count FROM withdrawals", [])[0]['count
                             <td>
                                 <div class="fw-bold text-white"><span class="font-mono" x-text="item.amount"></span></div>
                                 <div class="small text-danger" x-show="item.fee && item.fee !== '$0.00'"><?php echo __('Fee'); ?>: <span x-text="item.fee"></span></div>
+                                <div class="small text-secondary mt-1" x-show="item.local_currency_amount && item.local_currency_code">
+                                    <span x-text="item.local_currency_code + ' ' + item.local_currency_amount"></span>
+                                    <span class="text-muted" x-show="item.exchange_rate_used" x-text="'@ ' + parseFloat(item.exchange_rate_used).toFixed(4)"></span>
+                                </div>
                             </td>
                             <td class="text-secondary small"><span class="font-mono text-xs" x-text="item.date"></span></td>
                             <td>
@@ -380,6 +402,13 @@ $all_count = db_query("SELECT COUNT(*) as count FROM withdrawals", [])[0]['count
                             <tr x-show="selected.fee && selected.fee !== '$0.00'">
                                 <td class="text-secondary fw-bold"><?php echo __('Net Payout'); ?></td>
                                 <td class="text-success fw-bold"><span class="font-mono" x-text="selected.net_amount"></span></td>
+                            </tr>
+                            <tr x-show="selected.local_currency_amount && selected.local_currency_code">
+                                <td class="text-secondary"><?php echo __('User Local Amount'); ?></td>
+                                <td class="text-white">
+                                    <span class="font-mono" x-text="selected.local_currency_code + ' ' + selected.local_currency_amount"></span>
+                                    <span class="text-muted small" x-show="selected.exchange_rate_used" x-text="'@ ' + parseFloat(selected.exchange_rate_used).toFixed(4)"></span>
+                                </td>
                             </tr>
                         </tbody>
                     </table>
