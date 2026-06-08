@@ -293,7 +293,12 @@ function format_money($amount, $currency = null)
 {
     // Determine symbol to use
     if ($currency === null) {
-        $symbol = get_currency_symbol();
+        // If multicurrency is enabled and a user is logged in, use their local currency
+        if (is_multicurrency_enabled() && isset($_SESSION['user_id'])) {
+            $symbol = get_currency_symbol(get_user_currency_code());
+        } else {
+            $symbol = get_currency_symbol();
+        }
     } else {
         // If currency looks like a 3-letter code, convert to symbol
         if (preg_match('/^[A-Z]{3}$/i', $currency)) {
@@ -332,6 +337,42 @@ function get_currency_code()
     $code = is_string($code) ? strtoupper($code) : 'USD';
     $GLOBALS['currency_code'] = $code;
     return $code;
+}
+
+/**
+ * Check whether multicurrency support is enabled in settings.
+ * @return bool True if 'multicurrency_enabled' is set to 'yes'
+ */
+function is_multicurrency_enabled(): bool
+{
+    return get_setting('multicurrency_enabled', 'no') === 'yes';
+}
+
+/**
+ * Get the preferred currency code for a user based on their country.
+ * Falls back to the admin-configured currency if multicurrency is off
+ * or the user has no country mapping.
+ *
+ * @param int|null $user_id User ID. If null, uses the currently logged-in user.
+ * @return string ISO 4217 currency code
+ */
+function get_user_currency_code($user_id = null)
+{
+    if ($user_id === null && isset($_SESSION['user_id'])) {
+        $user_id = $_SESSION['user_id'];
+    }
+
+    if (is_multicurrency_enabled() && $user_id) {
+        $user = db_query("SELECT country FROM users WHERE id = ?", [$user_id])[0] ?? null;
+        if ($user && !empty($user['country'])) {
+            $local = get_user_local_currency($user['country']);
+            if ($local) {
+                return $local;
+            }
+        }
+    }
+
+    return get_currency_code();
 }
 
 /**
@@ -609,6 +650,8 @@ function get_country_flag_url_from_currency($currency_or_country)
 /**
  * Map an ISO 4217 currency code to a display symbol.
  * If the provided code is not recognized, the code itself is returned.
+ * Handles all codes defined in get_currencies() gracefully.
+ *
  * @param string|null $currency_code Currency code (e.g., 'USD'). If null, uses configured currency.
  * @return string Currency symbol or fallback code
  */
@@ -735,7 +778,7 @@ function get_valid_redirect_url(?string $intended_url, string $user_role = 'user
     }
 
     // Get the path
-    $path = $parsed[PHP_URL_PATH] ?? '/';
+    $path = $parsed['path'] ?? '/';
 
     // Sanitize the path
     $path = filter_var($path, FILTER_SANITIZE_URL);
