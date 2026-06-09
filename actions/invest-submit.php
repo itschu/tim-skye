@@ -87,15 +87,33 @@ $plan = $plan[0];
 $min_amount = (float)$plan['min_amount'];
 $max_amount = (float)$plan['max_amount'];
 
+// Determine display currency and converted amounts for error messages
+$plan_country = $plan['country'] ?? null;
+$display_currency = null;
+$display_min = $min_amount;
+$display_max = $max_amount;
+
+if (!empty($plan_country)) {
+    $local_currency = get_user_local_currency($plan_country);
+    if (!empty($local_currency)) {
+        $rate = get_rate_for_currency($local_currency);
+        if ($rate && $rate > 0) {
+            $display_currency = $local_currency;
+            $display_min = $min_amount * $rate;
+            $display_max = $max_amount * $rate;
+        }
+    }
+}
+
 // Validate amount against plan limits
 if ($amount < $min_amount) {
-    $_SESSION['error'] = __('Investment amount is below plan minimum of ') . format_money($min_amount);
+    $_SESSION['error'] = __('Investment amount is below plan minimum of ') . format_money($display_min, $display_currency);
     header('Location: /user/invest?plan=' . $plan_id);
     exit;
 }
 
 if ($max_amount > 0 && $amount > $max_amount) {
-    $_SESSION['error'] = __('Investment amount exceeds plan maximum of ') . format_money($max_amount);
+    $_SESSION['error'] = __('Investment amount exceeds plan maximum of ') . format_money($display_max, $display_currency);
     header('Location: /user/invest?plan=' . $plan_id);
     exit;
 }

@@ -17,6 +17,16 @@ $plan_id = isset($_GET['plan']) ? intval($_GET['plan']) : null;
 // Get user's country for filtering plans
 $user_country = db_query("SELECT country FROM users WHERE id = ?", [$user_id])[0]['country'] ?? null;
 
+// Local currency info for frontend conversion
+$local_currency_code = null;
+$exchange_rate = null;
+if ($user_country) {
+    $local_currency_code = get_user_local_currency($user_country);
+    if ($local_currency_code)
+        $exchange_rate = get_rate_for_currency($local_currency_code);
+}
+$local_currency_symbol = $local_currency_code ? get_currency_symbol($local_currency_code) : null;
+
 $plan = $plan_id ? db_query("SELECT * FROM investment_plans WHERE id = ? AND status = 'active' AND (country IS NULL OR country = '' OR country = ?)", [$plan_id, $user_country])[0] ?? null : null;
 $plans = db_query("SELECT * FROM investment_plans WHERE status = 'active' AND (country IS NULL OR country = '' OR country = ?) ORDER BY min_amount ASC", [$user_country]);
 $available = get_available_balance($user_id);
@@ -89,6 +99,7 @@ $default_plan_name = $default_plan ? $default_plan['name'] : __('Select a plan')
 <?php else: ?>
     <div x-data="{
         calculatorAmount: <?php echo $default_amount; ?>,
+        usdAmount: <?php echo $default_amount; ?>,
         selectedRoi: <?php echo $default_roi; ?>,
         selectedDuration: <?php echo $default_duration; ?>,
         selectedProfitDuration: <?php echo $default_duration; ?>,
@@ -101,6 +112,73 @@ $default_plan_name = $default_plan ? $default_plan['name'] : __('Select a plan')
         selectedWaitingPeriodUnit: '<?php echo $default_plan ? ($default_plan['waiting_period_unit'] ?? 'days') : 'days'; ?>',
         availableBalance: <?php echo $available; ?>,
         currencySymbol: '<?php echo $currency_symbol; ?>',
+        localCurrencySymbol: '<?php echo $local_currency_symbol; ?>',
+        localRate: <?php echo json_encode((float) ($exchange_rate ?: 1)); ?>,
+        localCurrencyCode: '<?php echo ($local_currency_code); ?>',
+        isLocalCurrency: false,
+        _suppressWatcher: false,
+
+        init() {
+            const root = document.documentElement._x_dataStack?.[0];
+            if (root && this.localCurrencyCode && root.currency === this.localCurrencyCode) {
+                this.isLocalCurrency = true;
+                this._suppressWatcher = true;
+                this.calculatorAmount = parseFloat((this.usdAmount * this.localRate).toFixed(2));
+                this.$nextTick(() => { this._suppressWatcher = false; });
+            }
+            this._lastCurrency = this.getRootCurrency();
+            setInterval(() => {
+                const current = this.getRootCurrency();
+                if (current !== this._lastCurrency) {
+                    this._lastCurrency = current;
+                    this.convertOnCurrencyToggle();
+                }
+            }, 500);
+
+            this.$watch('calculatorAmount', (value) => {
+                if (this._suppressWatcher) return;
+                const num = parseFloat(value);
+                if (isNaN(num)) {
+                    this.usdAmount = 0;
+                    return;
+                }
+                if (this.isLocalCurrency && this.localRate) {
+                    this.usdAmount = parseFloat((num / this.localRate).toFixed(15));
+                } else {
+                    this.usdAmount = num;
+                }
+            });
+        },
+
+        getRootCurrency() {
+            const root = document.documentElement._x_dataStack?.[0];
+            return root ? root.currency : 'USD';
+        },
+
+        convertOnCurrencyToggle() {
+            const root = document.documentElement._x_dataStack?.[0];
+            const nowLocal = root && root.currency === this.localCurrencyCode;
+            const wasLocal = this.isLocalCurrency;
+            this.isLocalCurrency = nowLocal;
+            this._suppressWatcher = true;
+            if (nowLocal && !wasLocal) {
+                this.calculatorAmount = parseFloat((this.usdAmount * this.localRate).toFixed(2));
+            } else if (!nowLocal && wasLocal) {
+                this.calculatorAmount = this.usdAmount;
+            }
+            this.$nextTick(() => { this._suppressWatcher = false; });
+        },
+
+        setPlanAmount(rawUsd) {
+            this.usdAmount = parseFloat(rawUsd);
+            this._suppressWatcher = true;
+            if (this.isLocalCurrency && this.localRate) {
+                this.calculatorAmount = parseFloat((this.usdAmount * this.localRate).toFixed(2));
+            } else {
+                this.calculatorAmount = this.usdAmount;
+            }
+            this.$nextTick(() => { this._suppressWatcher = false; });
+        },
 
         // Calculate number of payout intervals within the duration
         calculateTotalIntervals() {
@@ -143,7 +221,7 @@ $default_plan_name = $default_plan ? $default_plan['name'] : __('Select a plan')
 
         calculateProfit() {
             const totalIntervals = this.calculateTotalIntervals();
-            const profitPerInterval = this.calculatorAmount * this.selectedRoi;
+            const profitPerInterval = this.usdAmount * this.selectedRoi;
             return (profitPerInterval * totalIntervals).toFixed(2);
         }
     }">
@@ -163,8 +241,8 @@ $default_plan_name = $default_plan ? $default_plan['name'] : __('Select a plan')
                             <input type="text" class="form-control bg-light border-0 fw-bold text-primary" x-model="planName" readonly />
                         </div>
                         <div class="col-md-6">
-                            <label class="small text-muted fw-bold mb-1"><?php echo __('Investment Amount'); ?> (<?php echo e($currency_symbol); ?>)</label>
-                            <input type="number" class="form-control bg-light border-0 fw-bold" x-model="calculatorAmount" min="0" :max="availableBalance" />
+                            <label class="small text-muted fw-bold mb-1"><?php echo __('Investment Amount'); ?> (<span x-text="isLocalCurrency ? (localCurrencySymbol || currencySymbol) : currencySymbol"><?php echo e($currency_symbol); ?></span>)</label>
+                            <input type="number" class="form-control bg-light border-0 fw-bold" x-model="calculatorAmount" min="0" :max="isLocalCurrency ? availableBalance * localRate : availableBalance" />
                         </div>
                     </div>
                     <div class="mt-3 small text-muted">
@@ -235,7 +313,7 @@ $default_plan_name = $default_plan ? $default_plan['name'] : __('Select a plan')
 
                 // Build the click handler exactly like the design example (including interval info)
                 $click_handler = sprintf(
-                    "planName=%s; selectedRoi=%f; selectedDuration=%d; selectedProfitDuration=%d; calculatorAmount=%.2f; selectedPlanId=%d; selectedPayoutInterval=%s; selectedIntervalType=%s; selectedIntervalValue=%d; selectedWaitingPeriodValue=%d; selectedWaitingPeriodUnit=%s",
+                    "planName=%s; selectedRoi=%f; selectedDuration=%d; selectedProfitDuration=%d; setPlanAmount(%.2f); selectedPlanId=%d; selectedPayoutInterval=%s; selectedIntervalType=%s; selectedIntervalValue=%d; selectedWaitingPeriodValue=%d; selectedWaitingPeriodUnit=%s",
                     json_encode($p['name']),
                     $p['roi_percentage'] / 100,
                     $p['duration_days'],
@@ -350,10 +428,11 @@ $default_plan_name = $default_plan ? $default_plan['name'] : __('Select a plan')
                     <form x-data="{ loading: false }" @submit="loading = true" action="/actions/invest-submit.php" method="POST">
                         <input type="hidden" name="csrf_token" value="<?php echo csrf_token(); ?>">
                         <input type="hidden" name="plan_id" x-model="selectedPlanId">
+                        <input type="hidden" name="amount" x-model="usdAmount">
 
                         <div class="modal-body p-4">
                             <div class="text-center mb-4">
-                                <h2 class="fw-bold text-primary mb-0" x-text="formatCurrency(parseFloat(calculatorAmount || 0))"></h2>
+                                <h2 class="fw-bold text-primary mb-0" x-text="formatCurrency(parseFloat(usdAmount || 0))"></h2>
                                 <p class="text-muted small"><?php echo __('Investment Amount'); ?></p>
                             </div>
 
@@ -410,10 +489,10 @@ $default_plan_name = $default_plan ? $default_plan['name'] : __('Select a plan')
 
                             <div class="mb-3">
                                 <label class="small fw-bold text-muted mb-1"><?php echo __('Amount to Invest'); ?></label>
-                                <input type="number" name="amount" class="form-control form-control-lg bg-light border-0 fw-bold"
+                                <input type="number" class="form-control form-control-lg bg-light border-0 fw-bold"
                                     x-model="calculatorAmount"
                                     min="0"
-                                    max="<?php echo $available; ?>"
+                                    :max="isLocalCurrency ? availableBalance * localRate : availableBalance"
                                     required>
                                 <small class="text-muted"><?php echo __('Available Balance'); ?>: <span x-text="formatCurrency(<?php echo $available; ?>)"><?php echo format_money($available); ?></span></small>
                             </div>
@@ -429,7 +508,7 @@ $default_plan_name = $default_plan ? $default_plan['name'] : __('Select a plan')
                                 </div>
                                 <div class="d-flex justify-content-between small">
                                     <span class="text-muted"><?php echo __('Total Return'); ?></span>
-                                    <span class="fw-bold text-primary" x-text="formatCurrency((parseFloat(calculatorAmount || 0)) + (parseFloat(calculateProfit()) || 0))"></span>
+                                    <span class="fw-bold text-primary" x-text="formatCurrency((parseFloat(usdAmount || 0)) + (parseFloat(calculateProfit()) || 0))"></span>
                                 </div>
                             </div>
 

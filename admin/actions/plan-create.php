@@ -50,6 +50,10 @@ if (isset($_POST['display_min_amount']) || isset($_POST['display_max_amount'])) 
                 $max_amount = $display_max / $rate;
             }
         }
+    } else {
+        // Global plan: display amounts are already in USD
+        $min_amount = $display_min;
+        $max_amount = $display_max;
     }
 }
 
