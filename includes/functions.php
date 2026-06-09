@@ -1166,20 +1166,36 @@ function get_exchange_rates()
 }
 
 /**
- * Get exchange rate for a specific currency
+ * Get exchange rate for a specific currency (raw string, no float cast).
+ *
+ * This preserves exact decimal precision for MySQL DECIMAL arithmetic.
+ *
  * @param string $currency_code ISO-3 currency code (e.g. 'NGN')
- * @return float|null Exchange rate relative to base, or null if not found
+ * @return string|null Rate as a string, or null if not found
  */
-function get_rate_for_currency($currency_code)
+function get_rate_for_currency_raw($currency_code)
 {
     $rates = get_exchange_rates();
     $currency_code = strtoupper(trim($currency_code));
 
     if (!empty($rates) && isset($rates['rates'][$currency_code])) {
-        return (float) $rates['rates'][$currency_code];
+        $val = $rates['rates'][$currency_code];
+        return is_string($val) ? $val : (string) $val;
     }
 
     return null;
+}
+
+/**
+ * Get exchange rate for a specific currency (float, for display / JS use).
+ *
+ * @param string $currency_code ISO-3 currency code (e.g. 'NGN')
+ * @return float|null Exchange rate relative to base, or null if not found
+ */
+function get_rate_for_currency($currency_code)
+{
+    $raw = get_rate_for_currency_raw($currency_code);
+    return $raw !== null ? (float) $raw : null;
 }
 
 /**

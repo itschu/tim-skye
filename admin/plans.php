@@ -31,20 +31,20 @@ require_once ROOT . '/includes/admin-header.php';
 ?>
 
 <script>
-window.countryCurrencyData = <?php
-    $country_currency_js = [];
-    foreach ($accepted_countries as $code) {
-        $cc = get_user_local_currency($code);
-        if ($cc) {
-            $country_currency_js[$code] = [
-                'currency_code' => $cc,
-                'symbol' => get_currency_symbol($cc),
-                'rate' => get_rate_for_currency($cc)
-            ];
-        }
-    }
-    echo json_encode($country_currency_js);
-?>;
+    window.countryCurrencyData = <?php
+                                    $country_currency_js = [];
+                                    foreach ($accepted_countries as $code) {
+                                        $cc = get_user_local_currency($code);
+                                        if ($cc) {
+                                            $country_currency_js[$code] = [
+                                                'currency_code' => $cc,
+                                                'symbol' => get_currency_symbol($cc),
+                                                'rate' => get_rate_for_currency($cc)
+                                            ];
+                                        }
+                                    }
+                                    echo json_encode($country_currency_js);
+                                    ?>;
 </script>
 
 <div class="container-fluid p-3 p-md-4" x-data="{ 
@@ -489,6 +489,18 @@ window.countryCurrencyData = <?php
                             <input type="text" name="name" class="form-control-custom" x-model="currentPlan.name" placeholder="<?php echo __('e.g., Premium Plan'); ?>">
                         </div>
 
+                        <!-- Target Audience Section -->
+                        <div class="mb-4">
+                            <label class="form-label small text-muted-custom fw-bold"><?php echo __('Country'); ?></label>
+                            <select name="country" class="form-select-custom" x-model="currentPlan.country">
+                                <option value=""><?php echo __('Global (All Countries)'); ?></option>
+                                <?php foreach ($accepted_countries as $code): ?>
+                                    <option value="<?php echo e($code); ?>"><?php echo e($all_countries[$code] ?? $code); ?></option>
+                                <?php endforeach; ?>
+                            </select>
+                            <div class="form-text small text-muted-custom mt-2"><?php echo __('Leave empty to make this plan available globally.'); ?></div>
+                        </div>
+
                         <div class="row g-3 mb-4">
                             <div class="col-6">
                                 <label class="form-label small text-muted-custom fw-bold"><?php echo __('ROI %'); ?></label>
@@ -611,17 +623,6 @@ window.countryCurrencyData = <?php
                                 <option value="active"><?php echo __('Active'); ?></option>
                                 <option value="archived"><?php echo __('Archived'); ?></option>
                             </select>
-                        </div>
-
-                        <div class="mb-4">
-                            <label class="form-label small text-muted-custom fw-bold"><?php echo __('Country'); ?></label>
-                            <select name="country" class="form-select-custom" x-model="currentPlan.country">
-                                <option value=""><?php echo __('Global (All Countries)'); ?></option>
-                                <?php foreach ($accepted_countries as $code): ?>
-                                    <option value="<?php echo e($code); ?>"><?php echo e($all_countries[$code] ?? $code); ?></option>
-                                <?php endforeach; ?>
-                            </select>
-                            <div class="form-text small text-muted-custom mt-2"><?php echo __('Leave empty to make this plan available globally.'); ?></div>
                         </div>
                     </div>
                 </template>

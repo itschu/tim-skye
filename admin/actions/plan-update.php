@@ -5,6 +5,14 @@ require_once ROOT . '/includes/db.php';
 require_once ROOT . '/includes/functions.php';
 require_once ROOT . '/includes/validation-functions.php';
 require_once ROOT . '/includes/translation-functions.php';
+require_once ROOT . '/includes/currency-conversion.php';
+try {
+    require_not_maintenance();
+} catch (Exception $e) {
+    $_SESSION['error'] = $e->getMessage();
+    header('Location: /admin/plans');
+    exit;
+}
 
 // Check request method
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {

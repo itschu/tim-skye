@@ -71,6 +71,13 @@ $default_plan_name = $default_plan ? $default_plan['name'] : __('Select a plan')
 ?>
 <?php require ROOT . '/includes/header.php'; ?>
 
+<?php
+require_once ROOT . '/includes/currency-conversion.php';
+if (get_maintenance_mode()) {
+    echo '<div class="alert alert-warning">' . __('Platform is temporarily under maintenance. Deposits, withdrawals, and investments are disabled.') . '</div>';
+}
+?>
+
 <!-- Page Header -->
 <div class="d-flex justify-content-between align-items-start mb-4 flex-wrap gap-3">
     <div>

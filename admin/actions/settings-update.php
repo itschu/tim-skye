@@ -162,6 +162,9 @@ function handleSiteSettings()
         return;
     }
 
+    $old_currency = strtoupper(get_setting('currency', 'USD'));
+    $new_currency = strtoupper($currency);
+
     // Handle logo upload
     if (!empty($_FILES['site_logo']['name'])) {
         $upload_result = upload_file($_FILES['site_logo'], 'logo');
@@ -184,20 +187,63 @@ function handleSiteSettings()
     update_setting('contact_email', $contact_email);
     update_setting('secondary_language', $secondary_language);
     update_setting('translation_mode', $translation_mode);
-    update_setting('currency', strtoupper($currency));
 
-    // Trigger async exchange rate fetch when currency changes (fire-and-forget with 1s timeout)
-    $cron_key = $_ENV['CRON_API_KEY'] ?? null;
-    if ($cron_key) {
-        $fetch_url = get_site_url() . '/cron/fetch-exchange-rates.php?key=' . urlencode($cron_key);
-        $context = stream_context_create([
-            'http' => [
-                'method' => 'GET',
-                'timeout' => 1,
-                'ignore_errors' => true
-            ]
-        ]);
-        @file_get_contents($fetch_url, false, $context);
+    // If the base currency hasn't actually changed, just update the setting and skip conversion.
+    if ($old_currency === $new_currency) {
+        update_setting('currency', $new_currency);
+    } else {
+        // Fetch USD-based rates directly so we get the most precise values.
+        // Free APIs round small rates aggressively when the base is an exotic
+        // currency. By fetching with USD base we get e.g. XAF=568.84699999999998
+        // instead of XAF-based USD=0.001758.
+        $rate_str = null;
+
+        $usd_response = @file_get_contents('https://api.convertz.app/api/currency', false,
+            stream_context_create(['http' => ['timeout' => 10, 'ignore_errors' => true]])
+        );
+
+        if ($usd_response !== false) {
+            $pat = '/"' . preg_quote($old_currency, '/') . '"\s*:\s*([0-9]+(?:\.[0-9]+)?)/';
+            if (preg_match($pat, $usd_response, $m)) {
+                $rate_str = $m[1];
+            }
+        }
+
+        // If the direct fetch failed, fall back to the existing cache.
+        if ($rate_str === null) {
+            $rate_str = get_rate_for_currency_raw($old_currency);
+        }
+
+        if ($rate_str === null || (float) $rate_str <= 0 || !is_finite((float) $rate_str)) {
+            $_SESSION['error'] = __('Exchange rate for the selected currency is unavailable. Please refresh exchange rates and try again.');
+            return;
+        }
+
+        error_log("[settings-update] Currency switch {$old_currency} -> {$new_currency} | rate={$rate_str}", 3, ROOT . '/logs/db-errors.log');
+
+        require_once ROOT . '/includes/currency-conversion.php';
+
+        try {
+            set_maintenance_mode(true);
+            convert_all_monetary_values($rate_str, $old_currency, $new_currency);
+            // currency setting is updated atomically inside the conversion transaction
+        } catch (Exception $e) {
+            error_log('Currency conversion error: ' . $e->getMessage() . "\n" . $e->getTraceAsString(), 3, ROOT . '/logs/db-errors.log');
+            $_SESSION['error'] = __('Currency conversion failed: ') . $e->getMessage();
+            return;
+        } finally {
+            set_maintenance_mode(false);
+        }
+
+        // Rebuild the exchange-rate cache with the NEW base so the platform
+        // can display local-currency amounts correctly.
+        $cron_key = $_ENV['CRON_API_KEY'] ?? null;
+        if ($cron_key) {
+            $fetch_url = get_site_url() . '/cron/fetch-exchange-rates.php?key=' . urlencode($cron_key);
+            $context = stream_context_create(['http' => ['method' => 'GET', 'timeout' => 10, 'ignore_errors' => true]]);
+            @file_get_contents($fetch_url, false, $context);
+            unset($GLOBALS['exchange_rates']);
+        }
     }
 
     // Save contact phone/address

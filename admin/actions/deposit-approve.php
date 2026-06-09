@@ -7,6 +7,14 @@ require_once ROOT . '/includes/email-functions.php';
 require_once ROOT . '/includes/functions.php';
 require_once ROOT . '/includes/referral-functions.php';
 require_once ROOT . '/includes/translation-functions.php';
+require_once ROOT . '/includes/currency-conversion.php';
+try {
+    require_not_maintenance();
+} catch (Exception $e) {
+    $_SESSION['error'] = $e->getMessage();
+    header('Location: /admin/pending-deposits');
+    exit;
+}
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     $_SESSION['error'] = __('Invalid request method');

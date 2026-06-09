@@ -16,6 +16,15 @@ require_once __DIR__ . '/../includes/referral-functions.php';
 require_once __DIR__ . '/../includes/translation-functions.php';
 require_once __DIR__ . '/../includes/email-functions.php';
 
+require_once ROOT . '/includes/currency-conversion.php';
+try {
+    require_not_maintenance();
+} catch (Exception $e) {
+    $_SESSION['error'] = $e->getMessage();
+    header('Location: /user/dashboard');
+    exit;
+}
+
 // Initialize translation
 init_translation(get_user_language($_SESSION['user_id']));
 

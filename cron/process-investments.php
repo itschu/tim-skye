@@ -20,6 +20,12 @@ require_once ROOT . '/includes/db.php';
 require_once ROOT . '/includes/investment-functions.php';
 require_once ROOT . '/includes/wallet-functions.php';
 
+require_once ROOT . '/includes/currency-conversion.php';
+if (get_maintenance_mode()) {
+    log_cron("Platform is in maintenance mode. Skipping investment processing.", 'WARNING');
+    exit("Platform under maintenance");
+}
+
 // ============================================================================
 // API KEY VALIDATION (after database initialization)
 // ============================================================================

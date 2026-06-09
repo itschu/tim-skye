@@ -6,6 +6,14 @@ require_once ROOT . '/includes/wallet-functions.php';
 require_once ROOT . '/includes/functions.php';
 require_once ROOT . '/includes/validation-functions.php';
 require_once ROOT . '/includes/translation-functions.php';
+require_once ROOT . '/includes/currency-conversion.php';
+try {
+    require_not_maintenance();
+} catch (Exception $e) {
+    header('Content-Type: application/json');
+    echo json_encode(['success' => false, 'message' => $e->getMessage()]);
+    exit;
+}
 
 header('Content-Type: application/json');
 

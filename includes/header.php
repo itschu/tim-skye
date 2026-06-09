@@ -63,7 +63,7 @@ $exchange_rate = null;
 if ($user_country) {
     $local_currency_code = get_user_local_currency($user_country);
     if ($local_currency_code)
-        $exchange_rate = get_rate_for_currency($local_currency_code);
+        $exchange_rate = get_rate_for_currency_raw($local_currency_code);
 }
 
 $local_currency_symbol = $local_currency_code ? get_currency_symbol($local_currency_code) : null;

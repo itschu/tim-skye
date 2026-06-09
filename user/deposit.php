@@ -52,6 +52,13 @@ $recent_deposits = db_query("SELECT * FROM deposits WHERE user_id = ? ORDER BY c
 ?>
 <?php require ROOT . '/includes/header.php'; ?>
 
+<?php
+require_once ROOT . '/includes/currency-conversion.php';
+if (get_maintenance_mode()) {
+    echo '<div class="alert alert-warning">' . __('Platform is temporarily under maintenance. Deposits, withdrawals, and investments are disabled.') . '</div>';
+}
+?>
+
 <!-- Page Header -->
 <div class="d-flex justify-content-between align-items-end mb-4 flex-wrap gap-3">
     <div class="d-flex align-items-center gap-3">

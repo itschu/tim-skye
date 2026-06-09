@@ -259,6 +259,93 @@ try {
         $fallback_response = fetch_url('https://api.convertz.app/api/currency');
 
         if ($fallback_response !== false) {
+            // Extract the raw decimal strings from the JSON body so we never
+            // lose precision through json_decode float parsing.
+            $raw_rates = [];
+            if (preg_match('/"rates"\s*:\s*\{([^}]+)\}/s', $fallback_response, $m)) {
+                $rates_block = $m[1];
+                preg_match_all('/"([A-Z]{3})"\s*:\s*([0-9]+(?:\.[0-9]+)?)/', $rates_block, $matches, PREG_SET_ORDER);
+                foreach ($matches as $match) {
+                    $raw_rates[$match[1]] = $match[2];
+                }
+            }
+
+            if (empty($raw_rates)) {
+                log_cron("Fallback source returned unparseable rates block", 'WARNING');
+            } else {
+                // Handle base currency conversion if not USD
+                if ($base !== 'USD') {
+                    if (!isset($raw_rates[$base]) || bccomp($raw_rates[$base], '0', 20) <= 0) {
+                        log_cron("Fallback source does not have rate for base currency: $base", 'ERROR');
+                    } else {
+                        // Convert all rates from USD to the selected base currency
+                        // using exact BCMath string division.
+                        $converted = [];
+                        $base_rate_str = $raw_rates[$base];
+
+                        foreach ($raw_rates as $code => $usd_rate_str) {
+                            $converted[$code] = bcdiv($usd_rate_str, $base_rate_str, 20);
+                        }
+
+                        $rates = $converted;
+                        $source = 'convertz.app';
+                        $rates_count = count($rates);
+                        log_cron("[SUCCESS] convertz.app fallback succeeded with $rates_count currencies (converted to $base)", 'SUCCESS');
+                    }
+                } else {
+                    // Base is USD, use raw rates directly
+                    $rates = $raw_rates;
+                    $source = 'convertz.app';
+                    $rates_count = count($rates);
+                    log_cron("[SUCCESS] convertz.app fallback succeeded with $rates_count currencies", 'SUCCESS');
+                }
+            }
+        } else {
+            log_cron("Fallback source fetch failed (timeout or connection error)", 'WARNING');
+        }
+    }
+
+    // ========================================================================
+    // PRIMARY SOURCE: ExchangeRate-API
+    // ========================================================================
+
+    log_cron("Attempting primary source: exchangerate-api.com", 'INFO');
+
+    $api_key = $_ENV['EXCHANGERATE_API_KEY'] ?? '';
+    $primary_url = "https://v6.exchangerate-api.com/v6/{$api_key}/latest/{$base}";
+
+    $primary_response = fetch_url($primary_url);
+
+    if ($primary_response !== false) {
+        $data = json_decode($primary_response, true);
+
+        // Validate response structure
+        if (
+            $data !== null && isset($data['result']) && $data['result'] === 'success' &&
+            isset($data['conversion_rates']) && is_array($data['conversion_rates'])
+        ) {
+
+            $rates = $data['conversion_rates'];
+            $source = 'exchangerate-api';
+            $rates_count = count($rates);
+            log_cron("[SUCCESS] ExchangeRate-API returned $rates_count currencies", 'SUCCESS');
+        } else {
+            log_cron("Primary source returned invalid response structure", 'WARNING');
+        }
+    } else {
+        log_cron("Primary source fetch failed (timeout or connection error)", 'WARNING');
+    }
+
+    // ========================================================================
+    // FALLBACK SOURCE: convertz.app (only if primary failed)
+    // ========================================================================
+
+    if (empty($rates)) {
+        log_cron("Primary failed. Attempting fallback: convertz.app", 'WARNING');
+
+        $fallback_response = fetch_url('https://api.convertz.app/api/currency');
+
+        if ($fallback_response !== false) {
             $data = json_decode($fallback_response, true);
 
             // Validate response structure
@@ -270,12 +357,15 @@ try {
                     if (!isset($data['rates'][$base]) || $data['rates'][$base] <= 0) {
                         log_cron("Fallback source does not have rate for base currency: $base", 'ERROR');
                     } else {
-                        // Convert all rates from USD to the selected base currency
+                        // Convert all rates from USD to the selected base currency.
+                        // Use BCMath string division so the computed rates stay exact
+                        // instead of inheriting PHP float rounding errors.
                         $converted = [];
-                        $base_rate = $data['rates'][$base];
+                        $base_rate_str = (string) $data['rates'][$base];
 
                         foreach ($data['rates'] as $code => $usd_rate) {
-                            $converted[$code] = $usd_rate / $base_rate;
+                            $usd_rate_str = (string) $usd_rate;
+                            $converted[$code] = bcdiv($usd_rate_str, $base_rate_str, 20);
                         }
 
                         $rates = $converted;
@@ -306,8 +396,19 @@ try {
         $cache_file = ROOT . '/cache/exchange-rates.php';
         $cache_temp_file = $cache_file . '.tmp';
 
-        // Build PHP return array content
-        $rates_export = var_export($rates, true);
+        // Build PHP return array with rates stored as quoted strings.
+        // Using strings prevents PHP from parsing them as binary floats when
+        // the cache file is included, preserving exact decimal precision for
+        // MySQL DECIMAL arithmetic and JavaScript display.
+        $rates_parts = [];
+        foreach ($rates as $code => $val) {
+            $str = is_float($val) || is_int($val)
+                ? number_format((float) $val, 15, '.', '')
+                : (string) $val;
+            // Store as a quoted string literal so PHP keeps it as a string
+            $rates_parts[] = var_export($code, true) . ' => ' . var_export($str, true);
+        }
+        $rates_export = '[' . implode(', ', $rates_parts) . ']';
         $cache_content = "<?php return ['base' => '{$base}', 'rates' => {$rates_export}, 'updated_at' => " . time() . ", 'source' => '{$source}'];";
 
         // Write to temporary file first (atomic write pattern)
