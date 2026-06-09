@@ -47,7 +47,11 @@ if ($type_filter === 'all' || $type_filter === 'deposit') {
             u.country,
             d.local_currency_amount,
             d.local_currency_code,
-            d.exchange_rate_used
+            d.exchange_rate_used,
+            d.payment_method,
+            d.proof_path,
+            d.fee_amount,
+            d.net_amount
         FROM deposits d
         JOIN users u ON d.user_id = u.id
         WHERE " . implode(" AND ", $pending_deposit_where) . "
@@ -108,9 +112,17 @@ $tx_sql = "SELECT
         u.name as user_name,
         u.email as user_email,
         u.profile_picture,
-        u.country
+        u.country,
+        d2.payment_method as deposit_payment_method,
+        d2.proof_path as deposit_proof_path,
+        d2.fee_amount as deposit_fee_amount,
+        d2.net_amount as deposit_net_amount,
+        d2.local_currency_amount as deposit_local_currency_amount,
+        d2.local_currency_code as deposit_local_currency_code,
+        d2.exchange_rate_used as deposit_exchange_rate_used
     FROM transactions t
     JOIN users u ON t.user_id = u.id
+    LEFT JOIN deposits d2 ON d2.id = t.source_id AND t.type = 'deposit'
     {$tx_where_clause}
     ORDER BY t.created_at DESC
     LIMIT ? OFFSET ?";
@@ -120,6 +132,13 @@ $transactions = db_query($tx_sql, $tx_query_params);
 // Compute local currency for non-investment transaction types on-the-fly
 foreach ($transactions as &$tx) {
     if ($tx['type'] === 'investment') {
+        continue;
+    }
+    // Prefer linked deposit local-currency data if available
+    if (!empty($tx['deposit_local_currency_amount']) && !empty($tx['deposit_local_currency_code'])) {
+        $tx['local_currency_code'] = $tx['deposit_local_currency_code'];
+        $tx['local_currency_amount'] = $tx['deposit_local_currency_amount'];
+        $tx['exchange_rate_used'] = $tx['deposit_exchange_rate_used'];
         continue;
     }
     $tx['local_currency_code'] = null;
@@ -135,6 +154,17 @@ foreach ($transactions as &$tx) {
                 $tx['exchange_rate_used'] = $rate;
             }
         }
+    }
+}
+unset($tx);
+
+// Normalize linked-deposit fields onto standard keys for uniform template access
+foreach ($transactions as &$tx) {
+    if ($tx['type'] === 'deposit') {
+        $tx['payment_method'] = $tx['deposit_payment_method'] ?? $tx['payment_method'] ?? null;
+        $tx['proof_path'] = $tx['deposit_proof_path'] ?? $tx['proof_path'] ?? null;
+        $tx['fee_amount'] = $tx['deposit_fee_amount'] ?? $tx['fee_amount'] ?? null;
+        $tx['net_amount'] = $tx['deposit_net_amount'] ?? $tx['net_amount'] ?? null;
     }
 }
 unset($tx);
@@ -299,6 +329,10 @@ require_once ROOT . '/includes/admin-header.php';
                             // Compute display-ready amount string with +/- prefix and currency formatting
                             $display_amount = (in_array($tx['type'], ['deposit', 'profit', 'referral', 'bonus']) ? '+' : '') . format_money($tx['amount']);
                             $tx['display_amount'] = $display_amount;
+
+                            // Format deposit-specific amounts for the sheet
+                            $tx['display_fee_amount'] = !empty($tx['fee_amount']) && floatval($tx['fee_amount']) > 0 ? format_money($tx['fee_amount']) : null;
+                            $tx['display_net_amount'] = !empty($tx['net_amount']) && floatval($tx['net_amount']) > 0 ? format_money($tx['net_amount']) : null;
                         ?>
                             <tr @click="openSheet(<?php echo htmlspecialchars(json_encode($tx), ENT_QUOTES, 'UTF-8'); ?>)" style="cursor: pointer;">
                                 <td><span class="text-mono text-white fw-medium small">#<?php echo e($tx['id']); ?></span></td>
@@ -438,6 +472,10 @@ require_once ROOT . '/includes/admin-header.php';
                         <span class="text-mono text-white small" x-text="(selectedTx?.local_currency_code || '') + ' ' + (selectedTx?.local_currency_amount ? parseFloat(selectedTx.local_currency_amount).toFixed(2) : '')"></span>
                         <span class="text-muted small" x-show="selectedTx?.exchange_rate_used" x-text="'@ ' + parseFloat(selectedTx.exchange_rate_used).toFixed(4)"></span>
                     </div>
+                    <div class="col-6" x-show="selectedTx?.payment_method">
+                        <label class="text-muted-custom small d-block mb-1"><?php echo __('Payment Method'); ?></label>
+                        <span class="text-white small" x-text="selectedTx?.payment_method || '---'"></span>
+                    </div>
                     <div class="col-6">
                         <label class="text-muted-custom small d-block mb-1"><?php echo __('Type'); ?></label>
                         <span class="text-white small" x-text="selectedTx?.type ? selectedTx.type.charAt(0).toUpperCase() + selectedTx.type.slice(1) : '---'"></span>
@@ -452,10 +490,42 @@ require_once ROOT . '/includes/admin-header.php';
                     </div>
                 </div>
 
+                <!-- Fee / Net breakdown for deposits -->
+                <div class="mb-4 border-bottom border-subtle pb-4" x-show="selectedTx?.type === 'deposit' && selectedTx?.display_fee_amount">
+                    <h6 class="text-muted-custom text-uppercase fs-7 fw-semibold mb-3"><?php echo __('Deposit Breakdown'); ?></h6>
+                    <div class="p-3 border border-subtle rounded bg-black">
+                        <div class="mb-2 d-flex justify-content-between align-items-center">
+                            <span class="text-muted-custom small"><?php echo __('Gross Amount'); ?></span>
+                            <span class="text-mono text-white small" x-text="selectedTx?.display_amount?.replace('+','') || '---'"></span>
+                        </div>
+                        <div class="mb-2 d-flex justify-content-between align-items-center" x-show="selectedTx?.display_fee_amount">
+                            <span class="text-muted-custom small"><?php echo __('Deposit Fee'); ?></span>
+                            <span class="text-mono text-white small" x-text="selectedTx?.display_fee_amount || '---'"></span>
+                        </div>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span class="text-muted-custom small"><?php echo __('Net Credited'); ?></span>
+                            <span class="text-mono text-white small fw-bold" x-text="selectedTx?.display_net_amount || '---'"></span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Proof of Payment -->
+                <div class="mb-4 border-bottom border-subtle pb-4" x-show="selectedTx?.proof_path">
+                    <h6 class="text-muted-custom text-uppercase fs-7 fw-semibold mb-3"><?php echo __('Proof of Payment'); ?></h6>
+                    <div class="proof-thumbnail">
+                        <a :href="'/user/view-proof?file=' + selectedTx?.proof_path" target="_blank">
+                            <img :src="'/user/view-proof?file=' + selectedTx?.proof_path" style="width: 100%; max-height: 300px; object-fit: cover; border-radius: 6px;">
+                            <div class="proof-overlay">
+                                <i class="fas fa-search-plus"></i>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+
                 <div class="mb-2">
                     <h6 class="text-muted-custom text-uppercase fs-7 fw-semibold mb-2"><?php echo __('Additional Details'); ?></h6>
                 </div>
-                <div class="code-block" x-text="selectedTx?.details || 'No additional details available'"></div>
+                <div class="code-block" x-text="selectedTx?.details || '<?php echo __('No additional details available'); ?>'"></div>
             </div>
 
             <!-- Sheet Footer -->
