@@ -436,8 +436,8 @@ $all_count = db_query("SELECT COUNT(*) as count FROM withdrawals", [])[0]['count
                                 <td class="text-danger"><span class="font-mono" x-text="selected.local_currency_code + ' ' + selected.local_currency_fee"></span></td>
                             </tr>
                             <tr x-show="selected.local_currency_net && selected.local_currency_code">
-                                <td class="text-secondary fw-bold"><?php echo __('Local Net Payout'); ?></td>
-                                <td class="text-success fw-bold"><span class="font-mono" x-text="selected.local_currency_code + ' ' + selected.local_currency_net"></span></td>
+                                <td class="text-secondary fw-bold larger-text"><?php echo __('Local Net Payout'); ?></td>
+                                <td class="text-success fw-bold larger-text"><span class="font-mono" x-text="selected.local_currency_code + ' ' + selected.local_currency_net"></span></td>
                             </tr>
                         </tbody>
                     </table>

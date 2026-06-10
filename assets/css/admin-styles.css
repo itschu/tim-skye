@@ -3397,3 +3397,9 @@ textarea.font-monospace:focus {
 	font-weight: 700;
 	color: #fff;
 }
+
+.larger-text {
+	font-size: 1.1rem;
+	font-weight: 600;
+	color: var(--text-primary);
+}
