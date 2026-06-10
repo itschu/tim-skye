@@ -499,7 +499,6 @@ if (get_maintenance_mode()) {
                                 <input type="number" class="form-control form-control-lg bg-light border-0 fw-bold"
                                     x-model="calculatorAmount"
                                     min="0"
-                                    :max="isLocalCurrency ? availableBalance * localRate : availableBalance"
                                     required>
                                 <small class="text-muted"><?php echo __('Available Balance'); ?>: <span x-text="formatCurrency(<?php echo $available; ?>)"><?php echo format_money($available); ?></span></small>
                             </div>
