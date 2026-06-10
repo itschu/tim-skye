@@ -219,6 +219,13 @@ if (get_maintenance_mode()) {
                         });
                     },
 
+                    get maxAmount() {
+                        if (this.isLocalCurrency && this.exchangeRate) {
+                            return parseFloat((this.availableBalance * this.exchangeRate).toFixed(2));
+                        }
+                        return this.availableBalance;
+                    },
+
                     get feeAmount() {
                         let val = parseFloat(this.baseAmount);
                         return isNaN(val) ? 0 : (val * (this.withdrawalFeePercent / 100)).toFixed(2);
@@ -363,7 +370,7 @@ if (get_maintenance_mode()) {
                         <div class="balance-card">
                             <div>
                                 <span class="d-block text-white-50 small fw-bold text-uppercase ls-1 mb-1"><?php echo __('Available Balance'); ?></span>
-                                <h3 class="fw-bold text-white mb-0" x-text="formatCurrency(availableBalance)"></h3>
+                                <h3 class="fw-bold text-white mb-0" x-text="formatCurrency(isLocalCurrency && exchangeRate ? availableBalance * exchangeRate : availableBalance)"></h3>
                             </div>
                             <div class="bg-white bg-opacity-10 text-white rounded-circle p-3">
                                 <i class="fas fa-wallet fa-lg"></i>
@@ -475,7 +482,7 @@ if (get_maintenance_mode()) {
                         <h6 class="form-label mb-3"><?php echo __('3. Withdrawal Amount'); ?></h6>
                         <div class="position-relative mb-2">
                             <span class="position-absolute top-50 start-0 translate-middle-y ps-3 text-secondary fw-bold" x-text="isLocalCurrency ? localCurrencySymbol : currencySymbol"><?php echo e($currency_symbol); ?></span>
-                            <input type="number" step="0.01" x-model="displayAmount" class="form-control form-control-lg ps-4 fw-bold fs-4" placeholder="0.00" :class="{ 'local-currency-extra-padding': isLocalCurrency }" />
+                            <input type="number" step="0.01" x-model="displayAmount" class="form-control form-control-lg ps-4 fw-bold fs-4" placeholder="0.00" :max="maxAmount" :class="{ 'local-currency-extra-padding': isLocalCurrency }" />
                             <button type="button" class="btn btn-sm btn-light position-absolute top-50 end-0 translate-middle-y me-2 text-primary fw-bold" @click="setMax()"><?php echo __('MAX'); ?></button>
                         </div>
                         <?php if ($has_local_currency): ?>
