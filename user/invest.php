@@ -176,6 +176,13 @@ if (get_maintenance_mode()) {
             this.$nextTick(() => { this._suppressWatcher = false; });
         },
 
+        get maxAmount() {
+            if (this.isLocalCurrency && this.localRate) {
+                return parseFloat((this.availableBalance * this.localRate).toFixed(2));
+            }
+            return this.availableBalance;
+        },
+
         setPlanAmount(rawUsd) {
             this.usdAmount = parseFloat(rawUsd);
             this._suppressWatcher = true;
@@ -249,11 +256,11 @@ if (get_maintenance_mode()) {
                         </div>
                         <div class="col-md-6">
                             <label class="small text-muted fw-bold mb-1"><?php echo __('Investment Amount'); ?> (<span x-text="isLocalCurrency ? (localCurrencySymbol || currencySymbol) : currencySymbol"><?php echo e($currency_symbol); ?></span>)</label>
-                            <input type="number" class="form-control bg-light border-0 fw-bold" x-model="calculatorAmount" min="0" :max="isLocalCurrency ? availableBalance * localRate : availableBalance" />
+                            <input type="number" class="form-control bg-light border-0 fw-bold" x-model="calculatorAmount" min="0" :max="maxAmount" />
                         </div>
                     </div>
                     <div class="mt-3 small text-muted">
-                        <?php echo __('Available Balance'); ?>: <strong x-text="formatCurrency(<?php echo $available; ?>)"><?php echo format_money($available); ?></strong>
+                        <?php echo __('Available Balance'); ?>: <strong x-text="formatCurrency(isLocalCurrency && localRate ? availableBalance * localRate : availableBalance)"><?php echo format_money($available); ?></strong>
                     </div>
                 </div>
                 <!-- GRADIENT Projected Profit Section -->
