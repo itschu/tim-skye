@@ -63,6 +63,28 @@ if ($kyc_required === 'yes' && in_array($kyc_timing, ['before_withdrawal', 'imme
 $amount = isset($_POST['amount']) ? floatval($_POST['amount']) : 0.0;
 $method = trim($_POST['method'] ?? '');
 
+// T4: Get local currency info for withdrawal
+$user_for_country = db_query("SELECT country FROM users WHERE id = ?", [$user_id])[0] ?? null;
+$user_country = $user_for_country['country'] ?? null;
+$local_currency_code = null;
+$exchange_rate_used = null;
+$local_currency_amount = null;
+
+if ($user_country) {
+    $local_currency_code = get_user_local_currency($user_country);
+    if ($local_currency_code) {
+        $exchange_rate_used = get_rate_for_currency($local_currency_code);
+        if ($exchange_rate_used) {
+            if (!empty($_POST['local_currency_amount'])) {
+                $local_currency_amount = floatval($_POST['local_currency_amount']);
+            }
+        } else {
+            $local_currency_code = null;
+            $exchange_rate_used = null;
+        }
+    }
+}
+
 // Get withdrawal methods to validate
 $withdrawal_methods_json = get_setting('withdrawal_methods', '');
 $withdrawal_methods = [];
@@ -161,7 +183,7 @@ if ($method_type === 'crypto') {
         header('Location: /user/withdraw');
         exit;
     }
-    if (empty($mobile_number) || strlen($mobile_number) < 9) {
+    if (empty($mobile_number) || strlen($mobile_number) < 5) {
         $_SESSION['error'] = __('Please enter a valid mobile number');
         header('Location: /user/withdraw');
         exit;
@@ -234,6 +256,9 @@ try {
         'payment_method' => $method,
         'account_details' => json_encode($account_details),
         'status' => 'pending',
+        'local_currency_amount' => $local_currency_amount ? number_format($local_currency_amount, 15, '.', '') : null,
+        'local_currency_code' => $local_currency_code,
+        'exchange_rate_used' => $exchange_rate_used ? number_format($exchange_rate_used, 8, '.', '') : null,
         'created_at' => date('Y-m-d H:i:s'),
         'updated_at' => date('Y-m-d H:i:s')
     ]);

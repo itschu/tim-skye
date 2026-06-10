@@ -95,6 +95,8 @@ foreach ($withdrawals as $w) {
     // Compute local currency amount on-the-fly
     $local_currency_code = null;
     $local_currency_amount = null;
+    $local_currency_fee = null;
+    $local_currency_net = null;
     $exchange_rate_used = null;
     if (!empty($w['country'])) {
         $local_currency_code = get_user_local_currency($w['country']);
@@ -102,10 +104,17 @@ foreach ($withdrawals as $w) {
             $rate = get_rate_for_currency($local_currency_code);
             if ($rate) {
                 $local_currency_amount = $w['amount'] * $rate;
+                $local_currency_fee = $w['fee_amount'] * $rate;
+                $local_currency_net = $w['net_amount'] * $rate;
                 $exchange_rate_used = $rate;
             }
         }
     }
+
+    // Prefer stored local values if available
+    $stored_local_amount = isset($w['local_currency_amount']) ? (float)$w['local_currency_amount'] : null;
+    $stored_rate = isset($w['exchange_rate_used']) ? (float)$w['exchange_rate_used'] : null;
+    $stored_local_code = $w['local_currency_code'] ?? null;
 
     $js_withdrawals[] = [
         'id' => $w['id'],
@@ -120,9 +129,11 @@ foreach ($withdrawals as $w) {
         'net_amount' => format_money($w['net_amount']),
         'date' => date('M j, Y H:i', strtotime($w['created_at'])),
         'user_balance' => format_money($w['balance']),
-        'local_currency_code' => $local_currency_code,
-        'local_currency_amount' => $local_currency_amount !== null ? number_format($local_currency_amount, 2) : null,
-        'exchange_rate_used' => $exchange_rate_used,
+        'local_currency_code' => $stored_local_code ?: $local_currency_code,
+        'local_currency_amount' => $stored_local_amount !== null ? number_format($stored_local_amount, 2) : ($local_currency_amount !== null ? number_format($local_currency_amount, 2) : null),
+        'local_currency_fee' => $local_currency_fee !== null ? number_format($local_currency_fee, 2) : null,
+        'local_currency_net' => $local_currency_net !== null ? number_format($local_currency_net, 2) : null,
+        'exchange_rate_used' => $stored_rate ?: $exchange_rate_used,
     ];
 }
 $withdrawals_js = json_encode($js_withdrawals, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
@@ -139,7 +150,7 @@ $all_count = db_query("SELECT COUNT(*) as count FROM withdrawals", [])[0]['count
 <div x-data="{
     searchQuery: '',
     sheetOpen: false,
-    selected: { id: '', username: '', email: '', method: '', method_type: '', amount: '', fee: '', net_amount: '', user_balance: '', profile_picture: '', destination_display: '', destination_full: {} },
+    selected: { id: '', username: '', email: '', method: '', method_type: '', amount: '', fee: '', net_amount: '', user_balance: '', profile_picture: '', destination_display: '', destination_full: {}, local_currency_code: '', local_currency_amount: '', local_currency_fee: '', local_currency_net: '', exchange_rate_used: '' },
     rejectMode: false,
     rejectionReason: '',
     submitting: false,
@@ -261,9 +272,16 @@ $all_count = db_query("SELECT COUNT(*) as count FROM withdrawals", [])[0]['count
                             <td>
                                 <div class="fw-bold text-white"><span class="font-mono" x-text="item.amount"></span></div>
                                 <div class="small text-danger" x-show="item.fee && item.fee !== '$0.00'"><?php echo __('Fee'); ?>: <span x-text="item.fee"></span></div>
+                                <div class="small text-success" x-show="item.net_amount && item.net_amount !== '$0.00'"><?php echo __('Net'); ?>: <span x-text="item.net_amount"></span></div>
                                 <div class="small text-secondary mt-1" x-show="item.local_currency_amount && item.local_currency_code">
                                     <span x-text="item.local_currency_code + ' ' + item.local_currency_amount"></span>
                                     <span class="text-muted" x-show="item.exchange_rate_used" x-text="'@ ' + parseFloat(item.exchange_rate_used).toFixed(4)"></span>
+                                </div>
+                                <div class="small text-danger mt-1" x-show="item.local_currency_fee && item.local_currency_code">
+                                    <?php echo __('Local Fee'); ?>: <span x-text="item.local_currency_code + ' ' + item.local_currency_fee"></span>
+                                </div>
+                                <div class="small text-success mt-1" x-show="item.local_currency_net && item.local_currency_code">
+                                    <?php echo __('Local Net'); ?>: <span x-text="item.local_currency_code + ' ' + item.local_currency_net"></span>
                                 </div>
                             </td>
                             <td class="text-secondary small"><span class="font-mono text-xs" x-text="item.date"></span></td>
@@ -385,6 +403,9 @@ $all_count = db_query("SELECT COUNT(*) as count FROM withdrawals", [])[0]['count
                             <label class="small text-secondary text-uppercase fw-bold"><?php echo __('Payout Amount'); ?></label>
                             <div class="fs-5 fw-bold text-white" style="color: var(--primary);" x-text="selected.amount"></div>
                             <div class="small text-secondary" x-show="selected.fee && selected.fee !== '$0.00'"><?php echo __('Net'); ?>: <span x-text="selected.net_amount"></span></div>
+                            <div class="small text-success mt-1" x-show="selected.local_currency_net && selected.local_currency_code">
+                                <?php echo __('Local Net'); ?>: <span x-text="selected.local_currency_code + ' ' + selected.local_currency_net"></span>
+                            </div>
                         </div>
                     </div>
 
@@ -409,6 +430,14 @@ $all_count = db_query("SELECT COUNT(*) as count FROM withdrawals", [])[0]['count
                                     <span class="font-mono" x-text="selected.local_currency_code + ' ' + selected.local_currency_amount"></span>
                                     <span class="text-muted small" x-show="selected.exchange_rate_used" x-text="'@ ' + parseFloat(selected.exchange_rate_used).toFixed(4)"></span>
                                 </td>
+                            </tr>
+                            <tr x-show="selected.local_currency_fee && selected.local_currency_code">
+                                <td class="text-secondary"><?php echo __('Local Fee'); ?></td>
+                                <td class="text-danger"><span class="font-mono" x-text="selected.local_currency_code + ' ' + selected.local_currency_fee"></span></td>
+                            </tr>
+                            <tr x-show="selected.local_currency_net && selected.local_currency_code">
+                                <td class="text-secondary fw-bold"><?php echo __('Local Net Payout'); ?></td>
+                                <td class="text-success fw-bold"><span class="font-mono" x-text="selected.local_currency_code + ' ' + selected.local_currency_net"></span></td>
                             </tr>
                         </tbody>
                     </table>

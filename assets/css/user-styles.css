@@ -5767,3 +5767,7 @@ html body.dark-mode div.col-lg-5 div.card.border-0.summary-card form button.dark
 	pointer-events: none;
 	opacity: 0.75;
 }
+
+input.local-currency-extra-padding {
+	padding-left: 60px !important;
+}

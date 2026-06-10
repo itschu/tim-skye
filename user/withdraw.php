@@ -134,7 +134,8 @@ if (get_maintenance_mode()) {
             function withdrawFormData() {
                 return {
                     availableBalance: window.withdrawData.availableBalance,
-                    amount: '',
+                    displayAmount: '',
+                    baseAmount: '',
                     selectedMethod: window.withdrawData.firstMethodKey,
                     withdrawalFeePercent: window.withdrawData.withdrawalFeePercent,
                     minimumWithdrawal: window.withdrawData.minimumWithdrawal,
@@ -142,7 +143,10 @@ if (get_maintenance_mode()) {
                     localCurrencyCode: window.withdrawData.localCurrencyCode,
                     localCurrencySymbol: window.withdrawData.localCurrencySymbol,
                     exchangeRate: window.withdrawData.exchangeRate,
+                    currencySymbol: window.withdrawData.currencySymbol,
                     loading: false,
+                    isLocalCurrency: false,
+                    _suppressWatcher: false,
 
                     // Crypto fields
                     address: '',
@@ -165,13 +169,63 @@ if (get_maintenance_mode()) {
 
                     methods: window.withdrawData.methods,
 
+                    init() {
+                        const root = document.documentElement._x_dataStack?.[0];
+                        if (root && this.localCurrencyCode && root.currency === this.localCurrencyCode) {
+                            this.isLocalCurrency = true;
+                        }
+                        this._lastCurrency = this.getRootCurrency();
+                        setInterval(() => {
+                            const current = this.getRootCurrency();
+                            if (current !== this._lastCurrency) {
+                                this._lastCurrency = current;
+                                this.convertOnCurrencyToggle();
+                            }
+                        }, 500);
+
+                        this.$watch('displayAmount', (value) => {
+                            if (this._suppressWatcher) return;
+                            const num = parseFloat(value);
+                            if (isNaN(num)) {
+                                this.baseAmount = '';
+                                return;
+                            }
+                            if (this.isLocalCurrency && this.exchangeRate) {
+                                this.baseAmount = parseFloat((num / this.exchangeRate).toFixed(15));
+                            } else {
+                                this.baseAmount = num;
+                            }
+                        });
+                    },
+
+                    getRootCurrency() {
+                        const root = document.documentElement._x_dataStack?.[0];
+                        return root ? root.currency : 'USD';
+                    },
+
+                    convertOnCurrencyToggle() {
+                        const root = document.documentElement._x_dataStack?.[0];
+                        const nowLocal = root && root.currency === this.localCurrencyCode;
+                        const wasLocal = this.isLocalCurrency;
+                        this.isLocalCurrency = nowLocal;
+                        this._suppressWatcher = true;
+                        if (nowLocal && !wasLocal) {
+                            this.displayAmount = this.baseAmount ? parseFloat((this.baseAmount * this.exchangeRate).toFixed(2)) : '';
+                        } else if (!nowLocal && wasLocal) {
+                            this.displayAmount = this.baseAmount ? this.baseAmount : '';
+                        }
+                        this.$nextTick(() => {
+                            this._suppressWatcher = false;
+                        });
+                    },
+
                     get feeAmount() {
-                        let val = parseFloat(this.amount);
+                        let val = parseFloat(this.baseAmount);
                         return isNaN(val) ? 0 : (val * (this.withdrawalFeePercent / 100)).toFixed(2);
                     },
 
                     get netAmount() {
-                        let val = parseFloat(this.amount);
+                        let val = parseFloat(this.baseAmount);
                         let fee = parseFloat(this.feeAmount);
                         return isNaN(val) ? 0 : (val - fee).toFixed(2);
                     },
@@ -190,12 +244,12 @@ if (get_maintenance_mode()) {
 
                     get localAmountEstimate() {
                         if (!this.hasLocalCurrency || !this.exchangeRate) return '0.00';
-                        let val = parseFloat(this.amount);
+                        let val = parseFloat(this.baseAmount);
                         return isNaN(val) ? '0.00' : (val * this.exchangeRate).toFixed(2);
                     },
 
                     get isValid() {
-                        let val = parseFloat(this.amount);
+                        let val = parseFloat(this.baseAmount);
                         let validAmount = val > 0 && val >= this.minimumWithdrawal && val <= this.availableBalance;
 
                         if (!validAmount) return false;
@@ -207,7 +261,7 @@ if (get_maintenance_mode()) {
                         } else if (methodType === 'fiat') {
                             return this.bankName.length > 2 && this.accountName.length > 2 && this.accountNumber.length > 5;
                         } else if (methodType === 'momo') {
-                            return this.mobileProvider !== '' && this.mobileNumber.length > 6 && this.mobileName.length > 2;
+                            return this.mobileProvider !== '' && this.mobileNumber.length > 4 && this.mobileName.length > 2;
                         } else if (methodType === 'ewallet') {
                             return this.ewalletProvider !== '' && this.ewalletId.length > 3;
                         }
@@ -268,7 +322,16 @@ if (get_maintenance_mode()) {
                     },
 
                     setMax() {
-                        this.amount = this.availableBalance;
+                        this.baseAmount = this.availableBalance;
+                        this._suppressWatcher = true;
+                        if (this.isLocalCurrency && this.exchangeRate) {
+                            this.displayAmount = parseFloat((this.availableBalance * this.exchangeRate).toFixed(2));
+                        } else {
+                            this.displayAmount = this.availableBalance;
+                        }
+                        this.$nextTick(() => {
+                            this._suppressWatcher = false;
+                        });
                     },
 
                     selectMethod(key) {
@@ -411,21 +474,25 @@ if (get_maintenance_mode()) {
 
                         <h6 class="form-label mb-3"><?php echo __('3. Withdrawal Amount'); ?></h6>
                         <div class="position-relative mb-2">
-                            <span class="position-absolute top-50 start-0 translate-middle-y ps-3 text-secondary fw-bold"><?php echo e($currency_symbol); ?></span>
-                            <input type="number" step="0.01" x-model="amount" class="form-control form-control-lg ps-4 fw-bold fs-4" placeholder="0.00" />
+                            <span class="position-absolute top-50 start-0 translate-middle-y ps-3 text-secondary fw-bold" x-text="isLocalCurrency ? localCurrencySymbol : currencySymbol"><?php echo e($currency_symbol); ?></span>
+                            <input type="number" step="0.01" x-model="displayAmount" class="form-control form-control-lg ps-4 fw-bold fs-4" placeholder="0.00" :class="{ 'local-currency-extra-padding': isLocalCurrency }" />
                             <button type="button" class="btn btn-sm btn-light position-absolute top-50 end-0 translate-middle-y me-2 text-primary fw-bold" @click="setMax()"><?php echo __('MAX'); ?></button>
                         </div>
                         <?php if ($has_local_currency): ?>
                             <!-- Local Currency Estimate -->
-                            <div class="alert alert-info bg-light text-dark border-0 mb-3 small" style="border-radius: 1rem;">
+                            <div x-show="!isLocalCurrency" class="alert alert-info bg-light text-dark border-0 mb-3 small" style="border-radius: 1rem;">
                                 <i class="fas fa-info-circle me-2"></i>
                                 <span x-text="'≈ ' + localCurrencySymbol + localAmountEstimate + ' ' + window.withdrawData.translations.estimatedLocalReceipt"></span>
                             </div>
+                            <div x-show="isLocalCurrency" class="alert alert-info bg-light text-dark border-0 mb-3 small" style="border-radius: 1rem;">
+                                <i class="fas fa-info-circle me-2"></i>
+                                <span x-text="'≈ ' + currencySymbol + (baseAmount ? parseFloat(baseAmount).toFixed(2) : '0.00') + ' ' + <?php echo htmlspecialchars(json_encode(__('base currency')), ENT_QUOTES, 'UTF-8'); ?>"></span>
+                            </div>
                         <?php endif; ?>
-                        <div x-show="parseFloat(amount) > 0 && parseFloat(amount) < minimumWithdrawal" class="text-danger small fw-bold mt-2" style="display: none">
+                        <div x-show="parseFloat(baseAmount) > 0 && parseFloat(baseAmount) < minimumWithdrawal" class="text-danger small fw-bold mt-2" style="display: none">
                             <i class="fas fa-times-circle me-1"></i> <?php echo __('Minimum withdrawal is'); ?> <span x-text="formatCurrency(minimumWithdrawal)"></span>
                         </div>
-                        <div x-show="parseFloat(amount) > availableBalance" class="text-danger small fw-bold mt-2" style="display: none">
+                        <div x-show="parseFloat(baseAmount) > availableBalance" class="text-danger small fw-bold mt-2" style="display: none">
                             <i class="fas fa-times-circle me-1"></i> <?php echo __('Insufficient balance'); ?>
                         </div>
                     </div>
@@ -443,25 +510,25 @@ if (get_maintenance_mode()) {
                         <div class="bg-white bg-opacity-10 rounded-3 p-4 mb-4">
                             <div class="d-flex justify-content-between align-items-center mb-3">
                                 <span class="text-white-50 small"><?php echo __('Requested Amount'); ?></span>
-                                <span class="fw-bold fs-5 text-white" x-text="amount ? formatCurrency(parseFloat(amount)) : formatCurrency(0)"></span>
+                                <span class="fw-bold fs-5 text-white" x-text="baseAmount ? formatCurrency(parseFloat(baseAmount)) : formatCurrency(0)"></span>
                             </div>
 
                             <div class="d-flex justify-content-between align-items-center mb-3">
                                 <span class="text-white-50 small"><?php echo __('Processing Fee'); ?> (<span x-text="withdrawalFeePercent + '%'"></span>)</span>
-                                <span class="text-warning fw-bold" x-text="amount ? '-' + formatCurrency(parseFloat(feeAmount)) : formatCurrency(0)"></span>
+                                <span class="text-warning fw-bold" x-text="baseAmount ? '-' + formatCurrency(parseFloat(feeAmount)) : formatCurrency(0)"></span>
                             </div>
 
                             <div class="border-top border-white border-opacity-25 my-3"></div>
 
                             <div class="d-flex justify-content-between align-items-center">
                                 <span class="fw-bold text-white"><?php echo __('Net Receivable'); ?></span>
-                                <span class="display-6 fw-bold text-white" x-text="amount ? formatCurrency(parseFloat(netAmount)) : formatCurrency(0)"></span>
+                                <span class="display-6 fw-bold text-white" x-text="baseAmount ? formatCurrency(parseFloat(netAmount)) : formatCurrency(0)"></span>
                             </div>
                             <?php if ($has_local_currency): ?>
                                 <div class="mt-3 pt-3 border-top border-white border-opacity-25">
                                     <div class="d-flex justify-content-between align-items-center">
                                         <span class="small text-white-50"><?php echo __('≈ Estimated Local Receipt'); ?></span>
-                                        <span class="fw-bold text-white" x-text="amount ? localCurrencySymbol + localNetAmount + ' ' + localCurrencyCode : '—'"></span>
+                                        <span class="fw-bold text-white" x-text="baseAmount ? localCurrencySymbol + localNetAmount + ' ' + localCurrencyCode : '—'"></span>
                                     </div>
                                     <p class="small text-white-50 mt-2 mb-0"><i class="fas fa-info-circle me-1"></i><?php echo __('Actual amount may vary by provider'); ?></p>
                                 </div>
@@ -490,7 +557,8 @@ if (get_maintenance_mode()) {
                             <form action="/actions/withdraw-submit.php" method="POST" @submit="loading = true">
                                 <input type="hidden" name="csrf_token" value="<?php echo csrf_token(); ?>">
                                 <input type="hidden" name="method" x-model="selectedMethod">
-                                <input type="hidden" name="amount" x-model="amount">
+                                <input type="hidden" name="amount" x-model="baseAmount">
+                                <input type="hidden" name="local_currency_amount" :value="isLocalCurrency ? displayAmount : ''">
                                 <input type="hidden" name="network" x-model="network">
                                 <input type="hidden" name="crypto_address" x-model="address">
                                 <input type="hidden" name="bank_name" x-model="bankName">
