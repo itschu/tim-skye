@@ -498,7 +498,14 @@ foreach ($active as $index => $inv) {
                                         label: <?php echo json_encode(__("Asset Mix")); ?>,
                                         fontSize: '14px',
                                         fontWeight: 600,
-                                        color: darkModeOptions.plotOptions.pie.donut.labels.total.color
+                                        color: darkModeOptions.plotOptions.pie.donut.labels.total.color,
+                                        formatter: function(w) {
+                                            var total = w.globals.seriesTotals.reduce(function(a, b) { return a + b; }, 0);
+                                            return currencySymbol + parseFloat(total).toLocaleString('en-US', {
+                                                minimumFractionDigits: 2,
+                                                maximumFractionDigits: 2
+                                            });
+                                        }
                                     }
                                 },
                             },
@@ -511,7 +518,10 @@ foreach ($active as $index => $inv) {
                         },
                         y: {
                             formatter: function(val) {
-                                return currencySymbol + val.toLocaleString();
+                                return currencySymbol + parseFloat(val).toLocaleString('en-US', {
+                                    minimumFractionDigits: 2,
+                                    maximumFractionDigits: 2
+                                });
                             },
                         },
                     },

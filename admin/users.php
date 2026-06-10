@@ -594,13 +594,13 @@ require_once ROOT . '/includes/admin-header.php';
                         <div class="col-6">
                             <div class="p-3 border border-subtle rounded bg-black">
                                 <div class="small text-secondary mb-1"><?php echo __('Total Balance'); ?></div>
-                                <div class="fw-bold text-white h5" x-text="selectedUser ? selectedUser.balance : ''"></div>
+                                <div class="fw-bold text-white h5" x-text="selectedUser ? formatCurrency(selectedUser.balance) : ''"></div>
                             </div>
                         </div>
                         <div class="col-6">
                             <div class="p-3 border border-subtle rounded bg-black">
                                 <div class="small text-secondary mb-1"><?php echo __('Total Deposits'); ?></div>
-                                <div class="fw-bold text-white h5" x-text="selectedUser ? (selectedUser.total_deposits || 0) : 0"></div>
+                                <div class="fw-bold text-white h5" x-text="selectedUser ? formatCurrency(selectedUser.total_deposits || 0) : formatCurrency(0)"></div>
                             </div>
                         </div>
                     </div>

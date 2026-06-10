@@ -64,6 +64,15 @@ $stylesheet_version = filemtime(ROOT . '/assets/css/admin-styles.css');
     <link rel="stylesheet" href="/assets/css/admin-styles.css?hash=<?php echo $stylesheet_version; ?>">
 
     <link rel="icon" type="image/png" href="<?php echo e(SITE_ICON); ?>">
+
+    <script>
+        window.formatCurrency = function(amount) {
+            return '<?php echo function_exists('get_currency_symbol') ? get_currency_symbol() : '$'; ?>' + parseFloat(amount || 0).toLocaleString('en-US', {
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2
+            });
+        };
+    </script>
 </head>
 
 <body>
