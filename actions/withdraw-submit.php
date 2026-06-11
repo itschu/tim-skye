@@ -73,7 +73,7 @@ $local_currency_amount = null;
 if ($user_country) {
     $local_currency_code = get_user_local_currency($user_country);
     if ($local_currency_code) {
-        $exchange_rate_used = get_rate_for_currency($local_currency_code);
+        $exchange_rate_used = get_rate_for_currency_raw($local_currency_code);
         if ($exchange_rate_used) {
             if (!empty($_POST['local_currency_amount'])) {
                 $local_currency_amount = floatval($_POST['local_currency_amount']);
@@ -250,15 +250,15 @@ try {
     // Create withdrawal record
     $withdrawal_id = db_insert('withdrawals', [
         'user_id' => $user_id,
-        'amount' => number_format($amount, 15, '.', ''),
-        'fee_amount' => number_format($fee_amount, 15, '.', ''),
-        'net_amount' => number_format($net_amount, 15, '.', ''),
+        'amount' => number_format($amount, 30, '.', ''),
+        'fee_amount' => number_format($fee_amount, 30, '.', ''),
+        'net_amount' => number_format($net_amount, 30, '.', ''),
         'payment_method' => $method,
         'account_details' => json_encode($account_details),
         'status' => 'pending',
-        'local_currency_amount' => $local_currency_amount ? number_format($local_currency_amount, 15, '.', '') : null,
+        'local_currency_amount' => $local_currency_amount ? number_format($local_currency_amount, 30, '.', '') : null,
         'local_currency_code' => $local_currency_code,
-        'exchange_rate_used' => $exchange_rate_used ? number_format($exchange_rate_used, 8, '.', '') : null,
+        'exchange_rate_used' => $exchange_rate_used ? number_format($exchange_rate_used, 30, '.', '') : null,
         'created_at' => date('Y-m-d H:i:s'),
         'updated_at' => date('Y-m-d H:i:s')
     ]);

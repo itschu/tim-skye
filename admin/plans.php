@@ -53,6 +53,7 @@ require_once ROOT . '/includes/admin-header.php';
     currentPlan: null,
     displayMinAmount: 0,
     displayMaxAmount: 0,
+    saving: false,
     openSheet(plan = null) {
         this.isEdit = plan !== null;
         if (plan === null) {
@@ -104,6 +105,7 @@ require_once ROOT . '/includes/admin-header.php';
     },
     closeSheet() {
         this.sheetOpen = false;
+        this.saving = false;
         document.body.style.overflow = '';
         setTimeout(() => { this.currentPlan = null; this.displayMinAmount = 0; this.displayMaxAmount = 0; }, 200);
     },
@@ -474,6 +476,7 @@ require_once ROOT . '/includes/admin-header.php';
                         alert(<?php echo htmlspecialchars(json_encode(__('Minimum amount cannot exceed maximum amount')), ENT_QUOTES, 'UTF-8'); ?>); return;
                     }
 
+                    this.saving = true;
                     form.submit();
                 }).call(this, event)">
 
@@ -629,7 +632,10 @@ require_once ROOT . '/includes/admin-header.php';
 
                 <div class="p-4 border-top border-subtle bg-black d-flex gap-3" style="position: absolute; bottom: 0; width: 100%;">
                     <button type="button" class="btn btn-outline-secondary border-subtle text-white flex-fill" @click="closeSheet()"><?php echo __('Cancel'); ?></button>
-                    <button type="submit" class="btn btn-primary flex-fill"><?php echo __('Save Plan'); ?></button>
+                    <button type="submit" class="btn btn-primary flex-fill" :disabled="saving">
+                        <span x-show="!saving"><?php echo __('Save Plan'); ?></span>
+                        <span x-show="saving"><i class="fas fa-spinner fa-spin me-1"></i><?php echo __('Saving...'); ?></span>
+                    </button>
                     <button type="button" class="btn btn-outline-danger border-danger text-danger flex-fill" @click="if (confirm(<?php echo htmlspecialchars(json_encode(__('Are you sure you want to delete this plan?')), ENT_QUOTES, 'UTF-8'); ?>)) { document.getElementById('deleteForm').submit(); }" x-show="isEdit"><?php echo __('Delete'); ?></button>
                 </div>
             </form>

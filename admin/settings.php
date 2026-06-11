@@ -1033,7 +1033,7 @@ require_once ROOT . '/includes/admin-header.php';
                     <div class="card bg-card border-subtle">
                         <div class="card-body p-4">
                             <h6 class="card-title mb-4 text-white"><?php echo __('Investment Cancellation Policy'); ?></h6>
-                            <form action="/admin/actions/settings-update" method="POST">
+                            <form action="/admin/actions/settings-update" method="POST" novalidate>
                                 <input type="hidden" name="csrf_token" value="<?php echo csrf_token(); ?>">
                                 <input type="hidden" name="section" value="cancellation">
                                 <input type="hidden" name="redirect_tab" value="" x-bind:value="currentTab">
@@ -2188,8 +2188,10 @@ require_once ROOT . '/includes/admin-header.php';
         const earnedProfitsDiv = document.getElementById('earned_profits_div');
 
         function updateCancellationVisibility() {
-            const penaltyMode = document.querySelector('input[name="cancellation_penalty_mode"]:checked').value;
-            const blockMode = document.querySelector('input[name="cancellation_block_after_waiting"]:checked').value;
+            const penaltyModeEl = document.querySelector('input[name="cancellation_penalty_mode"]:checked');
+            const blockModeEl = document.querySelector('input[name="cancellation_block_after_waiting"]:checked');
+            const penaltyMode = penaltyModeEl ? penaltyModeEl.value : 'percentage';
+            const blockMode = blockModeEl ? blockModeEl.value : 'no';
 
             // Update penalty visibility based on mode
             if (percentageDiv) {
@@ -2441,14 +2443,14 @@ require_once ROOT . '/includes/admin-header.php';
                     // Success - no reassignment needed, redirect
                     resetLoadingState();
                     setTimeout(() => {
-                        window.location.href = '/admin/settings#countries';
+                        window.location.reload();
                     }, 500);
                 }
             } else {
                 // Success - redirect
                 resetLoadingState();
                 setTimeout(() => {
-                    window.location.href = '/admin/settings#countries';
+                    window.location.reload();
                 }, 500);
             }
         } catch (error) {
@@ -2478,7 +2480,7 @@ require_once ROOT . '/includes/admin-header.php';
                 state.showModal = false;
                 state.submitting = false;
             }
-            window.location.href = response.url || '/admin/settings#countries';
+            window.location.reload();
         }).catch(error => {
             console.error('Error reassigning countries:', error);
             alert('<?php echo __('An error occurred while reassigning users.'); ?>');

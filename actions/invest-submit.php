@@ -93,39 +93,50 @@ if (empty($plan)) {
 }
 
 $plan = $plan[0];
-$min_amount = (float)$plan['min_amount'];
-$max_amount = (float)$plan['max_amount'];
+$raw_amount = $_POST['amount'] ?? '0';
+
+// Exact decimal validation against plan limits using MySQL to avoid PHP float drift
+$exact_check = db_query(
+    "SELECT CAST(? AS DECIMAL(65,30)) < CAST(? AS DECIMAL(65,30)) AS below_min, CAST(? AS DECIMAL(65,30)) > CAST(? AS DECIMAL(65,30)) AS above_max",
+    [$raw_amount, $plan['min_amount'], $raw_amount, $plan['max_amount']]
+);
 
 // Determine display currency and converted amounts for error messages
 $plan_country = $plan['country'] ?? null;
 $display_currency = null;
-$display_min = $min_amount;
-$display_max = $max_amount;
+$display_min = $plan['min_amount'];
+$display_max = $plan['max_amount'];
 
 if (!empty($plan_country)) {
     $local_currency = get_user_local_currency($plan_country);
     if (!empty($local_currency)) {
-        $rate = get_rate_for_currency($local_currency);
-        if ($rate && $rate > 0) {
+        $rate = get_rate_for_currency_raw($local_currency);
+        if ($rate !== null && (float)$rate > 0) {
             $display_currency = $local_currency;
-            $display_min = $min_amount * $rate;
-            $display_max = $max_amount * $rate;
+            $converted = db_query(
+                "SELECT CAST(? AS DECIMAL(65,30)) * CAST(? AS DECIMAL(65,30)) AS min_local, CAST(? AS DECIMAL(65,30)) * CAST(? AS DECIMAL(65,30)) AS max_local",
+                [$plan['min_amount'], $rate, $plan['max_amount'], $rate]
+            );
+            $display_min = $converted[0]['min_local'];
+            $display_max = $converted[0]['max_local'];
         }
     }
 }
 
 // Validate amount against plan limits
-if ($amount < $min_amount) {
+if ($exact_check[0]['below_min']) {
     $_SESSION['error'] = __('Investment amount is below plan minimum of ') . format_money($display_min, $display_currency);
     header('Location: /user/invest?plan=' . $plan_id);
     exit;
 }
 
-if ($max_amount > 0 && $amount > $max_amount) {
+if ((float)$plan['max_amount'] > 0 && $exact_check[0]['above_max']) {
     $_SESSION['error'] = __('Investment amount exceeds plan maximum of ') . format_money($display_max, $display_currency);
     header('Location: /user/invest?plan=' . $plan_id);
     exit;
 }
+
+$amount = (float)$raw_amount;
 
 // Check available balance
 if (!has_sufficient_balance($user_id, $amount)) {

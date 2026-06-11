@@ -236,7 +236,7 @@ if (get_maintenance_mode()) {
         calculateProfit() {
             const totalIntervals = this.calculateTotalIntervals();
             const profitPerInterval = this.usdAmount * this.selectedRoi;
-            return (profitPerInterval * totalIntervals).toFixed(2);
+            return profitPerInterval * totalIntervals;
         }
     }">
         <!-- Profit Estimator Card -->
@@ -327,18 +327,18 @@ if (get_maintenance_mode()) {
 
                 // Build the click handler exactly like the design example (including interval info)
                 $click_handler = sprintf(
-                    "planName=%s; selectedRoi=%f; selectedDuration=%d; selectedProfitDuration=%d; setPlanAmount(%.2f); selectedPlanId=%d; selectedPayoutInterval=%s; selectedIntervalType=%s; selectedIntervalValue=%d; selectedWaitingPeriodValue=%d; selectedWaitingPeriodUnit=%s",
+                    "planName=%s; selectedRoi=%f; selectedDuration=%d; selectedProfitDuration=%d; setPlanAmount(%s); selectedPlanId=%d; selectedPayoutInterval=%s; selectedIntervalType=%s; selectedIntervalValue=%d; selectedWaitingPeriodValue=%d; selectedWaitingPeriodUnit=%s",
                     json_encode($p['name']),
                     $p['roi_percentage'] / 100,
                     $p['duration_days'],
                     $p['duration_days'],
-                    $p['min_amount'],
+                    json_encode((float) $p['min_amount']),
                     $p['id'],
                     json_encode($p['payout_interval'] ?? 'daily'),
                     json_encode($p['payout_interval_type'] ?? 'days'),
                     isset($p['payout_interval_value']) ? intval($p['payout_interval_value']) : 1,
                     $waiting_period_value,
-                    $waiting_period_unit
+                    json_encode($waiting_period_unit)
                 );
             ?>
                 <div class="card-plan <?php echo $is_featured ? 'popular' : ''; ?>"
@@ -506,6 +506,7 @@ if (get_maintenance_mode()) {
                                 <input type="number" class="form-control form-control-lg bg-light border-0 fw-bold"
                                     x-model="calculatorAmount"
                                     min="0"
+                                    :max="maxAmount"
                                     required>
                                 <small class="text-muted"><?php echo __('Available Balance'); ?>: <span x-text="formatCurrency(<?php echo $available; ?>)"><?php echo format_money($available); ?></span></small>
                             </div>

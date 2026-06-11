@@ -60,7 +60,7 @@ try {
 
     // Credit wallet within transaction (use net credited amount)
     $stmt = $db->prepare("UPDATE users SET balance = balance + ? WHERE id = ?");
-    $stmt->execute([number_format((float)$deposit['net_amount'], 15, '.', ''), $deposit['user_id']]);
+    $stmt->execute([number_format((float)$deposit['net_amount'], 30, '.', ''), $deposit['user_id']]);
 
     // Try to update an existing linked transaction (source_id) if present
     $existing_tx = db_query("SELECT id FROM transactions WHERE source_id = ? AND type = 'deposit' LIMIT 1", [$deposit_id]);
@@ -68,7 +68,7 @@ try {
         $existing_tx_id = $existing_tx[0]['id'];
         db_update('transactions', [
             'status' => 'completed',
-            'amount' => number_format((float)$deposit['net_amount'], 15, '.', ''),
+            'amount' => number_format((float)$deposit['net_amount'], 30, '.', ''),
             'details' => __('Deposit #') . $deposit_id . ' ' . __('approved'),
             'updated_at' => date('Y-m-d H:i:s')
         ], 'id = ?', [$existing_tx_id]);
@@ -78,7 +78,7 @@ try {
         $tx_data = [
             'user_id' => $deposit['user_id'],
             'type' => 'deposit',
-            'amount' => number_format((float)$deposit['net_amount'], 15, '.', ''),
+            'amount' => number_format((float)$deposit['net_amount'], 30, '.', ''),
             'status' => 'completed',
             'details' => __('Deposit #') . $deposit_id . ' ' . __('approved'),
             'source_id' => $deposit_id,

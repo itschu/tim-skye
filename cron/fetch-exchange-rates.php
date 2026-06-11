@@ -403,7 +403,7 @@ try {
         $rates_parts = [];
         foreach ($rates as $code => $val) {
             $str = is_float($val) || is_int($val)
-                ? number_format((float) $val, 15, '.', '')
+                ? number_format((float) $val, 30, '.', '')
                 : (string) $val;
             // Store as a quoted string literal so PHP keeps it as a string
             $rates_parts[] = var_export($code, true) . ' => ' . var_export($str, true);

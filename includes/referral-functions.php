@@ -128,7 +128,7 @@ function process_referral_bonus($referred_user_id, $trigger_event, $transaction_
             $ref_data = [
                 'referrer_id' => $referrer_id,
                 'referred_id' => $referred_user_id,
-                'bonus_amount' => number_format((float)$bonus_amount, 15, '.', ''),
+                'bonus_amount' => number_format((float)$bonus_amount, 30, '.', ''),
                 'trigger_event' => $trigger_event,
                 'status' => 'credited',
                 'created_at' => date('Y-m-d H:i:s')

@@ -39,8 +39,8 @@ function convert_all_monetary_values(string $rate, string $old_base, string $new
     $log_file = ROOT . '/logs/db-errors.log';
 
     // MySQL converts string parameters to DOUBLE in arithmetic expressions.
-    // We force DECIMAL(30,15) so the division is exact, not floating-point.
-    $d = 'CAST(? AS DECIMAL(30,15))';
+    // We force DECIMAL(65,30) so the division is exact, not floating-point.
+    $d = 'CAST(? AS DECIMAL(65,30))';
 
     try {
         $db->beginTransaction();
@@ -92,14 +92,14 @@ function convert_all_monetary_values(string $rate, string $old_base, string $new
         // --- Settings: minimum_withdrawal (always convert if numeric) ---
         $minimum_withdrawal = get_setting('minimum_withdrawal');
         if (is_numeric($minimum_withdrawal)) {
-            $result = db_query("SELECT CAST(? AS DECIMAL(30,15)) / {$d} AS v", [$minimum_withdrawal, $rate]);
+            $result = db_query("SELECT CAST(? AS DECIMAL(65,30)) / {$d} AS v", [$minimum_withdrawal, $rate]);
             update_setting('minimum_withdrawal', $result[0]['v']);
         }
 
         // --- Settings: cancellation_penalty_flat (always convert if numeric) ---
         $cancellation_penalty_flat = get_setting('cancellation_penalty_flat');
         if (is_numeric($cancellation_penalty_flat)) {
-            $result = db_query("SELECT CAST(? AS DECIMAL(30,15)) / {$d} AS v", [$cancellation_penalty_flat, $rate]);
+            $result = db_query("SELECT CAST(? AS DECIMAL(65,30)) / {$d} AS v", [$cancellation_penalty_flat, $rate]);
             update_setting('cancellation_penalty_flat', $result[0]['v']);
         }
 
@@ -108,7 +108,7 @@ function convert_all_monetary_values(string $rate, string $old_base, string $new
         if ($referral_bonus_type === 'flat') {
             $referral_bonus_amount = get_setting('referral_bonus_amount');
             if (is_numeric($referral_bonus_amount)) {
-                $result = db_query("SELECT CAST(? AS DECIMAL(30,15)) / {$d} AS v", [$referral_bonus_amount, $rate]);
+                $result = db_query("SELECT CAST(? AS DECIMAL(65,30)) / {$d} AS v", [$referral_bonus_amount, $rate]);
                 update_setting('referral_bonus_amount', $result[0]['v']);
             }
         }

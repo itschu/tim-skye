@@ -144,7 +144,8 @@ foreach ($active as $index => $inv) {
         return nowTime >= nextPayoutTime;
     },
     calculatePenalty(investment) {
-        const amount = parseFloat(investment.amount);
+        let amount = parseFloat(investment.amount);
+        const totalProfitEarned = parseFloat(investment.total_profit_earned || 0);
         /* FIX: Added htmlspecialchars to prevent quote conflict */
         const settings = <?php echo htmlspecialchars(json_encode([
                                 'penalty_mode' => get_setting('cancellation_penalty_mode', 'percentage'),
@@ -152,19 +153,35 @@ foreach ($active as $index => $inv) {
                                 'penalty_flat' => floatval(get_setting('cancellation_penalty_flat', 5.00)),
                                 'forfeit_profits' => get_setting('cancellation_forfeit_profits', 'no')
                             ]), ENT_QUOTES, 'UTF-8'); ?>;
-        
+
+        // Refund base includes earned profits when operator does not forfeit profits on cancellation
+        let refundBase = amount;
+        if (settings.forfeit_profits === 'no') {
+            refundBase += totalProfitEarned;
+        }
+
         let penalty = 0;
         if (settings.penalty_mode === 'percentage') {
-            penalty = amount * (settings.penalty_percentage / 100);
-        } else {
+            penalty = refundBase * (settings.penalty_percentage / 100);
+        } else if (settings.penalty_mode === 'flat') {
             penalty = settings.penalty_flat;
         }
-        const refund = Math.max(0, amount - penalty);
+        // 'none' mode keeps penalty at 0
+        const refund = Math.max(0, refundBase - penalty);
         this.penaltyBreakdown = {
-            penalty: penalty.toFixed(2),
-            refund: refund.toFixed(2),
+            penalty: penalty,
+            refund: refund,
             forfeitProfits: settings.forfeit_profits === 'yes'
         };
+    },
+    init() {
+        this.$watch('selectedInvestment', (value) => {
+            if (value) {
+                this.calculatePenalty(value);
+            } else {
+                this.penaltyBreakdown = {};
+            }
+        });
     }
 }" @tab-changed.window="activeTab = $event.detail">
     <div x-show="activeTab === 'active'" x-transition.opacity>
@@ -321,12 +338,12 @@ foreach ($active as $index => $inv) {
     <!-- Manage/Cancel Modal -->
     <div class="modal fade" tabindex="-1" x-show="showCancelModal" style="display: none; z-index: 1055;"
         :class="{ 'show d-block': showCancelModal }"
-        @keydown.escape.window="showCancelModal = false">
+        @keydown.escape.window="showCancelModal = false; selectedInvestment = null;">
         <div class="modal-dialog modal-dialog-centered" style="z-index: 1056;">
             <div class="modal-content border-0 shadow-lg rounded-4">
                 <div class="modal-header border-bottom-0 pb-0">
                     <h5 class="modal-title fw-bold"><?php echo __('Manage Investment'); ?></h5>
-                    <button type="button" class="btn-close" @click="showCancelModal = false"></button>
+                    <button type="button" class="btn-close" @click="showCancelModal = false; selectedInvestment = null;"></button>
                 </div>
                 <div class="modal-body p-4">
                     <template x-if="selectedInvestment">
@@ -394,7 +411,7 @@ foreach ($active as $index => $inv) {
                     </template>
                 </div>
                 <div class="modal-footer border-top-0">
-                    <button type="button" class="btn btn-outline-secondary fw-bold rounded-pill" @click="showCancelModal = false">
+                    <button type="button" class="btn btn-outline-secondary fw-bold rounded-pill" @click="showCancelModal = false; selectedInvestment = null;">
                         <?php echo __('Close'); ?>
                     </button>
                     <form action="/actions/cancel-investment.php" method="POST" class="d-inline">
@@ -409,7 +426,7 @@ foreach ($active as $index => $inv) {
         </div>
     </div>
     <!-- Modal Backdrop - Separate from modal to ensure proper z-index stacking -->
-    <div class="modal-backdrop fade show" x-show="showCancelModal" @click="showCancelModal = false" style="z-index: 1050;"></div>
+    <div class="modal-backdrop fade show" x-show="showCancelModal" @click="showCancelModal = false; selectedInvestment = null;" style="z-index: 1050;"></div>
 </div>
 
 <?php if (!empty($active)): ?>
@@ -500,7 +517,9 @@ foreach ($active as $index => $inv) {
                                         fontWeight: 600,
                                         color: darkModeOptions.plotOptions.pie.donut.labels.total.color,
                                         formatter: function(w) {
-                                            var total = w.globals.seriesTotals.reduce(function(a, b) { return a + b; }, 0);
+                                            var total = w.globals.seriesTotals.reduce(function(a, b) {
+                                                return a + b;
+                                            }, 0);
                                             return currencySymbol + parseFloat(total).toLocaleString('en-US', {
                                                 minimumFractionDigits: 2,
                                                 maximumFractionDigits: 2
