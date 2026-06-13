@@ -93,7 +93,7 @@ $nav_item = function ($key, $url, $icon, $label) use ($active_nav) {
     <div class="flex items-center gap-3 min-w-0">
         <a href="/user/dashboard" class="flex items-center gap-3 min-w-0">
             <?php if ($has_logo_h): ?>
-                <img src="/<?php echo e($site_logo_h); ?>" alt="<?php echo e($site_name); ?>" class="h-24 w-auto max-w-[200px] object-contain">
+                <img src="/<?php echo e($site_logo_h); ?>" alt="<?php echo e($site_name); ?>" class="h-10 md:h-14 w-auto max-w-[200px] object-contain">
             <?php else: ?>
                 <div class="w-10 h-10 rounded-full bg-gradient-to-tr from-brand-accent to-emerald-300 flex items-center justify-center text-brand-dark shadow-[0_0_15px_rgba(16,185,129,0.3)]">
                     <i class="fa-solid fa-bolt text-lg"></i>
