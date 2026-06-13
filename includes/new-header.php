@@ -89,7 +89,7 @@ $nav_item = function ($key, $url, $icon, $label) use ($active_nav) {
 ?>
 
 <!-- Sticky glass navbar -->
-<nav class="glass-panel sticky top-0 z-40 px-6 <?php echo $has_logo_h ? 'py-2' : 'py-4'; ?> flex items-center justify-between">
+<nav class="glass-panel sticky top-0 z-40 px-6 py-4 flex items-center justify-between">
     <div class="flex items-center gap-3 min-w-0">
         <a href="/user/dashboard" class="flex items-center gap-3 min-w-0">
             <?php if ($has_logo_h): ?>
