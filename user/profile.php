@@ -76,6 +76,63 @@ ob_start();
         if (modalBox) modalBox.classList.add('scale-95');
         document.body.style.overflow = 'auto';
     }
+
+    // Help center AJAX form submission
+    const helpForm = document.querySelector('#modal-help form');
+    const helpStatus = document.getElementById('help-status');
+    const helpSubmitBtn = helpForm ? helpForm.querySelector('button[type="submit"]') : null;
+    const helpOriginalBtnHtml = helpSubmitBtn ? helpSubmitBtn.innerHTML : '';
+    const sendingText = <?php echo json_encode(__('Sending...')); ?>;
+
+    if (helpForm) {
+        helpForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            if (helpStatus) {
+                helpStatus.classList.add('hidden');
+                helpStatus.classList.remove(
+                    'bg-emerald-500/10', 'text-emerald-400', 'border', 'border-emerald-500/20',
+                    'bg-red-500/10', 'text-red-400', 'border-red-500/20'
+                );
+            }
+
+            if (helpSubmitBtn) {
+                helpSubmitBtn.disabled = true;
+                helpSubmitBtn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> ' + sendingText;
+            }
+
+            try {
+                const response = await fetch(helpForm.action, {
+                    method: 'POST',
+                    body: new FormData(helpForm),
+                    headers: { 'X-Requested-With': 'XMLHttpRequest' }
+                });
+                const data = await response.json();
+
+                if (data && data.success) {
+                    if (helpStatus) {
+                        helpStatus.textContent = data.message || <?php echo json_encode(__('Message sent successfully.')); ?>;
+                        helpStatus.classList.remove('hidden');
+                        helpStatus.classList.add('bg-emerald-500/10', 'text-emerald-400', 'border', 'border-emerald-500/20');
+                    }
+                    helpForm.reset();
+                } else {
+                    throw new Error(data && data.message ? data.message : <?php echo json_encode(__('Failed to send message.')); ?>);
+                }
+            } catch (err) {
+                if (helpStatus) {
+                    helpStatus.textContent = err.message || <?php echo json_encode(__('An error occurred. Please try again.')); ?>;
+                    helpStatus.classList.remove('hidden');
+                    helpStatus.classList.add('bg-red-500/10', 'text-red-400', 'border', 'border-red-500/20');
+                }
+            }
+
+            if (helpSubmitBtn) {
+                helpSubmitBtn.disabled = false;
+                helpSubmitBtn.innerHTML = helpOriginalBtnHtml;
+            }
+        });
+    }
 </script>
 <?php
 $extra_scripts = ob_get_clean();
@@ -529,11 +586,12 @@ require ROOT . '/includes/new-header.php';
                 </button>
             </div>
 
-            <form action="/actions/contact-submit.php" method="POST" class="space-y-4">
+            <form action="/actions/contact-submit.php" method="POST" class="space-y-4" data-no-spinner>
                 <input type="hidden" name="csrf_token" value="<?php echo csrf_token(); ?>">
                 <input type="hidden" name="website" value="">
                 <input type="hidden" name="name" value="<?php echo e($user['name'] ?? ''); ?>">
                 <input type="hidden" name="email" value="<?php echo e($user['email'] ?? ''); ?>">
+                <input type="hidden" name="ajax" value="1">
 
                 <div>
                     <label class="block text-xs font-medium text-zinc-400 mb-1.5 uppercase tracking-wide"><?php echo e(__('Subject')); ?></label>
@@ -549,6 +607,8 @@ require ROOT . '/includes/new-header.php';
                     <label class="block text-xs font-medium text-zinc-400 mb-1.5 uppercase tracking-wide"><?php echo e(__('Message')); ?></label>
                     <textarea name="message" rows="4" class="premium-input resize-none" placeholder="<?php echo e(__('Describe your issue in detail...')); ?>" required></textarea>
                 </div>
+
+                <div id="help-status" class="hidden rounded-lg px-4 py-3 text-sm mb-4"></div>
 
                 <div class="pt-4">
                     <button type="submit" class="w-full py-3.5 bg-brand-accent text-brand-dark font-bold rounded-xl hover:bg-emerald-400 transition-colors shadow-[0_0_20px_rgba(16,185,129,0.2)] flex items-center justify-center gap-2">

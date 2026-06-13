@@ -15,28 +15,48 @@ require_once ROOT . '/includes/translation-functions.php';
 
 init_translation();
 
-if (($_SERVER['REQUEST_METHOD'] ?? '') !== 'POST') {
+/**
+ * Return a response either as JSON (AJAX) or as a session flash + redirect.
+ */
+function respond(bool $success, string $message)
+{
+    if (!empty($_POST['ajax'])) {
+        header('Content-Type: application/json; charset=utf-8');
+        echo json_encode(['success' => $success, 'message' => $message]);
+        exit;
+    }
+
+    $_SESSION[$success ? 'success' : 'error'] = $message;
     header('Location: /contact');
     exit;
+}
+
+if (($_SERVER['REQUEST_METHOD'] ?? '') !== 'POST') {
+    respond(false, __('Invalid request method'));
 }
 
 $token = $_POST['csrf_token'] ?? '';
 if (!verify_csrf($token)) {
-    $_SESSION['error'] = __('Invalid security token. Please try again.');
-    header('Location: /contact');
-    exit;
+    respond(false, __('Invalid security token. Please try again.'));
 }
 
 // Honeypot spam check
 if (!empty($_POST['website'] ?? '')) {
-    $_SESSION['error'] = __('An error occurred. Please try again.');
-    header('Location: /contact');
-    exit;
+    respond(false, __('An error occurred. Please try again.'));
+}
+
+// Resolve sender identity. If the user is logged in (help-center flow), use the
+// authenticated DB record so hidden form fields cannot be spoofed. Public
+// contact form falls back to the submitted name/email.
+$userId = $_SESSION['user_id'] ?? null;
+if ($userId) {
+    $authUserRows = db_query('SELECT name, email FROM users WHERE id = ?', [$userId]);
+    $authUser = !empty($authUserRows) ? $authUserRows[0] : null;
 }
 
 // Sanitize inputs
-$name = sanitize_input($_POST['name'] ?? '');
-$email = sanitize_input($_POST['email'] ?? '');
+$name = sanitize_input(($authUser['name'] ?? '') ?: ($_POST['name'] ?? ''));
+$email = sanitize_input(($authUser['email'] ?? '') ?: ($_POST['email'] ?? ''));
 $subject = sanitize_input($_POST['subject'] ?? '');
 $message = sanitize_input($_POST['message'] ?? '');
 
@@ -44,16 +64,12 @@ $message = sanitize_input($_POST['message'] ?? '');
 $required = ['name' => $name, 'email' => $email, 'subject' => $subject, 'message' => $message];
 $missing = validate_required($required);
 if (!empty($missing)) {
-    $_SESSION['error'] = __('Please fill in all required fields.');
-    header('Location: /contact');
-    exit;
+    respond(false, __('Please fill in all required fields.'));
 }
 
 // Validate email format
 if (!validate_email($email)) {
-    $_SESSION['error'] = __('Please enter a valid email address.');
-    header('Location: /contact');
-    exit;
+    respond(false, __('Please enter a valid email address.'));
 }
 
 // Determine recipient
@@ -79,11 +95,7 @@ $body = implode("\n", $body_lines);
 
 $sent = send_email($recipient, $email_subject, $body, false);
 if (!$sent) {
-    $_SESSION['error'] = __('Failed to send message. Please try again later.');
-    header('Location: /contact');
-    exit;
+    respond(false, __('Failed to send message. Please try again later.'));
 }
 
-$_SESSION['success'] = __('Thank you! Your message has been sent. We\'ll get back to you soon.');
-header('Location: /contact');
-exit;
+respond(true, __('Thank you! Your message has been sent. We\'ll get back to you soon.'));

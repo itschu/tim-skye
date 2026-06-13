@@ -84,6 +84,10 @@ require_once 'includes/public-header.php';
         </div>
 
         <form class="contact-form-wrap" action="/actions/contact-submit.php" method="POST">
+            <input type="hidden" name="csrf_token" value="<?php echo csrf_token(); ?>" />
+            <div class="frow" style="display:none;" aria-hidden="true">
+                <input type="text" name="website" tabindex="-1" autocomplete="off" />
+            </div>
             <div class="frow">
                 <div class="ff">
                     <label><?php echo __('Name'); ?></label>
