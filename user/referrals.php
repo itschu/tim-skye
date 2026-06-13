@@ -8,6 +8,7 @@ require_once ROOT . '/includes/translation-functions.php';
 
 init_translation(get_user_language($_SESSION['user_id']));
 $page_title = __('Referral Program');
+$active_nav = 'referrals';
 $user_id = $_SESSION['user_id'];
 
 $user = db_query("SELECT * FROM users WHERE id = ?", [$user_id])[0] ?? null;
@@ -31,19 +32,19 @@ $total_referrals = get_referral_list_count($user_id, $status_filter);
 $total_pages = max(1, ceil($total_referrals / $per_page));
 $referred = get_referral_list($user_id, $status_filter, $per_page, $offset);
 
-// Referral fund/withdraw settings for JS
+// Referral fund/withdraw settings
 $rfw_mode = get_setting('referral_fund_withdraw_mode', 'exact');
 $rfw_exact = (float)get_setting('referral_exact_amount', 0);
 $rfw_min = (float)get_setting('referral_min_amount', 0);
 $rfw_max = (float)get_setting('referral_max_amount', 0);
 $referral_url = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == 'on' ? 'https' : 'http') . '://' . $_SERVER['HTTP_HOST'] . '/register?ref=' . $code;
 
-// Get referral settings
+// Referral settings
 $referral_bonus_type = get_setting('referral_bonus_type', 'percentage');
 $referral_bonus_amount = get_setting('referral_bonus_amount', 5);
 $referral_bonus_trigger = get_setting('referral_bonus_trigger', 'registration');
 
-// Determine messaging based on trigger
+// Trigger-based messaging
 $trigger_messages = [
     'registration' => [
         'step2' => __('They Register'),
@@ -85,583 +86,452 @@ $trigger_messages = [
 
 $current_messages = $trigger_messages[$referral_bonus_trigger] ?? $trigger_messages['registration'];
 
+// Social share copy
+$share_message = __('Join me on this investment platform!');
+
+ob_start();
 ?>
-<?php require ROOT . '/includes/header.php'; ?>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        <?php if (isset($_GET['status']) || isset($_GET['page'])): ?>
+            const section = document.getElementById('referralHistorySection');
+            if (section) {
+                section.scrollIntoView({
+                    behavior: 'smooth',
+                    block: 'start'
+                });
+            }
+        <?php endif; ?>
+    });
+</script>
+<?php
+$extra_scripts = ob_get_clean();
+
+require ROOT . '/includes/new-head.php';
+require ROOT . '/includes/new-header.php';
+?>
 
 <!-- Page Header -->
-<div class="d-flex justify-content-between align-items-end mb-4 flex-wrap gap-3">
-    <div class="d-flex align-items-center gap-3">
-        <div>
-            <h3 class="fw-bold text-dark mb-1" style="font-size: clamp(1.5rem, 3vw, 2rem)"><?php echo __('Referral Program'); ?></h3>
-            <p class="text-secondary mb-0 small"><?php echo __('Invite friends and earn commissions'); ?></p>
-        </div>
+<header class="flex flex-col xl:flex-row xl:items-center justify-between gap-6 border-b border-zinc-900 pb-4">
+    <div>
+        <h1 class="text-3xl md:text-4xl font-bold text-zinc-50 mb-1 tracking-tight"><?php echo e(__('Referral Program')); ?></h1>
+        <p class="text-zinc-400 text-sm"><?php echo e(__('Invite friends and earn commissions')); ?></p>
     </div>
 
-    <div class="d-flex gap-3">
-        <button class="btn btn-white card-custom border shadow-sm fw-bold d-flex align-items-center gap-2 py-2 px-3 rounded-pill" style="cursor: default;" @click="toggleCurrency()">
-            <img :src="currencyFlag" width="20" height="20" class="rounded-circle object-fit-cover" />
-            <span x-text="currency"><?php echo e(get_currency_code()); ?></span>
-        </button>
-        <button class="btn btn-primary shadow-sm rounded-pill px-4 py-2 fw-bold" onclick="document.getElementById('shareSection').scrollIntoView({behavior: 'smooth'})">
-            <i class="fas fa-user-plus me-2"></i><?php echo __('Invite Friends'); ?>
+    <div class="flex items-center gap-3">
+        <button class="flex items-center gap-2 px-5 py-2.5 bg-brand-accent text-brand-dark text-sm font-bold rounded-xl hover:bg-emerald-400 transition-colors shadow-[0_0_20px_rgba(16,185,129,0.2)]"
+            onclick="document.getElementById('referralHistorySection').scrollIntoView({behavior:'smooth', block:'start'})">
+            <i class="fa-solid fa-user-plus"></i>
+            <?php echo e(__('Invite Friends')); ?>
         </button>
     </div>
-</div>
+</header>
 
-<!-- Alpine.js Component -->
-<div x-data="{ 
-    activeTab: 'all',
-    referralLink: '<?php echo e($referral_url); ?>',
-    copied: false,
-     copyToClipboard() {
-        const text = this.referralLink;
-        if (navigator.clipboard && navigator.clipboard.writeText) {
-            navigator.clipboard.writeText(text).then(() => {
-                this.copied = true;
-                setTimeout(() => this.copied = false, 2000);
-            }).catch(() => {
-                this.fallbackCopy(text);
-            });
-        } else {
-            this.fallbackCopy(text);
-        }
-    },
-    fallbackCopy(text) {
-        const ta = document.createElement('textarea');
-        ta.value = text;
-        ta.style.position = 'fixed';
-        ta.style.left = '-9999px';
-        document.body.appendChild(ta);
-        ta.focus();
-        ta.select();
-        try {
-            document.execCommand('copy');
-            this.copied = true;
-            setTimeout(() => this.copied = false, 2000);
-        } catch (e) {
-            
-        }
-        document.body.removeChild(ta);
-    }
-}">
-    <!-- Stats Cards -->
-    <div class="row g-4 mb-4">
+<div class="space-y-6">
+    <!-- Stats Grid -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         <!-- Total Earnings -->
-        <div class="col-md-4 col-lg-4">
-            <div class="card border-0 shadow-sm h-100 p-4 stat-card" style="border-radius: 1.25rem;">
-                <div class="d-flex align-items-center gap-3 mb-2">
-                    <div class="icon-box bg-success bg-opacity-10 text-success">
-                        <i class="fas fa-wallet"></i>
-                    </div>
-                    <h6 class="text-secondary fw-bold mb-0"><?php echo __('Total Earnings'); ?></h6>
+        <div class="bg-brand-card rounded-2xl p-5 border border-zinc-800 hover:border-zinc-700/80 transition-colors">
+            <div class="flex items-center justify-between mb-3">
+                <p class="text-[10px] font-bold text-zinc-500 uppercase tracking-wider"><?php echo e(__('Total Earnings')); ?></p>
+                <div class="w-10 h-10 rounded-xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-brand-accent">
+                    <i class="fa-solid fa-vault text-sm"></i>
                 </div>
-                <h2 class="fw-bold text-dark mb-0 mt-2" x-text="formatCurrency(<?php echo $stats['total'] ?? 0; ?>)"><?php echo format_money($stats['total'] ?? 0); ?></h2>
-                <?php if (($stats['total'] ?? 0) > 0): ?>
-                    <div class="d-flex align-items-center mt-2 small text-success fw-bold">
-                        <i class="fas fa-arrow-trend-up me-2"></i>
-                        <span><?php echo __('Keep inviting!'); ?></span>
-                    </div>
-                <?php endif; ?>
             </div>
+            <h3 class="text-2xl font-black text-zinc-50 font-mono tracking-tight" x-text="formatCurrency(<?php echo (float)($stats['total'] ?? 0); ?>)"></h3>
+            <?php if (($stats['total'] ?? 0) > 0): ?>
+                <p class="text-[11px] text-brand-accent font-medium flex items-center gap-1 mt-1">
+                    <i class="fa-solid fa-arrow-trend-up text-[10px]"></i>
+                    <?php echo e(__('Keep inviting!')); ?>
+                </p>
+            <?php endif; ?>
         </div>
 
         <!-- Referral Balance -->
-        <div class="col-md-4 col-lg-4">
-            <div class="card border-0 shadow-sm h-100 p-4 stat-card" style="border-radius: 1.25rem;">
-                <div class="d-flex align-items-center gap-3 mb-2">
-                    <div class="icon-box bg-primary bg-opacity-10 text-primary">
-                        <i class="fas fa-piggy-bank"></i>
-                    </div>
-                    <h6 class="text-secondary fw-bold mb-0"><?php echo __('Referral Balance'); ?></h6>
+        <div class="bg-brand-card rounded-2xl p-5 border border-zinc-800 hover:border-zinc-700/80 transition-colors">
+            <div class="flex items-center justify-between mb-3">
+                <p class="text-[10px] font-bold text-zinc-500 uppercase tracking-wider"><?php echo e(__('Referral Balance')); ?></p>
+                <div class="w-10 h-10 rounded-xl bg-sky-500/10 border border-sky-500/20 flex items-center justify-center text-sky-500">
+                    <i class="fa-solid fa-piggy-bank text-sm"></i>
                 </div>
-                <h2 class="fw-bold text-dark mb-0 mt-2" x-text="formatCurrency(<?php echo $available_referral; ?>)"><?php echo format_money($available_referral); ?></h2>
-                <?php if ($referral_balance > $available_referral): ?>
-                    <p class="text-secondary small mt-1 mb-0"><?php echo sprintf(__('Total: %s (pending withdrawals locked)'), format_money($referral_balance)); ?></p>
-                <?php endif; ?>
-                <div class="d-flex gap-2 mt-3">
-                    <button class="btn btn-primary btn-sm rounded-pill px-4 py-2 fw-bold" data-bs-toggle="modal" data-bs-target="#fundWalletModal">
-                        <i class="fas fa-wallet me-1"></i> <?php echo __('Fund Wallet'); ?>
-                    </button>
-                    <a href="/user/withdraw?source=referral" class="btn btn-outline-primary btn-sm rounded-pill px-4 py-2 fw-bold">
-                        <i class="fas fa-money-bill-transfer me-1"></i> <?php echo __('Withdraw'); ?>
-                    </a>
-                </div>
+            </div>
+            <h3 class="text-2xl font-black text-zinc-50 font-mono tracking-tight" x-text="formatCurrency(<?php echo (float)$available_referral; ?>)"></h3>
+            <?php if ($referral_balance > $available_referral): ?>
+                <p class="text-[11px] text-zinc-500 mt-1">
+                    <?php echo e(sprintf(__('Total: %s (pending withdrawals locked)'), format_money($referral_balance))); ?>
+                </p>
+            <?php endif; ?>
+            <div class="flex items-center gap-2 mt-3">
+                <button class="px-4 py-2 bg-brand-accent hover:bg-emerald-400 text-brand-dark text-xs font-bold rounded-lg transition-colors"
+                    @click="$dispatch('open-fund-modal')">
+                    <i class="fa-solid fa-wallet mr-1"></i>
+                    <?php echo e(__('Fund Wallet')); ?>
+                </button>
+                <a href="/user/withdraw?source=referral" class="px-4 py-2 bg-zinc-800 hover:bg-zinc-700 text-zinc-100 text-xs font-bold rounded-lg transition-colors border border-zinc-700">
+                    <i class="fa-solid fa-money-bill-transfer mr-1"></i>
+                    <?php echo e(__('Withdraw')); ?>
+                </a>
             </div>
         </div>
 
         <!-- Commission Rate -->
-        <div class="col-md-4 col-lg-4">
-            <div class="card border-0 shadow-sm h-100 p-4 position-relative overflow-hidden stat-card" style="border-radius: 1.25rem;">
-                <div class="position-absolute top-0 end-0 p-3 opacity-10">
-                    <i class="fas fa-percentage fa-4x text-primary"></i>
+        <div class="bg-brand-card rounded-2xl p-5 border border-zinc-800 hover:border-zinc-700/80 transition-colors relative overflow-hidden">
+            <div class="absolute -right-4 -bottom-4 w-24 h-24 bg-brand-accent/5 rounded-full blur-xl"></div>
+            <div class="flex items-center justify-between mb-3 relative z-10">
+                <p class="text-[10px] font-bold text-zinc-500 uppercase tracking-wider"><?php echo e(__('Commission Rate')); ?></p>
+                <div class="w-10 h-10 rounded-xl bg-zinc-900 border border-zinc-800 flex items-center justify-center text-zinc-400">
+                    <i class="fa-solid fa-percentage text-sm"></i>
                 </div>
-                <div class="d-flex align-items-center gap-3 mb-2">
-                    <div class="icon-box bg-warning bg-opacity-10 text-warning">
-                        <i class="fas fa-gift"></i>
-                    </div>
-                    <h6 class="text-secondary fw-bold mb-0"><?php echo __('Commission Rate'); ?></h6>
+            </div>
+            <h3 class="text-2xl font-black text-zinc-50 font-mono tracking-tight relative z-10"
+                <?php if ($referral_bonus_type !== 'percentage'): ?>x-text="formatCurrency(<?php echo (float)$referral_bonus_amount; ?>)" <?php endif; ?>>
+                <?php echo $referral_bonus_type === 'percentage' ? e($referral_bonus_amount) . '%' : ''; ?>
+            </h3>
+            <p class="text-[11px] text-zinc-500 mt-1 relative z-10"><?php echo e($current_messages['commission_desc']); ?></p>
+        </div>
+
+        <!-- Successful Invites -->
+        <div class="bg-brand-card rounded-2xl p-5 border border-zinc-800 hover:border-zinc-700/80 transition-colors">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2.5">
+                <div>
+                    <p class="text-[10px] font-bold text-zinc-500 uppercase tracking-wider"><?php echo e(__('Successful Invites')); ?></p>
+                    <p class="text-2xl font-bold text-zinc-100 font-mono mt-0.5"><?php echo e($stats['successful'] ?? 0); ?></p>
                 </div>
-                <h2 class="fw-bold text-dark mb-0 mt-2" <?php if ($referral_bonus_type !== 'percentage'): ?>x-text="formatCurrency(<?php echo $referral_bonus_amount; ?>)" <?php endif; ?>><?php echo $referral_bonus_type === 'percentage' ? $referral_bonus_amount . '%' : format_money($referral_bonus_amount); ?></h2>
-                <p class="text-secondary small mt-1 mb-0">
-                    <?php echo $current_messages['commission_desc']; ?>
-                </p>
+                <span class="text-[10px] bg-emerald-500/10 text-brand-accent px-2 py-0.5 rounded font-medium self-start sm:self-center">
+                    <?php echo e(__('Users who invested')); ?>
+                </span>
             </div>
         </div>
 
-        <!-- Successful Referrals -->
-        <div class="col-md-4 col-lg-4">
-            <div class="card border-0 shadow-sm h-100 p-4 stat-card" style="border-radius: 1.25rem;">
-                <div class="d-flex align-items-center gap-3 mb-2">
-                    <div class="icon-box bg-primary bg-opacity-10 text-primary">
-                        <i class="fas fa-trophy"></i>
-                    </div>
-                    <h6 class="text-secondary fw-bold mb-0"><?php echo __('Successful Invites'); ?></h6>
+        <!-- Active -->
+        <div class="bg-brand-card rounded-2xl p-5 border border-zinc-800 hover:border-zinc-700/80 transition-colors">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2.5">
+                <div>
+                    <p class="text-[10px] font-bold text-zinc-500 uppercase tracking-wider"><?php echo e(__('Active')); ?></p>
+                    <p class="text-2xl font-bold text-zinc-100 font-mono mt-0.5"><?php echo e($stats['active'] ?? 0); ?></p>
                 </div>
-                <h2 class="fw-bold text-dark mb-0 mt-2"><?php echo $stats['successful'] ?? 0; ?></h2>
-                <p class="text-secondary small mt-1 mb-0"><?php echo __('Users who invested'); ?></p>
+                <span class="text-[10px] bg-sky-500/10 text-sky-400 px-2 py-0.5 rounded font-medium self-start sm:self-center">
+                    <?php echo e(__('Users who deposited')); ?>
+                </span>
             </div>
         </div>
 
-        <!-- Active Referrals -->
-        <div class="col-md-4 col-lg-4">
-            <div class="card border-0 shadow-sm h-100 p-4 stat-card" style="border-radius: 1.25rem;">
-                <div class="d-flex align-items-center gap-3 mb-2">
-                    <div class="icon-box bg-info bg-opacity-10 text-info">
-                        <i class="fas fa-coins"></i>
-                    </div>
-                    <h6 class="text-secondary fw-bold mb-0"><?php echo __('Active'); ?></h6>
+        <!-- Pending -->
+        <div class="bg-brand-card rounded-2xl p-5 border border-zinc-800 hover:border-zinc-700/80 transition-colors">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2.5">
+                <div>
+                    <p class="text-[10px] font-bold text-zinc-500 uppercase tracking-wider"><?php echo e(__('Pending')); ?></p>
+                    <p class="text-2xl font-bold text-zinc-100 font-mono mt-0.5"><?php echo e($stats['pending'] ?? 0); ?></p>
                 </div>
-                <h2 class="fw-bold text-dark mb-0 mt-2"><?php echo $stats['active'] ?? 0; ?></h2>
-                <p class="text-secondary small mt-1 mb-0"><?php echo __('Users who deposited'); ?></p>
-            </div>
-        </div>
-
-        <!-- Pending Referrals -->
-        <div class="col-md-4 col-lg-4">
-            <div class="card border-0 shadow-sm h-100 p-4 stat-card" style="border-radius: 1.25rem;">
-                <div class="d-flex align-items-center gap-3 mb-2">
-                    <div class="icon-box bg-warning bg-opacity-10 text-warning">
-                        <i class="fas fa-clock"></i>
-                    </div>
-                    <h6 class="text-secondary fw-bold mb-0"><?php echo __('Pending'); ?></h6>
-                </div>
-                <h2 class="fw-bold text-dark mb-0 mt-2"><?php echo $stats['pending'] ?? 0; ?></h2>
-                <p class="text-secondary small mt-1 mb-0"><?php echo __('Registered only'); ?></p>
+                <span class="text-[10px] bg-amber-500/10 text-amber-400 px-2 py-0.5 rounded font-medium self-start sm:self-center">
+                    <?php echo e(__('Registered only')); ?>
+                </span>
             </div>
         </div>
     </div>
 
-    <div class="row g-4">
-        <!-- Left Column - How it works & Share -->
-        <div class="col-lg-5" id="shareSection">
-            <!-- How it works Card -->
-            <div class="card border-0 text-white overflow-hidden position-relative mb-4" style="border-radius: 1.25rem; background: var(--gradient-card);">
-                <div class="position-absolute" style="top: -30%; right: -10%; width: 200px; height: 200px; background: rgba(255,255,255,0.1); border-radius: 50%;"></div>
-                <div class="position-absolute" style="bottom: -20%; left: -5%; width: 150px; height: 150px; background: rgba(255,255,255,0.08); border-radius: 50%;"></div>
+    <!-- Main asymmetric grid -->
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+        <!-- Left: How it works + Share -->
+        <div class="lg:col-span-4 space-y-6">
+            <!-- How it works -->
+            <div class="relative overflow-hidden rounded-2xl p-5 bg-gradient-to-tr from-emerald-500 to-emerald-700 text-white shadow-lg">
+                <div class="absolute -top-10 -right-10 w-40 h-40 bg-white/10 rounded-full"></div>
+                <div class="absolute -bottom-8 -left-8 w-32 h-32 bg-white/5 rounded-full"></div>
 
-                <div class="card-body p-4 position-relative">
-                    <h5 class="fw-bold mb-4"><?php echo __('How it works'); ?></h5>
+                <h3 class="text-sm font-bold text-white uppercase tracking-wider mb-4 relative z-10"><?php echo e(__('How it works')); ?></h3>
 
-                    <div class="d-flex gap-3 mb-3">
-                        <div class="step-circle">1</div>
+                <div class="space-y-4 relative z-10">
+                    <div class="flex items-start gap-3.5">
+                        <div class="w-6 h-6 rounded-full bg-white/20 border border-white/30 text-[10px] font-bold text-white flex items-center justify-center shrink-0">1</div>
                         <div>
-                            <h6 class="fw-bold mb-1"><?php echo __('Invite Friends'); ?></h6>
-                            <p class="text-white-50 small mb-0"><?php echo __('Share your link with friends.'); ?></p>
+                            <h4 class="text-xs font-bold text-white"><?php echo e(__('Invite Friends')); ?></h4>
+                            <p class="text-white/70 text-[11px]"><?php echo e(__('Share your link with friends.')); ?></p>
                         </div>
                     </div>
-
-                    <div class="d-flex gap-3 mb-3">
-                        <div class="step-circle">2</div>
+                    <div class="flex items-start gap-3.5">
+                        <div class="w-6 h-6 rounded-full bg-white/20 border border-white/30 text-[10px] font-bold text-white flex items-center justify-center shrink-0">2</div>
                         <div>
-                            <h6 class="fw-bold mb-1"><?php echo $current_messages['step2']; ?></h6>
-                            <p class="text-white-50 small mb-0"><?php echo $current_messages['step2_desc']; ?></p>
+                            <h4 class="text-xs font-bold text-white"><?php echo e($current_messages['step2']); ?></h4>
+                            <p class="text-white/70 text-[11px]"><?php echo e($current_messages['step2_desc']); ?></p>
                         </div>
                     </div>
-
-                    <div class="d-flex gap-3 mb-3">
-                        <div class="step-circle">3</div>
+                    <div class="flex items-start gap-3.5">
+                        <div class="w-6 h-6 rounded-full bg-white/20 border border-white/30 text-[10px] font-bold text-white flex items-center justify-center shrink-0">3</div>
                         <div>
-                            <h6 class="fw-bold mb-1"><?php echo $current_messages['step3']; ?></h6>
-                            <p class="text-white-50 small mb-0"><?php echo $current_messages['step3_desc']; ?></p>
+                            <h4 class="text-xs font-bold text-white"><?php echo e($current_messages['step3']); ?></h4>
+                            <p class="text-white/70 text-[11px]"><?php echo e($current_messages['step3_desc']); ?></p>
                         </div>
                     </div>
-
-                    <?php if ($rfw_mode === 'exact' && $rfw_exact > 0): ?>
-                        <div class="alert bg-white bg-opacity-10 text-white border-0 mb-0 small" style="border-radius: 1rem;">
-                            <i class="fas fa-info-circle me-2"></i>
-                            <span><?php echo sprintf(__('Referral fund and withdrawal amounts must be exactly %s'), format_money($rfw_exact)); ?></span>
-                        </div>
-                    <?php elseif ($rfw_mode === 'range'): ?>
-                        <div class="alert bg-white bg-opacity-10 text-white border-0 mb-0 small" style="border-radius: 1rem;">
-                            <i class="fas fa-info-circle me-2"></i>
-                            <span><?php echo sprintf(__('Referral fund and withdrawal amounts must be at least %s'), format_money($rfw_min)) . ($rfw_max > 0 ? ' ' . sprintf(__('and at most %s'), format_money($rfw_max)) : ''); ?></span>
-                        </div>
-                    <?php endif; ?>
                 </div>
+
+                <?php if ($rfw_mode === 'exact' && $rfw_exact > 0): ?>
+                    <div class="mt-4 rounded-xl bg-white/10 border border-white/10 px-3 py-2 text-[11px] text-white/90 flex items-start gap-2 relative z-10">
+                        <i class="fa-solid fa-info-circle mt-0.5"></i>
+                        <span><?php echo e(sprintf(__('Referral fund and withdrawal amounts must be exactly %s'), format_money($rfw_exact))); ?></span>
+                    </div>
+                <?php elseif ($rfw_mode === 'range'): ?>
+                    <div class="mt-4 rounded-xl bg-white/10 border border-white/10 px-3 py-2 text-[11px] text-white/90 flex items-start gap-2 relative z-10">
+                        <i class="fa-solid fa-info-circle mt-0.5"></i>
+                        <span><?php echo e(sprintf(__('Referral fund and withdrawal amounts must be at least %s'), format_money($rfw_min)) . ($rfw_max > 0 ? ' ' . e(sprintf(__('and at most %s'), format_money($rfw_max))) : '')); ?></span>
+                    </div>
+                <?php endif; ?>
             </div>
 
-            <!-- Share Link Card -->
-            <div class="card border-0 shadow-sm mb-4" style="border-radius: 1.25rem;">
-                <div class="card-body p-4">
-                    <h5 class="fw-bold mb-3"><?php echo __('Share Your Link'); ?></h5>
-                    <p class="text-secondary small mb-4"><?php echo __('Copy your unique referral link and share it with your network to start earning.'); ?></p>
+            <!-- Share link -->
+            <div class="glass-panel rounded-2xl p-5 space-y-4 shadow-lg"
+                x-data="{ copied: false, link: <?php echo htmlspecialchars(json_encode($referral_url), ENT_QUOTES, 'UTF-8'); ?>, copyToClipboard() { const text = this.link; if (navigator.clipboard && navigator.clipboard.writeText) { navigator.clipboard.writeText(text).then(() => { this.copied = true; setTimeout(() => this.copied = false, 2000); }).catch(() => this.fallbackCopy(text)); } else { this.fallbackCopy(text); } }, fallbackCopy(text) { const ta = document.createElement('textarea'); ta.value = text; ta.style.position = 'fixed'; ta.style.left = '-9999px'; document.body.appendChild(ta); ta.focus(); ta.select(); try { document.execCommand('copy'); this.copied = true; setTimeout(() => this.copied = false, 2000); } catch (err) {} document.body.removeChild(ta); } }">
+                <div class="space-y-0.5">
+                    <h3 class="text-sm font-bold text-zinc-200 uppercase tracking-wider"><?php echo e(__('Share Your Link')); ?></h3>
+                    <p class="text-zinc-500 text-xs"><?php echo e(__('Copy your unique referral link and share it with your network to start earning.')); ?></p>
+                </div>
 
-                    <div class="copy-input-group mb-4">
-                        <div class="ps-3 text-secondary opacity-50"><i class="fas fa-link"></i></div>
-                        <input type="text" class="copy-input" x-model="referralLink" readonly />
-                        <button class="d-flex btn rounded-pill px-4 fw-bold shadow-sm" @click="copyToClipboard()" :class="{ 'btn-success': copied, 'btn-primary': !copied }">
-                            <span x-show="!copied"><?php echo __('Copy'); ?></span>
-                            <span x-show="copied" style="display: none">
-                                <!-- <i class="fas fa-check me-1"></i> -->
-                                <?php echo __('Copied'); ?></span>
-                        </button>
-                    </div>
+                <div class="flex items-center gap-2 bg-zinc-950 border border-zinc-800 rounded-xl p-1.5 pl-3 focus-within:border-brand-accent/40 transition-colors">
+                    <i class="fa-solid fa-link text-zinc-600 text-xs"></i>
+                    <input type="text" x-model="link" readonly
+                        class="w-full bg-transparent text-xs font-mono font-medium text-zinc-300 focus:outline-none select-all truncate"
+                        aria-label="<?php echo e(__('Referral link')); ?>">
+                    <button @click="copyToClipboard()"
+                        class="shrink-0 px-3.5 py-2 rounded-lg text-xs font-bold transition-all active:scale-95"
+                        :class="copied ? 'bg-emerald-400 text-brand-dark' : 'bg-brand-accent text-brand-dark hover:bg-emerald-400'">
+                        <span x-show="!copied"><?php echo e(__('Copy')); ?></span>
+                        <span x-show="copied"><?php echo e(__('Copied')); ?></span>
+                    </button>
+                </div>
 
-                    <p class="text-secondary small fw-bold mb-3 text-uppercase" style="letter-spacing: 1px; font-size: 0.75rem"><?php echo __('Share via'); ?></p>
-                    <div class="d-flex gap-2">
-                        <a href="https://www.facebook.com/sharer/sharer.php?u=<?php echo urlencode($referral_url); ?>" target="_blank" class="btn-social bg-facebook">
-                            <i class="fab fa-facebook-f"></i>
+                <div class="space-y-2">
+                    <p class="text-[9px] font-bold text-zinc-600 uppercase tracking-widest px-0.5"><?php echo e(__('Share via')); ?></p>
+                    <div class="flex items-center gap-2">
+                        <a href="https://www.facebook.com/sharer/sharer.php?u=<?php echo urlencode($referral_url); ?>"
+                            target="_blank" rel="noopener noreferrer"
+                            class="w-8 h-8 rounded-lg bg-zinc-950 border border-zinc-800 text-zinc-400 hover:text-blue-400 flex items-center justify-center text-xs transition-colors">
+                            <i class="fa-brands fa-facebook-f"></i>
                         </a>
-
-                        <a href="https://twitter.com/intent/tweet?url=<?php echo urlencode($referral_url); ?>&text=<?php echo urlencode(__('Join me on this investment platform!')); ?>" target="_blank" class="btn-social bg-twitter">
+                        <a href="https://twitter.com/intent/tweet?url=<?php echo urlencode($referral_url); ?>&text=<?php echo urlencode($share_message); ?>"
+                            target="_blank" rel="noopener noreferrer"
+                            class="w-8 h-8 rounded-lg bg-zinc-950 border border-zinc-800 text-zinc-400 hover:text-white flex items-center justify-center text-xs transition-colors">
                             <i class="fa-brands fa-x"></i>
                         </a>
-
-                        <a href="https://api.whatsapp.com/send?text=<?php echo urlencode(__('Join me on this investment platform!') . ' ' . $referral_url); ?>" target="_blank" class="btn-social bg-whatsapp">
-                            <i class="fab fa-whatsapp"></i>
+                        <a href="https://api.whatsapp.com/send?text=<?php echo urlencode($share_message . ' ' . $referral_url); ?>"
+                            target="_blank" rel="noopener noreferrer"
+                            class="w-8 h-8 rounded-lg bg-zinc-950 border border-zinc-800 text-zinc-400 hover:text-emerald-400 flex items-center justify-center text-xs transition-colors">
+                            <i class="fa-brands fa-whatsapp"></i>
                         </a>
-
-                        <a href="https://t.me/share/url?url=<?php echo urlencode($referral_url); ?>&text=<?php echo urlencode(__('Join me on this investment platform!')); ?>" target="_blank" class="btn-social bg-telegram">
-                            <i class="fab fa-telegram-plane"></i>
+                        <a href="https://t.me/share/url?url=<?php echo urlencode($referral_url); ?>&text=<?php echo urlencode($share_message); ?>"
+                            target="_blank" rel="noopener noreferrer"
+                            class="w-8 h-8 rounded-lg bg-zinc-950 border border-zinc-800 text-zinc-400 hover:text-sky-400 flex items-center justify-center text-xs transition-colors">
+                            <i class="fa-brands fa-telegram"></i>
                         </a>
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- Right Column - Referral History -->
-        <div class="col-lg-7" id="referralHistorySection">
-            <div class="card border-0 shadow-sm h-100" style="border-radius: 1.25rem;">
-                <div class="card-header bg-transparent border-bottom p-4 d-flex flex-wrap justify-content-between align-items-center gap-3">
-                    <h5 class="fw-bold mb-0"><?php echo __('Referral History'); ?></h5>
+        <!-- Right: Referral History -->
+        <div class="lg:col-span-8" id="referralHistorySection">
+            <div class="glass-panel rounded-2xl overflow-hidden shadow-2xl flex flex-col">
+                <div class="p-4 bg-zinc-950/50 border-b border-zinc-800/60 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                    <div class="space-y-0.5">
+                        <h3 class="text-sm font-bold text-zinc-200 uppercase tracking-wider"><?php echo e(__('Referral History')); ?></h3>
+                        <p class="text-[11px] text-zinc-500 font-medium"><?php echo e(__('Track your invited users and bonuses')); ?></p>
+                    </div>
 
-                    <div class="nav nav-pills nav-pills-custom">
-                        <a href="?status=all" class="nav-link <?php echo $status_filter === 'all' ? 'active' : ''; ?>"><?php echo __('All'); ?></a>
-                        <a href="?status=successful" class="nav-link <?php echo $status_filter === 'successful' ? 'active' : ''; ?>"><?php echo __('Successful'); ?></a>
-                        <a href="?status=active" class="nav-link <?php echo $status_filter === 'active' ? 'active' : ''; ?>"><?php echo __('Active'); ?></a>
-                        <a href="?status=pending" class="nav-link <?php echo $status_filter === 'pending' ? 'active' : ''; ?>"><?php echo __('Pending'); ?></a>
+                    <div class="flex gap-1 bg-zinc-950 p-1 rounded-xl border border-zinc-900 text-[11px] font-semibold self-start sm:self-auto">
+                        <?php foreach ($valid_statuses as $st): ?>
+                            <?php $label = $st === 'all' ? __('All') : ($st === 'successful' ? __('Successful') : ($st === 'active' ? __('Active') : __('Pending'))); ?>
+                            <a href="?status=<?php echo e($st); ?>"
+                                class="px-3 py-1 rounded-lg transition-colors <?php echo $status_filter === $st ? 'bg-zinc-900 border border-zinc-800 text-white' : 'text-zinc-500 hover:text-zinc-300'; ?>">
+                                <?php echo e($label); ?>
+                            </a>
+                        <?php endforeach; ?>
                     </div>
                 </div>
 
-                <div class="card-body p-0">
-                    <div class="list-group list-group-flush">
-                        <?php if ($referred):
-                            foreach ($referred as $r):
-                                $status = $r['status'] ?? 'pending';
-                                $initials = strtoupper(substr($r['referred_name'] ?? 'U', 0, 1));
+                <div class="max-h-[515px] overflow-y-auto custom-scrollbar divide-y divide-zinc-800/40 bg-zinc-950/20">
+                    <?php if ($referred): ?>
+                        <?php foreach ($referred as $r):
+                            $status = $r['status'] ?? 'pending';
+                            $initials = e(strtoupper(substr($r['referred_name'] ?? 'U', 0, 1)));
 
-                                // Status badge styling
-                                $status_config = [
-                                    'successful' => [
-                                        'badge_class' => 'bg-success bg-opacity-10 text-success',
-                                        'badge_text' => __('Invested'),
-                                        'amount_class' => 'text-success',
-                                        'icon' => 'fa-check-circle'
-                                    ],
-                                    'active' => [
-                                        'badge_class' => 'bg-info bg-opacity-10 text-info',
-                                        'badge_text' => __('Deposited'),
-                                        'amount_class' => 'text-info',
-                                        'icon' => 'fa-coins'
-                                    ],
-                                    'pending' => [
-                                        'badge_class' => 'bg-warning bg-opacity-10 text-warning',
-                                        'badge_text' => __('Registered'),
-                                        'amount_class' => 'text-muted',
-                                        'icon' => 'fa-clock'
-                                    ]
-                                ];
-                                $config = $status_config[$status] ?? $status_config['pending'];
+                            $status_config = [
+                                'successful' => [
+                                    'badge_class' => 'bg-emerald-500/10 text-brand-accent border-emerald-500/20',
+                                    'badge_text' => __('Invested'),
+                                    'amount_class' => 'text-brand-accent',
+                                    'icon' => 'fa-check-circle',
+                                    'avatar_class' => 'bg-emerald-500/10 border-brand-accent/20 text-brand-accent'
+                                ],
+                                'active' => [
+                                    'badge_class' => 'bg-sky-500/10 text-sky-400 border-sky-500/20',
+                                    'badge_text' => __('Deposited'),
+                                    'amount_class' => 'text-sky-400',
+                                    'icon' => 'fa-coins',
+                                    'avatar_class' => 'bg-sky-500/10 border-sky-500/20 text-sky-400'
+                                ],
+                                'pending' => [
+                                    'badge_class' => 'bg-amber-500/10 text-amber-400 border-amber-500/20',
+                                    'badge_text' => __('Registered'),
+                                    'amount_class' => 'text-zinc-500',
+                                    'icon' => 'fa-clock',
+                                    'avatar_class' => 'bg-zinc-900 border-zinc-800 text-zinc-400'
+                                ]
+                            ];
+                            $config = $status_config[$status] ?? $status_config['pending'];
                         ?>
-                                <div class="list-group-item p-4 border-bottom-light referral-item"
-                                    x-transition:enter="transition ease-out duration-200"
-                                    x-transition:enter-start="opacity-0"
-                                    x-transition:enter-end="opacity-100">
-                                    <div class="d-flex align-items-center justify-content-between flex-wrap gap-3">
-                                        <div class="d-flex align-items-center gap-3">
-                                            <div class="bg-primary bg-opacity-10 text-primary rounded-circle d-flex align-items-center justify-content-center fw-bold" style="width: 45px; height: 45px">
-                                                <?php echo $initials; ?>
-                                            </div>
-                                            <div>
-                                                <h6 class="fw-bold text-dark mb-0"><?php echo e($r['referred_name'] ?? __('Unknown')); ?></h6>
-                                                <span class="small text-secondary"><?php echo format_date($r['registered_at'] ?? null); ?></span>
-                                                <?php if ($r['has_deposits']): ?>
-                                                    <div class="small text-info">
-                                                        <i class="fas fa-coins me-1"></i>
-                                                        <?php echo __('Deposit:'); ?> <?php echo format_money($r['deposit_total']); ?>
-                                                    </div>
-                                                <?php endif; ?>
-                                                <?php if ($r['has_investments']): ?>
-                                                    <div class="small text-success">
-                                                        <i class="fas fa-chart-line me-1"></i>
-                                                        <?php echo __('Invested:'); ?> <?php echo format_money($r['investment_total']); ?>
-                                                    </div>
-                                                <?php endif; ?>
-                                            </div>
-                                        </div>
-                                        <div class="text-end">
-                                            <h6 class="fw-bold <?php echo $config['amount_class']; ?> mb-0">
-                                                <?php echo ($r['bonus_amount'] ?? 0) > 0 ? '+' : ''; ?><?php echo format_money($r['bonus_amount'] ?? 0); ?>
-                                            </h6>
-                                            <span class="badge <?php echo $config['badge_class']; ?> rounded-pill px-2 py-1" style="font-size: 0.7rem">
-                                                <i class="fas <?php echo $config['icon']; ?> me-1"></i><?php echo $config['badge_text']; ?>
-                                            </span>
+                            <div class="p-4 flex items-center justify-between gap-4 hover:bg-zinc-900/20 transition-colors">
+                                <div class="flex items-center gap-3.5 min-w-0">
+                                    <div class="w-9 h-9 rounded-xl flex items-center justify-center font-bold text-sm shrink-0 <?php echo e($config['avatar_class']); ?>">
+                                        <?php echo $initials; ?>
+                                    </div>
+                                    <div class="min-w-0 space-y-1">
+                                        <h4 class="text-sm font-bold text-zinc-200 truncate"><?php echo e($r['referred_name'] ?? __('Unknown')); ?></h4>
+                                        <div class="flex flex-wrap items-center gap-x-3 gap-y-0.5 text-[10px] text-zinc-500 font-medium">
+                                            <span class="font-mono"><i class="fa-regular fa-clock text-[9px] mr-1"></i><?php echo e(format_date($r['registered_at'] ?? null)); ?></span>
+                                            <?php if (!empty($r['has_deposits'])): ?>
+                                                <span class="text-zinc-600">|</span>
+                                                <span class="font-mono"><?php echo e(__('Deposit:')); ?> <strong class="text-zinc-400"><?php echo e(format_money($r['deposit_total'] ?? 0)); ?></strong></span>
+                                            <?php endif; ?>
+                                            <?php if (!empty($r['has_investments'])): ?>
+                                                <span class="text-zinc-600">|</span>
+                                                <span class="font-mono"><?php echo e(__('Invested:')); ?> <strong class="text-zinc-400"><?php echo e(format_money($r['investment_total'] ?? 0)); ?></strong></span>
+                                            <?php endif; ?>
                                         </div>
                                     </div>
                                 </div>
-                            <?php endforeach;
-                        else: ?>
-                            <div class="p-5 text-center">
-                                <div class="bg-light rounded-circle p-4 mb-3 d-inline-flex">
-                                    <i class="fas fa-users fa-2x text-secondary opacity-25"></i>
+                                <div class="text-right shrink-0 space-y-1.5">
+                                    <p class="text-sm font-mono font-bold <?php echo e($config['amount_class']); ?>">
+                                        <?php echo ($r['bonus_amount'] ?? 0) > 0 ? '+' : ''; ?><?php echo e(format_money($r['bonus_amount'] ?? 0)); ?>
+                                    </p>
+                                    <span class="inline-block text-[9px] font-bold uppercase tracking-wide px-2 py-0.5 rounded border <?php echo e($config['badge_class']); ?>">
+                                        <i class="fas <?php echo e($config['icon']); ?> mr-1"></i><?php echo e($config['badge_text']); ?>
+                                    </span>
                                 </div>
-                                <h5 class="fw-bold text-dark"><?php echo __('No referrals yet'); ?></h5>
-                                <p class="text-muted small"><?php echo __('Start sharing your link to earn commissions!'); ?></p>
                             </div>
-                        <?php endif; ?>
-                    </div>
+                        <?php endforeach; ?>
+                    <?php else: ?>
+                        <div class="p-8 flex flex-col items-center justify-center text-center">
+                            <div class="w-14 h-14 rounded-full bg-zinc-800/60 border border-zinc-700/60 flex items-center justify-center text-zinc-500 mb-4">
+                                <i class="fa-solid fa-users text-xl"></i>
+                            </div>
+                            <h4 class="text-zinc-50 font-bold mb-1"><?php echo e(__('No referrals yet')); ?></h4>
+                            <p class="text-zinc-500 text-sm"><?php echo e(__('Start sharing your link to earn commissions!')); ?></p>
+                        </div>
+                    <?php endif; ?>
                 </div>
+
                 <?php if ($total_pages > 1): ?>
-                    <div class="card-footer bg-white border-top py-3">
-                        <nav>
-                            <ul class="pagination justify-content-center mb-0 gap-2">
-                                <?php if ($page > 1): ?>
-                                    <li class="page-item">
-                                        <a class="page-link rounded-circle border-0 bg-light text-dark d-flex align-items-center justify-content-center" href="?status=<?php echo e($status_filter);
-                                                                                                                                                                        ?>&page=<?php echo $page - 1; ?>" style="width: 40px; height: 40px">
-                                            <i class="fas fa-chevron-left"></i>
-                                        </a>
-                                    </li>
-                                <?php else: ?>
-                                    <li class="page-item disabled">
-                                        <span class="page-link rounded-circle border-0 bg-light text-secondary d-flex align-items-center justify-content-center" style="width: 40px; height: 40px">
-                                            <i class="fas fa-chevron-left"></i>
-                                        </span>
-                                    </li>
-                                <?php endif; ?>
+                    <div class="p-3 bg-zinc-950/60 border-t border-zinc-900/60">
+                        <nav class="flex items-center justify-center gap-1">
+                            <?php if ($page > 1): ?>
+                                <a href="?status=<?php echo e($status_filter); ?>&page=<?php echo $page - 1; ?>"
+                                    class="w-9 h-9 rounded-full bg-zinc-900 border border-zinc-800 text-zinc-400 hover:text-zinc-100 flex items-center justify-center text-xs transition-colors">
+                                    <i class="fa-solid fa-chevron-left"></i>
+                                </a>
+                            <?php else: ?>
+                                <span class="w-9 h-9 rounded-full bg-zinc-900 border border-zinc-800 text-zinc-600 flex items-center justify-center text-xs cursor-not-allowed">
+                                    <i class="fa-solid fa-chevron-left"></i>
+                                </span>
+                            <?php endif; ?>
 
-                                <?php for ($p = 1; $p <= $total_pages; $p++): ?>
-                                    <?php if ($p == $page): ?>
-                                        <li class="page-item active">
-                                            <span class="page-link rounded-circle border-0 bg-primary text-white d-flex align-items-center justify-content-center" style="width: 40px; height: 40px"><?php
-                                                                                                                                                                                                        echo $p; ?></span>
-                                        </li>
-                                    <?php else: ?>
-                                        <li class="page-item">
-                                            <a class="page-link rounded-circle border-0 bg-light text-dark d-flex align-items-center justify-content-center" href="?status=<?php echo e($status_filter);
-                                                                                                                                                                            ?>&page=<?php echo $p; ?>" style="width: 40px; height: 40px"><?php echo $p; ?></a>
-                                        </li>
-                                    <?php endif; ?>
-                                <?php endfor; ?>
-
-                                <?php if ($page < $total_pages): ?>
-                                    <li class="page-item">
-                                        <a class="page-link rounded-circle border-0 bg-light text-dark d-flex align-items-center justify-content-center" href="?status=<?php echo e($status_filter);
-                                                                                                                                                                        ?>&page=<?php echo $page + 1; ?>" style="width: 40px; height: 40px">
-                                            <i class="fas fa-chevron-right"></i>
-                                        </a>
-                                    </li>
+                            <?php for ($p = 1; $p <= $total_pages; $p++): ?>
+                                <?php if ($p == $page): ?>
+                                    <span class="w-9 h-9 rounded-full bg-brand-accent text-brand-dark font-bold flex items-center justify-center text-xs">
+                                        <?php echo $p; ?>
+                                    </span>
                                 <?php else: ?>
-                                    <li class="page-item disabled">
-                                        <span class="page-link rounded-circle border-0 bg-light text-secondary d-flex align-items-center justify-content-center" style="width: 40px; height: 40px">
-                                            <i class="fas fa-chevron-right"></i>
-                                        </span>
-                                    </li>
+                                    <a href="?status=<?php echo e($status_filter); ?>&page=<?php echo $p; ?>"
+                                        class="w-9 h-9 rounded-full bg-zinc-900 border border-zinc-800 text-zinc-400 hover:text-zinc-100 flex items-center justify-center text-xs transition-colors">
+                                        <?php echo $p; ?>
+                                    </a>
                                 <?php endif; ?>
-                            </ul>
+                            <?php endfor; ?>
+
+                            <?php if ($page < $total_pages): ?>
+                                <a href="?status=<?php echo e($status_filter); ?>&page=<?php echo $page + 1; ?>"
+                                    class="w-9 h-9 rounded-full bg-zinc-900 border border-zinc-800 text-zinc-400 hover:text-zinc-100 flex items-center justify-center text-xs transition-colors">
+                                    <i class="fa-solid fa-chevron-right"></i>
+                                </a>
+                            <?php else: ?>
+                                <span class="w-9 h-9 rounded-full bg-zinc-900 border border-zinc-800 text-zinc-600 flex items-center justify-center text-xs cursor-not-allowed">
+                                    <i class="fa-solid fa-chevron-right"></i>
+                                </span>
+                            <?php endif; ?>
                         </nav>
                     </div>
                 <?php endif; ?>
             </div>
         </div>
     </div>
-
-    <!-- Fund Wallet Modal -->
-    <div class="modal fade" id="fundWalletModal" tabindex="-1" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content border-0 shadow" style="border-radius: 1.25rem;">
-                <div class="modal-header border-0">
-                    <h5 class="modal-title fw-bold"><?php echo __('Fund Wallet from Referrals'); ?></h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <p class="text-secondary small"><?php echo __('Available referral balance:'); ?> <strong><?php echo format_money($available_referral); ?></strong></p>
-                    <form action="/actions/referral-fund.php" method="POST" x-data="{ amount: '', mode: '<?php echo e($rfw_mode); ?>', exact: <?php echo json_encode($rfw_exact); ?>, minAmt: <?php echo json_encode($rfw_min); ?>, maxAmt: <?php echo json_encode($rfw_max); ?>, get isValid() { let a = parseFloat(this.amount); if (isNaN(a) || a <= 0) return false; if (a > <?php echo json_encode((float)$available_referral); ?>) return false; if (this.mode === 'exact') { return a === parseFloat(this.exact); } else { return a >= parseFloat(this.minAmt) && (parseFloat(this.maxAmt) <= 0 || a <= parseFloat(this.maxAmt)); } } }">
-                        <input type="hidden" name="csrf_token" value="<?php echo csrf_token(); ?>">
-                        <div class="mb-3">
-                            <label class="form-label fw-bold small"><?php echo __('Amount'); ?></label>
-                            <div class="input-group">
-                                <span class="input-group-text bg-light border-0 fw-bold"><?php echo get_currency_symbol(); ?></span>
-                                <input type="number" name="amount" step="0.01" class="form-control form-control-lg fw-bold" x-model="amount" placeholder="0.00" required>
-                            </div>
-                            <div class="mt-2 small">
-                                <span x-show="mode === 'exact'" class="text-info"><?php echo __('Must be exactly'); ?> <?php echo format_money($rfw_exact); ?></span>
-                                <span x-show="mode === 'range'" class="text-info"><?php echo __('Min:'); ?> <?php echo format_money($rfw_min); ?> <?php if ($rfw_max > 0) echo ' | ' . __('Max:') . ' ' . format_money($rfw_max); ?></span>
-                            </div>
-                            <div x-show="parseFloat(amount) > <?php echo json_encode((float)$available_referral); ?>" class="text-danger small mt-1" style="display:none">
-                                <?php echo __('Insufficient referral balance'); ?>
-                            </div>
-                            <div x-show="!isValid && amount !== ''" class="text-danger small mt-1" style="display:none">
-                                <?php echo __('Please enter a valid amount.'); ?>
-                            </div>
-                        </div>
-                        <button type="submit" class="btn btn-primary w-100 rounded-pill fw-bold py-2" :disabled="!isValid">
-                            <?php echo __('Confirm Fund Transfer'); ?>
-                        </button>
-                    </form>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <?php if (isset($_GET['status']) || isset($_GET['page'])): ?>
-        <script>
-            document.addEventListener('DOMContentLoaded', function() {
-                const section = document.getElementById('referralHistorySection');
-                if (section) {
-                    section.scrollIntoView({
-                        behavior: 'smooth',
-                        block: 'start'
-                    });
-                }
-            });
-        </script>
-    <?php endif; ?>
 </div>
 
-<style>
-    /* Stats Card */
-    .stat-card {
-        transition: transform 0.2s;
-    }
+<!-- Fund Wallet Modal -->
+<div class="fixed inset-0 z-50 flex items-center justify-center"
+    x-data="{ open: false, amount: '', mode: '<?php echo e($rfw_mode); ?>', exact: <?php echo json_encode($rfw_exact); ?>, minAmt: <?php echo json_encode($rfw_min); ?>, maxAmt: <?php echo json_encode($rfw_max); ?>, avail: <?php echo json_encode((float)$available_referral); ?>, get isValid() { let a = parseFloat(this.amount); if (isNaN(a) || a <= 0) return false; if (a > this.avail) return false; if (this.mode === 'exact') { return a === parseFloat(this.exact); } return a >= parseFloat(this.minAmt) && (parseFloat(this.maxAmt) <= 0 || a <= parseFloat(this.maxAmt)); } }"
+    x-show="open"
+    x-transition:enter="transition ease-out duration-200"
+    x-transition:enter-start="opacity-0"
+    x-transition:enter-end="opacity-100"
+    x-transition:leave="transition ease-in duration-150"
+    x-transition:leave-start="opacity-100"
+    x-transition:leave-end="opacity-0"
+    @open-fund-modal.window="open = true"
+    @keydown.escape.window="open = false"
+    style="display: none;">
+    <div class="absolute inset-0 bg-black/70 backdrop-blur-sm" @click="open = false"></div>
+    <div class="relative w-full max-w-md mx-4 glass-panel rounded-2xl shadow-2xl overflow-hidden"
+        x-show="open"
+        x-transition:enter="transition ease-out duration-200"
+        x-transition:enter-start="opacity-0 scale-95"
+        x-transition:enter-end="opacity-100 scale-100"
+        x-transition:leave="transition ease-in duration-150"
+        x-transition:leave-start="opacity-100 scale-100"
+        x-transition:leave-end="opacity-0 scale-95">
+        <div class="p-5 border-b border-zinc-800/60 flex items-center justify-between">
+            <h3 class="text-base font-bold text-zinc-100"><?php echo e(__('Fund Wallet from Referrals')); ?></h3>
+            <button type="button" class="text-zinc-500 hover:text-zinc-300" @click="open = false">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+        </div>
+        <div class="p-5 space-y-4">
+            <p class="text-zinc-400 text-sm">
+                <?php echo e(__('Available referral balance:')); ?>
+                <strong class="text-brand-accent"><?php echo e(format_money($available_referral)); ?></strong>
+            </p>
+            <form action="/actions/referral-fund.php" method="POST">
+                <input type="hidden" name="csrf_token" value="<?php echo csrf_token(); ?>">
+                <div class="mb-4">
+                    <label class="block text-xs font-bold text-zinc-400 uppercase tracking-wider mb-2"><?php echo e(__('Amount')); ?></label>
+                    <div class="flex items-center bg-zinc-950 border border-zinc-800 rounded-xl overflow-hidden focus-within:border-brand-accent/40 transition-colors">
+                        <span class="px-4 py-3 bg-zinc-900 text-zinc-300 text-sm font-bold border-r border-zinc-800"><?php echo e(get_currency_symbol()); ?></span>
+                        <input type="number" name="amount" step="0.01" x-model="amount"
+                            class="w-full bg-transparent px-4 py-3 text-zinc-100 font-mono font-bold focus:outline-none"
+                            placeholder="0.00" required>
+                    </div>
+                    <div class="mt-2 text-[11px] text-zinc-500">
+                        <span x-show="mode === 'exact'">
+                            <?php echo e(__('Must be exactly')); ?> <?php echo e(format_money($rfw_exact)); ?>
+                        </span>
+                        <span x-show="mode === 'range'">
+                            <?php echo e(__('Min:')); ?> <?php echo e(format_money($rfw_min)); ?>
+                            <?php if ($rfw_max > 0): ?>
+                                | <?php echo e(__('Max:')); ?> <?php echo e(format_money($rfw_max)); ?>
+                            <?php endif; ?>
+                        </span>
+                    </div>
+                    <div x-show="parseFloat(amount) > avail" class="text-rose-400 text-[11px] mt-1" style="display: none;">
+                        <?php echo e(__('Insufficient referral balance')); ?>
+                    </div>
+                    <div x-show="!isValid && amount !== ''" class="text-rose-400 text-[11px] mt-1" style="display: none;">
+                        <?php echo e(__('Please enter a valid amount.')); ?>
+                    </div>
+                </div>
+                <button type="submit" class="w-full py-3 bg-brand-accent hover:bg-emerald-400 text-brand-dark font-bold rounded-xl transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                    :disabled="!isValid">
+                    <?php echo e(__('Confirm Fund Transfer')); ?>
+                </button>
+            </form>
+        </div>
+    </div>
+</div>
 
-    .stat-card:hover {
-        transform: translateY(-2px);
-    }
-
-    /* Icon Box */
-    .icon-box {
-        width: 48px;
-        height: 48px;
-        border-radius: 1rem;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 1.25rem;
-        flex-shrink: 0;
-    }
-
-    /* Copy Field */
-    .copy-input-group {
-        background: #f8fafc;
-        border: 1px solid #e2e8f0;
-        border-radius: 1rem;
-        padding: 0.5rem;
-        display: flex;
-        align-items: center;
-    }
-
-    .copy-input {
-        border: none;
-        background: transparent;
-        font-weight: 600;
-        color: var(--text-muted);
-        flex-grow: 1;
-        padding: 0.5rem 1rem;
-        outline: none;
-    }
-
-    /* Social Share Buttons */
-    .btn-social {
-        width: 40px;
-        height: 40px;
-        border-radius: 50%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        color: white;
-        transition: transform 0.2s;
-        border: none;
-        text-decoration: none;
-    }
-
-    .btn-social:hover {
-        transform: scale(1.1);
-        color: white;
-    }
-
-    .bg-facebook {
-        background: #1877f2;
-    }
-
-    .bg-twitter {
-        background: #000000;
-    }
-
-    .bg-whatsapp {
-        background: #25d366;
-    }
-
-    .bg-telegram {
-        background: #0088cc;
-    }
-
-    /* Step Circles */
-    .step-circle {
-        width: 32px;
-        height: 32px;
-        background: rgba(255, 255, 255, 0.2);
-        border-radius: 50%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-weight: 800;
-        flex-shrink: 0;
-        border: 1px solid rgba(255, 255, 255, 0.3);
-    }
-
-    /* Custom Tabs */
-    .nav-pills-custom .nav-link {
-        color: var(--text-muted);
-        font-weight: 600;
-        padding: 0.5rem 1.2rem;
-        border-radius: 50rem;
-        font-size: 0.9rem;
-        border: none;
-        background: transparent;
-    }
-
-    .nav-pills-custom .nav-link.active {
-        background: #eff6ff;
-        color: var(--primary);
-    }
-
-    /* Referral Item */
-    .referral-item {
-        transition: background 0.2s;
-    }
-
-    .referral-item:hover {
-        background: #f8fafc;
-    }
-
-    /* Transitions */
-    .transition {
-        transition: all 0.2s ease;
-    }
-</style>
-
-<?php require ROOT . '/includes/footer.php'; ?>
-</body>
-
-</html>
+<?php require ROOT . '/includes/new-footer.php'; ?>

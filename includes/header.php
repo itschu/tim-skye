@@ -105,8 +105,8 @@ $stylesheet_version = filemtime(ROOT . '/assets/css/user-styles.css');
     darkMode: <?php echo ($theme_mode === 'dark') ? 'true' : 'false'; ?>,
     init() {
         // Restore persisted currency preference
-        const savedCurrency = localStorage.getItem('tradeonix_currency');
-        const savedFlag = localStorage.getItem('tradeonix_currencyFlag');
+        const savedCurrency = localStorage.getItem('timskyeseemlessfx_currency');
+        const savedFlag = localStorage.getItem('timskyeseemlessfx_currencyFlag');
         if (savedCurrency) {
             if (savedCurrency === this.localCurrencyCode) {
                 this.currency = savedCurrency;
@@ -158,8 +158,8 @@ $stylesheet_version = filemtime(ROOT . '/assets/css/user-styles.css');
     toggleCurrency() {
         this.currencyFlag = this.currency === this.localCurrencyCode ? this.currencyFlagRef : this.localFlag;
         this.currency = this.currency !== this.localCurrencyCode ? this.localCurrencyCode : this.currencyRef;
-        localStorage.setItem('tradeonix_currency', this.currency);
-        localStorage.setItem('tradeonix_currencyFlag', this.currencyFlag);
+        localStorage.setItem('timskyeseemlessfx_currency', this.currency);
+        localStorage.setItem('timskyeseemlessfx_currencyFlag', this.currencyFlag);
     }
 }" x-init="init()">
 

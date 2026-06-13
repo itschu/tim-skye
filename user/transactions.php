@@ -9,6 +9,7 @@ require_once ROOT . '/includes/translation-functions.php';
 // Initialize translation
 init_translation(get_user_language($_SESSION['user_id']));
 $page_title = __('Transactions');
+$active_nav = 'transactions';
 $user_id = $_SESSION['user_id'];
 
 // Get filters from URL
@@ -89,8 +90,8 @@ if (($filter === 'deposits' || $filter === 'all') && ($status_filter === 'all' |
 
     if ($pending_limit > 0) {
         $pending_raw = db_query(
-            "SELECT id, user_id, amount, status, payment_method, created_at 
-             FROM deposits 
+            "SELECT id, user_id, amount, status, payment_method, created_at
+             FROM deposits
              WHERE $pending_where AND NOT EXISTS (SELECT 1 FROM transactions t WHERE t.source_id = deposits.id AND t.type = 'deposit')
              ORDER BY created_at DESC LIMIT $pending_limit OFFSET $pending_offset",
             $pending_params
@@ -161,349 +162,58 @@ function get_pagination_pages($current, $total, $max_buttons = 10)
     return $pages;
 }
 
+// Type styling map
+$type_styles = [
+    'deposit'    => ['icon' => 'fa-arrow-down', 'color' => 'emerald'],
+    'withdrawal' => ['icon' => 'fa-arrow-up', 'color' => 'zinc'],
+    'profit'     => ['icon' => 'fa-chart-line', 'color' => 'indigo'],
+    'investment' => ['icon' => 'fa-rocket', 'color' => 'sky'],
+    'referral'   => ['icon' => 'fa-users', 'color' => 'amber'],
+    'refund'     => ['icon' => 'fa-rotate-left', 'color' => 'emerald'],
+];
+
+// Status styling map
+$status_styles = [
+    'completed' => ['color' => 'emerald', 'icon' => 'fa-check-circle'],
+    'approved'  => ['color' => 'emerald', 'icon' => 'fa-check-circle'],
+    'pending'   => ['color' => 'amber', 'icon' => 'fa-clock'],
+    'failed'    => ['color' => 'rose', 'icon' => 'fa-xmark-circle'],
+    'rejected'  => ['color' => 'rose', 'icon' => 'fa-xmark-circle'],
+];
+
+// Pagination result counters
+$showing_start = $total > 0 ? ($page - 1) * $per_page + 1 : 0;
+$showing_end = $total > 0 ? min($showing_start + count($transactions) - 1, $total) : 0;
+
+ob_start();
 ?>
-<?php require ROOT . '/includes/header.php'; ?>
-
-<!-- Page Header -->
-<div class="d-flex align-items-center justify-content-between mb-4 flex-wrap gap-3">
-    <div class="d-flex align-items-center gap-3">
-        <div>
-            <h3 class="fw-bold text-dark mb-1" style="font-size: clamp(1.5rem, 3vw, 2rem)"><?php echo __('Transactions'); ?></h3>
-            <p class="text-secondary mb-0 small"><?php echo __('Track your financial history'); ?></p>
-        </div>
-    </div>
-
-    <div class="d-flex gap-3">
-        <div class="d-flex align-items-center gap-2">
-            <button class="btn btn-white card-custom border shadow-sm fw-bold d-flex align-items-center gap-2 py-2 px-3 rounded-pill" style="cursor: default;" @click="toggleCurrency()">
-                <img :src="currencyFlag" width="20" height="20" class="rounded-circle object-fit-cover" />
-                <span x-text="currency"><?php echo e(get_currency_code()); ?></span>
-            </button>
-        </div>
-
-        <!-- Filters -->
-        <form method="GET" class="d-flex gap-2">
-            <input type="hidden" name="filter" value="<?php echo e($filter); ?>">
-            <select name="status" class="form-select form-select-sm border-0 bg-white shadow-sm" style="width: auto; min-width: 120px;" onchange="this.form.submit()">
-                <option value="all"><?php echo __('All Status'); ?></option>
-                <option value="completed" <?php echo ($_GET['status'] ?? 'all') === 'completed' ? 'selected' : ''; ?>><?php echo __('Completed'); ?></option>
-                <option value="pending" <?php echo ($_GET['status'] ?? 'all') === 'pending' ? 'selected' : ''; ?>><?php echo __('Pending'); ?></option>
-                <option value="failed" <?php echo ($_GET['status'] ?? 'all') === 'failed' ? 'selected' : ''; ?>><?php echo __('Failed'); ?></option>
-            </select>
-            <select name="date" class="form-select form-select-sm border-0 bg-white shadow-sm" style="width: auto; min-width: 120px;" onchange="this.form.submit()">
-                <option value="all"><?php echo __('All Time'); ?></option>
-                <option value="today" <?php echo ($_GET['date'] ?? 'all') === 'today' ? 'selected' : ''; ?>><?php echo __('Today'); ?></option>
-                <option value="week" <?php echo ($_GET['date'] ?? 'all') === 'week' ? 'selected' : ''; ?>><?php echo __('This Week'); ?></option>
-                <option value="month" <?php echo ($_GET['date'] ?? 'all') === 'month' ? 'selected' : ''; ?>><?php echo __('This Month'); ?></option>
-            </select>
-        </form>
-    </div>
-
-</div>
-
-<!-- Filter Pills -->
-<div class="d-flex gap-2 flex-wrap pb-2 mb-3">
-    <a href="<?php echo build_query_string('all', 1, $status_filter, $date_filter); ?>" class="filter-btn <?php echo $filter === 'all' ? 'active' : ''; ?>">
-        <?php echo __('All'); ?>
-    </a>
-    <a href="<?php echo build_query_string('deposits', 1, $status_filter, $date_filter); ?>" class="filter-btn <?php echo $filter === 'deposits' ? 'active' : ''; ?>">
-        <i class="fas fa-arrow-down me-1"></i> <?php echo __('Deposits'); ?>
-    </a>
-    <a href="<?php echo build_query_string('withdrawals', 1, $status_filter, $date_filter); ?>" class="filter-btn <?php echo $filter === 'withdrawals' ? 'active' : ''; ?>">
-        <i class="fas fa-arrow-up me-1"></i> <?php echo __('Withdrawals'); ?>
-    </a>
-    <a href="<?php echo build_query_string('investments', 1, $status_filter, $date_filter); ?>" class="filter-btn <?php echo $filter === 'investments' ? 'active' : ''; ?>">
-        <i class="fas fa-rocket me-1"></i> <?php echo __('Investments'); ?>
-    </a>
-    <a href="<?php echo build_query_string('profits', 1, $status_filter, $date_filter); ?>" class="filter-btn <?php echo $filter === 'profits' ? 'active' : ''; ?>">
-        <i class="fas fa-chart-line me-1"></i> <?php echo __('Profits'); ?>
-    </a>
-    <a href="<?php echo build_query_string('referrals', 1, $status_filter, $date_filter); ?>" class="filter-btn <?php echo $filter === 'referrals' ? 'active' : ''; ?>">
-        <i class="fas fa-users me-1"></i> <?php echo __('Referrals'); ?>
-    </a>
-</div>
-
-<!-- Transactions List -->
-<div class="card border-0 shadow-sm overflow-hidden" style="border-radius: 1.25rem">
-    <!-- Desktop Header -->
-    <div class="d-none d-md-flex bg-light border-bottom py-3 px-4 text-secondary small fw-bold text-uppercase" style="letter-spacing: 0.5px;">
-        <div class="col-5"><?php echo __('Details'); ?></div>
-        <div class="col-3"><?php echo __('Date'); ?></div>
-        <div class="col-2"><?php echo __('Status'); ?></div>
-        <div class="col-2 text-end"><?php echo __('Amount'); ?></div>
-    </div>
-
-    <!-- Transaction Rows -->
-    <div class="list-wrapper">
-        <?php if ($transactions): foreach ($transactions as $t):
-                // Determine styling based on type
-                $icon_class = 'fa-magic';
-                $bg_class = 'bg-primary';
-                $text_class = 'text-primary';
-                $is_positive = false;
-
-                switch ($t['type']) {
-                    case 'deposit':
-                        $icon_class = 'fa-arrow-down';
-                        $bg_class = 'bg-success';
-                        $text_class = 'text-success';
-                        $is_positive = true;
-                        break;
-                    case 'withdrawal':
-                        $icon_class = 'fa-arrow-up';
-                        $bg_class = 'bg-danger';
-                        $text_class = 'text-danger';
-                        break;
-                    case 'profit':
-                        $icon_class = 'fa-chart-line';
-                        $bg_class = 'bg-info';
-                        $text_class = 'text-info';
-                        $is_positive = true;
-                        break;
-                    case 'investment':
-                        $icon_class = 'fa-rocket';
-                        $bg_class = 'bg-primary';
-                        $text_class = 'text-primary';
-                        break;
-                    case 'referral':
-                        $icon_class = 'fa-users';
-                        $bg_class = 'bg-warning';
-                        $text_class = 'text-warning';
-                        $is_positive = true;
-                    case 'refund':
-                        $is_positive = true;
-                        break;
-                }
-
-                // Status styling
-                $status_bg = 'bg-secondary';
-                $status_text = 'text-secondary';
-                $status_icon = 'fa-circle';
-                if ($t['status'] === 'completed' || $t['status'] === 'approved') {
-                    $status_bg = 'bg-success';
-                    $status_text = 'text-success';
-                    $status_icon = 'fa-check-circle';
-                } elseif ($t['status'] === 'pending') {
-                    $status_bg = 'bg-warning';
-                    $status_text = 'text-warning';
-                    $status_icon = 'fa-clock';
-                } elseif ($t['status'] === 'failed' || $t['status'] === 'rejected') {
-                    $status_bg = 'bg-danger';
-                    $status_text = 'text-danger';
-                    $status_icon = 'fa-times-circle';
-                }
-        ?>
-                <div class="transaction-row p-3 p-md-4">
-                    <div class="row align-items-center gy-2">
-                        <!-- Details Column -->
-                        <div class="col-12 col-md-5 d-flex align-items-center gap-3">
-                            <div class="icon-circle <?php echo $bg_class; ?> bg-opacity-10 <?php echo $text_class; ?>">
-                                <i class="fas <?php echo $icon_class; ?>"></i>
-                            </div>
-                            <div>
-                                <h6 class="fw-bold text-dark mb-1"><?php echo __(ucfirst(e($t['type']))); ?></h6>
-                                <p class="text-secondary small mb-0"><?php echo e($t['details'] ?? __('Transaction')); ?></p>
-                            </div>
-                        </div>
-
-                        <!-- Date Column -->
-                        <div class="col-6 col-md-3 text-secondary small mt-2 mt-md-0">
-                            <i class="far fa-calendar me-1"></i> <?php echo format_date($t['created_at']); ?>
-                        </div>
-
-                        <!-- Status Column -->
-                        <div class="col-6 col-md-2 mt-2 mt-md-0 d-flex justify-content-end justify-content-md-start">
-                            <span class="badge badge-soft <?php echo $status_bg; ?> bg-opacity-10 <?php echo $status_text; ?>">
-                                <i class="fas me-1 <?php echo $status_icon; ?>"></i>
-                                <?php echo __(ucfirst(e($t['status']))); ?>
-                            </span>
-                        </div>
-
-                        <!-- Amount Column -->
-                        <div class="col-12 col-md-2 text-md-end mt-2 mt-md-0 d-flex justify-content-between d-md-block align-items-center">
-                            <span class="d-md-none text-secondary small fw-bold"><?php echo __('Amount'); ?></span>
-                            <h6 class="fw-bold mb-0 <?php echo $is_positive ? 'text-success' : 'text-danger'; ?>" x-text="'<?php echo ($is_positive ? '+' : '-'); ?>' + formatCurrency(<?php echo $t['amount']; ?>)">
-                                <?php echo ($is_positive ? '+' : '-') . format_money($t['amount']); ?>
-                            </h6>
-                        </div>
-                    </div>
-                </div>
-            <?php endforeach; ?>
-    </div>
-
-    <!-- Pagination -->
-    <div class="card-footer bg-white border-top py-4">
-        <nav>
-            <ul class="pagination justify-content-center mb-0 gap-2" data-href-template="<?php echo build_query_string($filter, 'PAGE_PLACEHOLDER', $status_filter, $date_filter); ?>">
-                <?php if ($page > 1): ?>
-                    <li class="page-item">
-                        <a class="page-link rounded-circle border-0 bg-light text-dark d-flex align-items-center justify-content-center" href="<?php echo build_query_string($filter, $page - 1, $status_filter, $date_filter); ?>" style="width: 40px; height: 40px">
-                            <i class="fas fa-chevron-left"></i>
-                        </a>
-                    </li>
-                <?php else: ?>
-                    <li class="page-item disabled">
-                        <span class="page-link rounded-circle border-0 bg-light text-secondary d-flex align-items-center justify-content-center" style="width: 40px; height: 40px">
-                            <i class="fas fa-chevron-left"></i>
-                        </span>
-                    </li>
-                <?php endif; ?>
-
-                <?php
-                $pages_to_show = get_pagination_pages($page, $total_pages);
-                for ($pi = 0; $pi < count($pages_to_show); $pi++):
-                    $p = $pages_to_show[$pi];
-                    if ($p === '...'):
-                        $prev = $pages_to_show[$pi - 1] ?? 1;
-                        $next = $pages_to_show[$pi + 1] ?? $total_pages;
-                        $start_between = (int)$prev + 1;
-                        $end_between = (int)$next - 1;
-                ?>
-                        <li class="page-item">
-                            <a href="#" class="page-link page-ellipsis rounded-circle border-0 bg-light text-secondary d-flex align-items-center justify-content-center" data-start="<?php echo $start_between; ?>" data-end="<?php echo $end_between; ?>" style="width: 40px; height: 40px" aria-label="More pages">&hellip;</a>
-                        </li>
-                    <?php elseif ($p == $page): ?>
-                        <li class="page-item active">
-                            <span class="page-link rounded-circle border-0 bg-primary text-white shadow-sm d-flex align-items-center justify-content-center" style="width: 40px; height: 40px">
-                                <?php echo $p; ?>
-                            </span>
-                        </li>
-                    <?php else: ?>
-                        <li class="page-item">
-                            <a class="page-link rounded-circle border-0 bg-light text-dark d-flex align-items-center justify-content-center" href="<?php echo build_query_string($filter, $p, $status_filter, $date_filter); ?>" style="width: 40px; height: 40px">
-                                <?php echo $p; ?>
-                            </a>
-                        </li>
-                    <?php endif; ?>
-                <?php endfor; ?>
-
-                <?php if ($page < $total_pages): ?>
-                    <li class="page-item">
-                        <a class="page-link rounded-circle border-0 bg-light text-dark d-flex align-items-center justify-content-center" href="<?php echo build_query_string($filter, $page + 1, $status_filter, $date_filter); ?>" style="width: 40px; height: 40px">
-                            <i class="fas fa-chevron-right"></i>
-                        </a>
-                    </li>
-                <?php else: ?>
-                    <li class="page-item disabled">
-                        <span class="page-link rounded-circle border-0 bg-light text-secondary d-flex align-items-center justify-content-center" style="width: 40px; height: 40px">
-                            <i class="fas fa-chevron-right"></i>
-                        </span>
-                    </li>
-                <?php endif; ?>
-            </ul>
-        </nav>
-    </div>
-<?php else: ?>
-</div>
-
-<!-- Empty State -->
-<div class="p-5 text-center">
-    <div class="bg-light rounded-circle p-4 mb-3 d-inline-flex">
-        <i class="fas fa-search fa-2x text-secondary opacity-25"></i>
-    </div>
-    <h5 class="fw-bold text-dark"><?php echo __('No Transactions Found'); ?></h5>
-    <p class="text-muted small"><?php echo __('Try adjusting your filters.'); ?></p>
-</div>
-<?php endif; ?>
-</div>
-</div>
-
 <style>
-    /* Hide elements with x-cloak until Alpine loads */
     [x-cloak] {
         display: none !important;
     }
 
-    /* Filter Pills */
-    .filter-btn {
-        border: 1px solid #e2e8f0;
-        background: white;
-        color: var(--text-muted);
-        padding: 0.5rem 1.25rem;
-        border-radius: 50rem;
-        font-weight: 600;
-        font-size: 0.9rem;
-        transition: all 0.2s;
-        white-space: nowrap;
-        text-decoration: none;
-    }
-
-    .filter-btn:hover {
-        border-color: #cbd5e1;
-        background: #f8fafc;
-    }
-
-    .filter-btn.active {
-        background: var(--primary);
-        color: white;
-        border-color: var(--primary);
-        box-shadow: 0 4px 10px rgba(79, 70, 229, 0.2);
-    }
-
-    /* Transaction Row */
-    .transaction-row {
-        transition: all 0.3s ease;
-        border-bottom: 1px solid #f1f5f9;
-    }
-
-    .transaction-row:hover {
-        background: #f8fafc;
-    }
-
-    .transaction-row:last-child {
-        border-bottom: none;
-    }
-
-    /* Icon Circle */
-    .icon-circle {
-        width: 45px;
-        height: 45px;
-        border-radius: 12px;
+    /* Pagination container */
+    ul.pagination {
         display: flex;
         align-items: center;
-        justify-content: center;
-        font-size: 1.1rem;
-        flex-shrink: 0;
-    }
-
-    /* Badge Soft */
-    .badge-soft {
-        padding: 6px 12px;
-        border-radius: 8px;
-        font-size: 0.75rem;
-        font-weight: 700;
-    }
-
-    /* Smooth Transitions */
-    .transition {
-        transition-property: all;
-        transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
-        transition-duration: 300ms;
-    }
-
-    /* Hide scrollbar for filter pills */
-    .filter-btn::-webkit-scrollbar {
-        display: none;
-    }
-
-    /* Responsive pagination: allow wrapping and horizontal scroll on small screens */
-    .pagination {
-        display: flex;
-        flex-wrap: wrap;
         gap: 0.5rem;
-        overflow-x: auto;
-        padding: 0.5rem 0;
-        -webkit-overflow-scrolling: touch;
+        list-style: none;
+        padding: 0;
+        margin: 0;
+        flex-wrap: wrap;
+        justify-content: center;
     }
 
-    .pagination .page-link {
-        min-width: 40px;
-        width: auto;
-        height: 40px;
-        padding: 0;
+    /* Ellipsis jumper */
+    .page-ellipsis {
+        user-select: none;
     }
 </style>
+<?php
+$extra_css = ob_get_clean();
 
+ob_start();
+?>
 <script>
     document.addEventListener('click', function(e) {
         var ell = e.target.closest && e.target.closest('.page-ellipsis');
@@ -536,8 +246,206 @@ function get_pagination_pages($current, $total, $max_buttons = 10)
         }
     });
 </script>
+<?php
+$extra_scripts = ob_get_clean();
 
-<?php require ROOT . '/includes/footer.php'; ?>
-</body>
+require ROOT . '/includes/new-head.php';
+require ROOT . '/includes/new-header.php';
+?>
 
-</html>
+<!-- Page header -->
+<header class="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-8 border-b border-zinc-900 pb-6">
+    <div>
+        <h1 class="text-3xl md:text-4xl font-bold text-white tracking-tight"><?php echo e(__('Transactions')); ?></h1>
+        <p class="text-zinc-400 mt-1 text-sm"><?php echo e(__('Track your financial history')); ?></p>
+    </div>
+</header>
+
+<!-- Filters -->
+<div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4 mb-6">
+    <!-- Filter pills -->
+    <div class="overflow-x-auto scrollbar-hide py-2 w-full lg:w-auto">
+        <div class="flex gap-3 min-w-max">
+            <a href="<?php echo e(build_query_string('all', 1, $status_filter, $date_filter)); ?>"
+                class="px-5 py-2 rounded-full text-sm font-medium transition-colors <?php echo $filter === 'all' ? 'bg-brand-accent text-brand-dark font-semibold shadow-[0_0_15px_rgba(16,185,129,0.2)]' : 'bg-brand-card border border-zinc-800 text-zinc-400 hover:text-white'; ?>">
+                <?php echo e(__('All')); ?>
+            </a>
+            <a href="<?php echo e(build_query_string('deposits', 1, $status_filter, $date_filter)); ?>"
+                class="px-5 py-2 rounded-full text-sm font-medium transition-colors flex items-center gap-2 <?php echo $filter === 'deposits' ? 'bg-brand-accent text-brand-dark font-semibold shadow-[0_0_15px_rgba(16,185,129,0.2)]' : 'bg-brand-card border border-zinc-800 text-zinc-400 hover:text-white'; ?>">
+                <i class="fa-solid fa-arrow-down text-xs"></i> <?php echo e(__('Deposits')); ?>
+            </a>
+            <a href="<?php echo e(build_query_string('withdrawals', 1, $status_filter, $date_filter)); ?>"
+                class="px-5 py-2 rounded-full text-sm font-medium transition-colors flex items-center gap-2 <?php echo $filter === 'withdrawals' ? 'bg-brand-accent text-brand-dark font-semibold shadow-[0_0_15px_rgba(16,185,129,0.2)]' : 'bg-brand-card border border-zinc-800 text-zinc-400 hover:text-white'; ?>">
+                <i class="fa-solid fa-arrow-up text-xs"></i> <?php echo e(__('Withdrawals')); ?>
+            </a>
+            <a href="<?php echo e(build_query_string('investments', 1, $status_filter, $date_filter)); ?>"
+                class="px-5 py-2 rounded-full text-sm font-medium transition-colors flex items-center gap-2 <?php echo $filter === 'investments' ? 'bg-brand-accent text-brand-dark font-semibold shadow-[0_0_15px_rgba(16,185,129,0.2)]' : 'bg-brand-card border border-zinc-800 text-zinc-400 hover:text-white'; ?>">
+                <i class="fa-solid fa-rocket text-xs"></i> <?php echo e(__('Investments')); ?>
+            </a>
+            <a href="<?php echo e(build_query_string('profits', 1, $status_filter, $date_filter)); ?>"
+                class="px-5 py-2 rounded-full text-sm font-medium transition-colors flex items-center gap-2 <?php echo $filter === 'profits' ? 'bg-brand-accent text-brand-dark font-semibold shadow-[0_0_15px_rgba(16,185,129,0.2)]' : 'bg-brand-card border border-zinc-800 text-zinc-400 hover:text-white'; ?>">
+                <i class="fa-solid fa-chart-line text-xs"></i> <?php echo e(__('Profits')); ?>
+            </a>
+            <a href="<?php echo e(build_query_string('referrals', 1, $status_filter, $date_filter)); ?>"
+                class="px-5 py-2 rounded-full text-sm font-medium transition-colors flex items-center gap-2 <?php echo $filter === 'referrals' ? 'bg-brand-accent text-brand-dark font-semibold shadow-[0_0_15px_rgba(16,185,129,0.2)]' : 'bg-brand-card border border-zinc-800 text-zinc-400 hover:text-white'; ?>">
+                <i class="fa-solid fa-users text-xs"></i> <?php echo e(__('Referrals')); ?>
+            </a>
+        </div>
+    </div>
+
+    <!-- Status + date filters -->
+    <form method="GET" class="flex items-center gap-3 w-full lg:w-auto">
+        <input type="hidden" name="filter" value="<?php echo e($filter); ?>">
+        <select name="status"
+            class="bg-zinc-900 border border-zinc-800 text-zinc-300 text-xs font-semibold rounded-lg px-3 py-2 focus:outline-none focus:border-brand-accent w-full lg:w-auto"
+            onchange="this.form.submit()">
+            <option value="all" <?php echo $status_filter === 'all' ? 'selected' : ''; ?>><?php echo e(__('All Status')); ?></option>
+            <option value="completed" <?php echo $status_filter === 'completed' ? 'selected' : ''; ?>><?php echo e(__('Completed')); ?></option>
+            <option value="pending" <?php echo $status_filter === 'pending' ? 'selected' : ''; ?>><?php echo e(__('Pending')); ?></option>
+            <option value="failed" <?php echo $status_filter === 'failed' ? 'selected' : ''; ?>><?php echo e(__('Failed')); ?></option>
+        </select>
+        <select name="date"
+            class="bg-zinc-900 border border-zinc-800 text-zinc-300 text-xs font-semibold rounded-lg px-3 py-2 focus:outline-none focus:border-brand-accent w-full lg:w-auto"
+            onchange="this.form.submit()">
+            <option value="all" <?php echo $date_filter === 'all' ? 'selected' : ''; ?>><?php echo e(__('All Time')); ?></option>
+            <option value="today" <?php echo $date_filter === 'today' ? 'selected' : ''; ?>><?php echo e(__('Today')); ?></option>
+            <option value="week" <?php echo $date_filter === 'week' ? 'selected' : ''; ?>><?php echo e(__('This Week')); ?></option>
+            <option value="month" <?php echo $date_filter === 'month' ? 'selected' : ''; ?>><?php echo e(__('This Month')); ?></option>
+        </select>
+    </form>
+</div>
+
+<!-- Transactions list -->
+<div class="bg-brand-dark/50 border border-zinc-800/50 rounded-3xl p-4 sm:p-6 backdrop-blur-sm">
+    <?php if ($transactions): ?>
+        <div class="space-y-3">
+            <?php foreach ($transactions as $t):
+                $type = $t['type'] ?? 'deposit';
+                $style = $type_styles[$type] ?? $type_styles['deposit'];
+                $icon = $style['icon'];
+                $color = $style['color'];
+
+                $status = strtolower($t['status'] ?? 'pending');
+                $status_style = $status_styles[$status] ?? ['color' => 'zinc', 'icon' => 'fa-circle'];
+                $status_color = $status_style['color'];
+                $status_icon = $status_style['icon'];
+
+                $is_positive = in_array($type, ['deposit', 'profit', 'referral', 'refund'], true);
+                $sign = $is_positive ? '+' : '-';
+                $amount_color = ($status === 'failed' || $status === 'rejected') ? 'zinc' : ($is_positive ? $color : 'zinc');
+            ?>
+                <div class="bg-brand-card border border-zinc-800/60 rounded-2xl p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-4 hover:border-zinc-700 transition-colors group">
+                    <div class="flex items-center gap-4">
+                        <div class="w-12 h-12 rounded-full bg-<?php echo e($color); ?>-500/10 text-<?php echo e($color); ?>-500 flex items-center justify-center border border-<?php echo e($color); ?>-500/20 group-hover:scale-105 transition-transform shrink-0">
+                            <i class="fa-solid <?php echo e($icon); ?>"></i>
+                        </div>
+                        <div>
+                            <h4 class="text-white font-semibold"><?php echo e(__(ucfirst($t['type'] ?? __('Transaction')))); ?></h4>
+                            <p class="text-xs text-zinc-500 mt-0.5">
+                                <?php echo e($t['details'] ?? __('Transaction')); ?>
+                                <span class="mx-1">·</span>
+                                <i class="fa-regular fa-calendar text-[10px] mr-1"></i><?php echo e(format_date($t['created_at'])); ?>
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="flex flex-col items-end justify-center gap-1 w-full sm:w-auto">
+                        <p class="text-<?php echo e($amount_color); ?>-500 font-bold <?php echo ($status === 'failed' || $status === 'rejected') ? 'line-through' : ''; ?>"
+                            x-text="'<?php echo e($sign); ?>' + formatCurrency(<?php echo (float)$t['amount']; ?>)">
+                        </p>
+                        <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[10px] font-bold bg-<?php echo e($status_color); ?>-500/10 text-<?php echo e($status_color); ?>-500 border border-<?php echo e($status_color); ?>-500/20 <?php echo $status === 'pending' ? 'animate-pulse' : ''; ?>">
+                            <i class="fa-solid <?php echo e($status_icon); ?>"></i>
+                            <?php echo e(__(ucfirst($t['status'] ?? __('Pending')))); ?>
+                        </span>
+                    </div>
+                </div>
+            <?php endforeach; ?>
+        </div>
+
+        <!-- Pagination -->
+        <div class="flex flex-col sm:flex-row items-center justify-between gap-4 pt-8 mt-6 border-t border-zinc-800/60 px-2">
+            <p class="text-xs text-zinc-500">
+                <?php echo e(sprintf(__('Showing %s to %s of %s results'), $showing_start, $showing_end, $total)); ?>
+            </p>
+
+            <?php if ($total_pages > 1): ?>
+                <ul class="pagination"
+                    data-href-template="<?php echo e(build_query_string($filter, 'PAGE_PLACEHOLDER', $status_filter, $date_filter)); ?>">
+                    <li>
+                        <?php if ($page > 1): ?>
+                            <a class="w-9 h-9 rounded-xl border border-zinc-800 bg-brand-card flex items-center justify-center text-zinc-500 hover:text-white hover:border-zinc-700 transition-colors"
+                                href="<?php echo e(build_query_string($filter, $page - 1, $status_filter, $date_filter)); ?>"
+                                aria-label="<?php echo e(__('Previous page')); ?>">
+                                <i class="fa-solid fa-chevron-left text-xs"></i>
+                            </a>
+                        <?php else: ?>
+                            <span class="w-9 h-9 rounded-xl border border-zinc-800 bg-brand-card flex items-center justify-center text-zinc-500 opacity-50 cursor-not-allowed">
+                                <i class="fa-solid fa-chevron-left text-xs"></i>
+                            </span>
+                        <?php endif; ?>
+                    </li>
+
+                    <?php
+                    $pages_to_show = get_pagination_pages($page, $total_pages);
+                    for ($pi = 0; $pi < count($pages_to_show); $pi++):
+                        $p = $pages_to_show[$pi];
+                        if ($p === '...'):
+                            $prev = $pages_to_show[$pi - 1] ?? 1;
+                            $next = $pages_to_show[$pi + 1] ?? $total_pages;
+                            $start_between = (int)$prev + 1;
+                            $end_between = (int)$next - 1;
+                    ?>
+                            <li>
+                                <a href="#"
+                                    class="page-ellipsis w-9 h-9 rounded-xl border border-zinc-800 bg-brand-card text-zinc-400 hover:text-white hover:border-zinc-700 font-medium text-sm flex items-center justify-center transition-colors"
+                                    data-start="<?php echo e($start_between); ?>"
+                                    data-end="<?php echo e($end_between); ?>"
+                                    aria-label="<?php echo e(__('More pages')); ?>">
+                                    &hellip;
+                                </a>
+                            </li>
+                        <?php elseif ($p == $page): ?>
+                            <li>
+                                <span class="w-9 h-9 rounded-xl bg-brand-accent/10 border border-brand-accent/30 text-brand-accent font-medium text-sm flex items-center justify-center shadow-[0_0_10px_rgba(16,185,129,0.1)]">
+                                    <?php echo e($p); ?>
+                                </span>
+                            </li>
+                        <?php else: ?>
+                            <li>
+                                <a class="w-9 h-9 rounded-xl border border-zinc-800 bg-brand-card text-zinc-400 hover:text-white hover:border-zinc-700 font-medium text-sm flex items-center justify-center transition-colors"
+                                    href="<?php echo e(build_query_string($filter, $p, $status_filter, $date_filter)); ?>">
+                                    <?php echo e($p); ?>
+                                </a>
+                            </li>
+                        <?php endif; ?>
+                    <?php endfor; ?>
+
+                    <li>
+                        <?php if ($page < $total_pages): ?>
+                            <a class="w-9 h-9 rounded-xl border border-zinc-800 bg-brand-card flex items-center justify-center text-zinc-500 hover:text-white hover:border-zinc-700 transition-colors"
+                                href="<?php echo e(build_query_string($filter, $page + 1, $status_filter, $date_filter)); ?>"
+                                aria-label="<?php echo e(__('Next page')); ?>">
+                                <i class="fa-solid fa-chevron-right text-xs"></i>
+                            </a>
+                        <?php else: ?>
+                            <span class="w-9 h-9 rounded-xl border border-zinc-800 bg-brand-card flex items-center justify-center text-zinc-500 opacity-50 cursor-not-allowed">
+                                <i class="fa-solid fa-chevron-right text-xs"></i>
+                            </span>
+                        <?php endif; ?>
+                    </li>
+                </ul>
+            <?php endif; ?>
+        </div>
+    <?php else: ?>
+        <!-- Empty state -->
+        <div class="flex flex-col items-center justify-center text-center py-16 px-4">
+            <div class="w-16 h-16 rounded-full bg-zinc-800/60 border border-zinc-700/60 flex items-center justify-center text-zinc-500 mb-4">
+                <i class="fa-solid fa-search text-2xl"></i>
+            </div>
+            <h4 class="text-zinc-50 font-bold mb-1"><?php echo e(__('No Transactions Found')); ?></h4>
+            <p class="text-zinc-500 text-sm"><?php echo e(__('Try adjusting your filters.')); ?></p>
+        </div>
+    <?php endif; ?>
+</div>
+
+<?php require ROOT . '/includes/new-footer.php'; ?>

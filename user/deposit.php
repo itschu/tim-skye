@@ -8,10 +8,10 @@ require_once ROOT . '/includes/translation-functions.php';
 
 init_translation(get_user_language($_SESSION['user_id']));
 $page_title = __('Deposit Funds');
+$active_nav = 'deposit';
 $user_id = $_SESSION['user_id'];
 
 $currency_symbol = get_currency_symbol();
-
 $base_currency_code = get_currency_code();
 
 // Get user country and local currency
@@ -20,7 +20,6 @@ $user_country = $user['country'] ?? null;
 $local_currency_code = null;
 $exchange_rate = null;
 $rate_updated_at = null;
-
 
 if ($user_country) {
     $local_currency_code = get_user_local_currency($user_country);
@@ -40,8 +39,27 @@ $has_local_currency = ($exchange_rate !== null && $local_currency_code !== null)
 $payment_methods_json = get_setting('payment_methods', '[]');
 $payment_methods = json_decode($payment_methods_json, true) ?: [];
 
+function normalize_payment_method_type($type)
+{
+    $type = strtolower(trim($type));
+    if (strpos($type, 'crypto') !== false || strpos($type, 'bitcoin') !== false || strpos($type, 'usdt') !== false) {
+        return 'crypto';
+    }
+    if (strpos($type, 'bank') !== false) {
+        return 'bank';
+    }
+    if (strpos($type, 'mobile') !== false || strpos($type, 'momo') !== false) {
+        return 'momo';
+    }
+    if (strpos($type, 'wallet') !== false || strpos($type, 'e-wallet') !== false) {
+        return 'ewallet';
+    }
+    return 'other';
+}
+
 foreach ($payment_methods as $key => $method) {
     $payment_methods[$key]['instructions'] = __($method['instructions']);
+    $payment_methods[$key]['normalized_type'] = normalize_payment_method_type($method['type']);
 }
 
 // Get deposit fee
@@ -49,595 +67,23 @@ $deposit_fee_percentage = (float)get_setting('deposit_fee_percentage', 0);
 
 $recent_deposits = db_query("SELECT * FROM deposits WHERE user_id = ? ORDER BY created_at DESC LIMIT 5", [$user_id]);
 
+// Capture page-specific CSS and scripts before head include
+ob_start();
 ?>
-<?php require ROOT . '/includes/header.php'; ?>
-
-<?php
-require_once ROOT . '/includes/currency-conversion.php';
-if (get_maintenance_mode()) {
-    echo '<div class="alert alert-warning">' . __('Platform is temporarily under maintenance. Deposits, withdrawals, and investments are disabled.') . '</div>';
-}
-?>
-
-<!-- Page Header -->
-<div class="d-flex justify-content-between align-items-end mb-4 flex-wrap gap-3">
-    <div class="d-flex align-items-center gap-3">
-        <div>
-            <h3 class="fw-bold text-dark mb-1" style="font-size: clamp(1.5rem, 3vw, 2rem)"><?php echo __('Deposit Funds'); ?></h3>
-            <p class="text-secondary mb-0 small"><?php echo __('Securely add funds to your wallet'); ?></p>
-        </div>
-    </div>
-
-    <a href="/contact" class="btn btn-white border shadow-sm rounded-pill px-3 py-2 small fw-bold text-secondary">
-        <i class="fas fa-headset me-2"></i><?php echo __('Help'); ?>
-    </a>
-</div>
-
-<?php if (empty($payment_methods)): ?>
-    <div class="card border-0 shadow-sm p-5 text-center" style="border-radius: 1.25rem;">
-        <div class="mb-3">
-            <i class="fas fa-credit-card fa-3x text-secondary opacity-25"></i>
-        </div>
-        <h5 class="fw-bold text-dark"><?php echo __('No Payment Methods Available'); ?></h5>
-        <p class="text-muted"><?php echo __('Please check back later for available deposit options.'); ?></p>
-    </div>
-<?php else: ?>
-    <!-- Alpine.js Component -->
-    <div class="row g-4" x-data="depositApp()" x-init="init()">
-        <!-- Left Column - Method Selection & Amount -->
-        <div class="col-lg-7">
-            <div class="card border-0 shadow-sm" style="border-radius: 1.25rem;">
-                <div class="card-body p-4">
-                    <h6 class="form-label mb-3">
-                        <span class="badge bg-primary rounded-circle me-2">1</span>
-                        <?php echo __('Select Payment Method'); ?>
-                    </h6>
-
-                    <div class="d-grid gap-3 mb-4">
-                        <?php foreach ($payment_methods as $key => $method):
-                            $icon = 'fa-credit-card';
-                            $color = 'bg-secondary';
-                            if (stripos($method['type'], 'crypto') !== false || stripos($method['type'], 'bitcoin') !== false || stripos($method['type'], 'usdt') !== false) {
-                                $icon = 'fa-coins';
-                                $color = 'bg-warning';
-                            } elseif (stripos($method['type'], 'bank') !== false) {
-                                $icon = 'fa-university';
-                                $color = 'bg-primary';
-                            } elseif (stripos($method['type'], 'mobile') !== false) {
-                                $icon = 'fa-mobile-alt';
-                                $color = 'bg-success';
-                            } elseif (stripos($method['type'], 'wallet') !== false) {
-                                $icon = 'fa-wallet';
-                                $color = 'bg-info';
-                            }
-                        ?>
-                            <div class="method-card" @click="selectMethod('<?php echo e($key); ?>')" :class="{ 'active': selectedMethod === '<?php echo e($key); ?>' }">
-                                <div class="method-icon <?php echo $color; ?> bg-opacity-10 text-<?php echo str_replace('bg-', '', $color); ?>">
-                                    <i class="fas <?php echo $icon; ?>"></i>
-                                </div>
-                                <div class="flex-grow-1">
-                                    <h6 class="fw-bold text-dark mb-0"><?php echo e($method['name']); ?></h6>
-                                    <small class="text-muted"><?php echo e($method['type']); ?></small>
-                                </div>
-                                <div x-show="selectedMethod === '<?php echo e($key); ?>'" class="text-primary">
-                                    <i class="fas fa-check-circle fa-lg"></i>
-                                </div>
-                            </div>
-                        <?php endforeach; ?>
-                    </div>
-
-                    <hr class="border-light my-4" />
-
-                    <h6 class="form-label mb-3">
-                        <span class="badge bg-primary rounded-circle me-2">2</span>
-                        <?php if ($has_local_currency): ?>
-                            <?php echo __('Enter Amount (Your Local Currency)'); ?>
-                        <?php else: ?>
-                            <?php echo __('Enter Amount'); ?>
-                        <?php endif; ?>
-                    </h6>
-
-                    <form action="/actions/deposit-submit.php" method="POST" enctype="multipart/form-data" @submit.prevent="submitDeposit()">
-                        <input type="hidden" name="csrf_token" value="<?php echo csrf_token(); ?>">
-                        <input type="hidden" name="payment_method" x-model="selectedMethod">
-                        <?php if ($has_local_currency): ?>
-                            <input type="hidden" name="local_currency_amount" x-model="localCurrencyAmount">
-                        <?php endif; ?>
-
-                        <div class="mb-3 position-relative">
-                            <span class="position-absolute top-50 start-0 translate-middle-y ps-3 text-secondary fw-bold"><?php if ($has_local_currency): ?><?php echo e($local_currency_code); ?><?php else: ?><?php echo e($currency_symbol); ?><?php endif; ?></span>
-                            <input type="number" name="amount" class="form-control form-control-lg ps-4 fw-bold fs-4" style="padding-left: 55px !important;" x-model="amount" placeholder="0.00" min="1" step="0.01" required />
-                        </div>
-
-                        <?php if ($has_local_currency): ?>
-                            <!-- Local Currency Estimate -->
-                            <div class="alert alert-info bg-light text-dark border-0 mb-3 small" style="border-radius: 1rem;">
-                                <i class="fas fa-info-circle me-2"></i>
-                                <span x-text="'≈ ' + '<?php echo e($currency_symbol); ?>' + usdEstimate + ' ' + window.depositData.translations.willBeCredited"></span>
-                            </div>
-
-                            <!-- Rate Note -->
-                            <div class="text-muted small mb-3">
-                                <?php
-                                $time_label = $rate_updated_at ? time_ago($rate_updated_at) : __('Unknown');
-                                ?>
-                                <i class="fas fa-exchange-alt me-1"></i>
-                                <span><?php echo sprintf(__('Rate: 1 %s = '), $base_currency_code); ?><?php echo e($local_currency_symbol); ?><span x-text="exchangeRate.toFixed(2)"></span><?php echo __(' · Updated '); ?><?php echo $time_label; ?></span>
-                            </div>
-                        <?php endif; ?>
-
-                        <div class="bg-light rounded-3 p-3 mb-4">
-                            <?php if ($has_local_currency): ?>
-                                <div class="d-flex justify-content-between small mb-2">
-                                    <span class="text-secondary"><?php echo __('You Send'); ?></span>
-                                    <span class="fw-bold" x-text="localCurrencySymbol + localAmount.toFixed(2)"></span>
-                                </div>
-                            <?php else: ?>
-                                <div class="d-flex justify-content-between small mb-2">
-                                    <span class="text-secondary"><?php echo __('Amount'); ?></span>
-                                    <span class="fw-bold" x-text="'<?php echo e($currency_symbol); ?>' + numericAmount.toFixed(2)"></span>
-                                </div>
-                            <?php endif; ?>
-                            <?php if ($deposit_fee_percentage > 0): ?>
-                                <div class="d-flex justify-content-between small mb-2">
-                                    <span class="text-secondary"><?php echo __('Processing Fee'); ?> (<span x-text="depositFeePercent + '%'"></span>)</span>
-                                    <span class="fw-bold" x-text="'<?php echo e($currency_symbol); ?>' + feeAmount"></span>
-                                </div>
-                            <?php endif; ?>
-                            <div class="border-top border-secondary border-opacity-10 my-2"></div>
-                            <div class="d-flex justify-content-between align-items-center">
-                                <span class="fw-bold text-dark"><?php echo __('You Receive'); ?></span>
-                                <span class="h5 fw-bold text-primary mb-0" x-text="'<?php echo e($currency_symbol); ?>' + totalAmount"></span>
-                            </div>
-                            <?php if ($deposit_fee_percentage > 0 && false): ?>
-                                <div x-show="hasLocalCurrency" style="display: none;" class="mt-3 pt-3 border-top border-secondary border-opacity-10">
-                                    <div class="d-flex justify-content-between align-items-center">
-                                        <span class="small text-secondary"><?php echo sprintf(__('After Fee (%s)'), $base_currency_code); ?></span>
-                                        <span class="fw-bold" x-text="'<?php echo e($currency_symbol); ?>' + (usdEstimate * (1 - depositFeePercent / 100)).toFixed(2)"></span>
-                                    </div>
-                                </div>
-                            <?php endif; ?>
-                        </div>
-
-                        <!-- Mobile: Show submit button here -->
-                        <div class="d-lg-none">
-                            <button type="button" class="btn btn-primary w-100 py-3 rounded-pill fw-bold shadow" :disabled="loading || (!previewUrl && selectedMethodData.type !== 'auto')" @click="submitDeposit()">
-                                <span x-show="!loading"><i class="fas fa-check-circle me-2"></i> <?php echo __('Confirm Deposit'); ?></span>
-                                <span x-show="loading" style="display:none"><i class="fas fa-spinner fa-spin me-2"></i> <?php echo __('Processing…'); ?></span>
-                            </button>
-                        </div>
-                    </form>
-                </div>
-            </div>
-        </div>
-
-        <!-- Right Column - Payment Details -->
-        <div class="col-lg-5" x-ref="paymentDetails">
-            <div class="card border-0 text-white position-relative overflow-hidden" style="border-radius: 1.25rem;">
-                <!-- Gradient Background -->
-                <div class="position-absolute top-0 start-0 w-100 h-100" style="background: linear-gradient(135deg, #4f46e5 0%, #4338ca 100%); z-index: 0;"></div>
-                <!-- Decorative circles -->
-                <div class="position-absolute top-0 end-0 bg-white opacity-10 rounded-circle" style="width: 200px; height: 200px; transform: translate(30%, -30%); z-index: 0; opacity: 0.2;"></div>
-                <div class="position-absolute bottom-0 start-0 bg-white opacity-10 rounded-circle" style="width: 150px; height: 150px; transform: translate(-30%, 30%); z-index: 0; opacity: 0.3;"></div>
-
-
-                <div class="card-body p-4 position-relative d-flex flex-column" style="z-index: 1;">
-                    <h5 class="fw-bold mb-4"><?php echo __('Complete Payment'); ?></h5>
-
-                    <!-- Instructions -->
-                    <div class="mb-4" x-show="selectedMethodData.instructions">
-                        <div class="alert bg-white bg-opacity-10 border-0 text-white small">
-                            <i class="fas fa-info-circle me-2"></i>
-                            <span x-text="selectedMethodData.instructions"></span>
-                        </div>
-                    </div>
-
-                    <!-- QR Code for Crypto -->
-                    <div x-show="selectedMethodData.type === 'Cryptocurrency'" class="text-center mb-4" x-transition>
-                        <div x-show="selectedMethodData.qr_code" class="qr-placeholder d-flex align-items-center justify-content-center mb-3 mx-auto">
-                            <img :src="selectedMethodData.qr_code" alt="QR Code" class="img-fluid" style="max-width: 150px; border-radius: 0.5rem;">
-                        </div>
-                        <p class="small text-white-50 mb-0" x-show="selectedMethodData.qr_code"><?php echo __('Scan QR code or copy address below'); ?></p>
-                        <p class="small text-warning mb-0" x-show="!selectedMethodData.qr_code"><i class="fas fa-exclamation-circle me-1"></i><?php echo __('QR code not available - contact admin'); ?></p>
-                    </div>
-
-                    <!-- Type-Specific Payment Details -->
-                    <div class="mb-4">
-                        <!-- Cryptocurrency Fields -->
-                        <div x-show="selectedMethodData.type === 'Cryptocurrency'" x-transition>
-                            <div class="mb-3" x-show="selectedMethodData.wallet_address">
-                                <label class="small fw-bold text-white-50 mb-2 text-uppercase"><?php echo __('Wallet Address'); ?></label>
-                                <div class="copy-input-group bg-white bg-opacity-10 border-white border-opacity-25">
-                                    <input type="text" class="copy-input text-white" :value="selectedMethodData.wallet_address" readonly />
-                                    <button type="button" class="btn btn-sm btn-light rounded-pill px-3 fw-bold" @click="copyAddress('wallet_address')" :class="{ 'btn-success text-white': copied, 'btn-light': !copied }">
-                                        <span x-show="!copied"><i class="fas fa-copy me-1"></i> <?php echo __('Copy'); ?></span>
-                                        <span x-show="copied" style="display: none"><i class="fas fa-check"></i></span>
-                                    </button>
-                                </div>
-                            </div>
-
-                            <div class="alert bg-warning bg-opacity-25 border-0 text-white small d-flex gap-2">
-                                <i class="fas fa-exclamation-triangle mt-1"></i>
-                                <div>
-                                    <?php echo __('Please ensure you are sending via the correct network.'); ?>
-                                    <span x-show="selectedMethodData.network"><strong>(<span x-text="selectedMethodData.network"></span>)</span></span>
-                                    <?php echo __('Transactions sent to the wrong network may not be recoverable.'); ?>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Bank Transfer Fields -->
-                        <div x-show="selectedMethodData.type === 'Bank Transfer'" x-transition>
-                            <div class="bg-white bg-opacity-10 rounded-3 p-3 mb-4">
-                                <div class="mb-3" x-show="selectedMethodData.bank_name">
-                                    <label class="small text-white-50 d-block"><?php echo __('Bank Name'); ?></label>
-                                    <div class="d-flex align-items-center justify-content-between">
-                                        <span class="fw-bold fs-5" x-text="selectedMethodData.bank_name"></span>
-                                        <button type="button" class="btn btn-sm btn-light" @click="copyAddress('bank_name')">
-                                            <i class="fas fa-copy"></i>
-                                        </button>
-                                    </div>
-                                </div>
-                                <div class="mb-3" x-show="selectedMethodData.account_name">
-                                    <label class="small text-white-50 d-block"><?php echo __('Account Name'); ?></label>
-                                    <div class="d-flex align-items-center justify-content-between">
-                                        <span class="fw-bold fs-5" x-text="selectedMethodData.account_name"></span>
-                                        <button type="button" class="btn btn-sm btn-light" @click="copyAddress('account_name')">
-                                            <i class="fas fa-copy"></i>
-                                        </button>
-                                    </div>
-                                </div>
-                                <div class="mb-3" x-show="selectedMethodData.account_number">
-                                    <label class="small text-white-50 d-block"><?php echo __('Account Number'); ?></label>
-                                    <div class="d-flex align-items-center justify-content-between">
-                                        <span class="fw-bold fs-5" x-text="selectedMethodData.account_number"></span>
-                                        <button type="button" class="btn btn-sm btn-light" @click="copyAddress('account_number')">
-                                            <i class="fas fa-copy"></i>
-                                        </button>
-                                    </div>
-                                </div>
-                                <div x-show="selectedMethodData.swift_code">
-                                    <label class="small text-white-50 d-block"><?php echo __('SWIFT / Routing'); ?></label>
-                                    <div class="d-flex align-items-center justify-content-between">
-                                        <span class="fw-bold" x-text="selectedMethodData.swift_code"></span>
-                                        <button type="button" class="btn btn-sm btn-light" @click="copyAddress('swift_code')">
-                                            <i class="fas fa-copy"></i>
-                                        </button>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="alert bg-info bg-opacity-25 border-0 text-white small d-flex gap-2">
-                                <i class="fas fa-info-circle mt-1"></i>
-                                <div><?php echo __('Use your Username as the payment reference/memo.'); ?></div>
-                            </div>
-                        </div>
-
-                        <!-- E-Wallet Fields -->
-                        <div x-show="selectedMethodData.type === 'E-Wallet'" x-transition>
-                            <div class="bg-white bg-opacity-10 rounded-3 p-3 mb-4">
-                                <div class="mb-3" x-show="selectedMethodData.provider">
-                                    <label class="small text-white-50 d-block"><?php echo __('Provider'); ?></label>
-                                    <div class="d-flex align-items-center justify-content-between">
-                                        <span class="fw-bold fs-5" x-text="selectedMethodData.provider"></span>
-                                        <button type="button" class="btn btn-sm btn-light" @click="copyAddress('provider')">
-                                            <i class="fas fa-copy"></i>
-                                        </button>
-                                    </div>
-                                </div>
-                                <div class="mb-3" x-show="selectedMethodData.wallet_id">
-                                    <label class="small text-white-50 d-block"><?php echo __('Wallet ID / Email'); ?></label>
-                                    <div class="d-flex align-items-center justify-content-between">
-                                        <span class="fw-bold fs-5" x-text="selectedMethodData.wallet_id"></span>
-                                        <button type="button" class="btn btn-sm btn-light" @click="copyAddress('wallet_id')">
-                                            <i class="fas fa-copy"></i>
-                                        </button>
-                                    </div>
-                                </div>
-                                <div x-show="selectedMethodData.account_name">
-                                    <label class="small text-white-50 d-block"><?php echo __('Account Holder'); ?></label>
-                                    <div class="d-flex align-items-center justify-content-between">
-                                        <span class="fw-bold" x-text="selectedMethodData.account_name"></span>
-                                        <button type="button" class="btn btn-sm btn-light" @click="copyAddress('account_name')">
-                                            <i class="fas fa-copy"></i>
-                                        </button>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Mobile Money Fields -->
-                        <div x-show="selectedMethodData.type === 'Mobile Money'" x-transition>
-                            <div class="bg-white bg-opacity-10 rounded-3 p-3 mb-4">
-                                <div class="mb-3" x-show="selectedMethodData.provider">
-                                    <label class="small text-white-50 d-block"><?php echo __('Provider'); ?></label>
-                                    <div class="d-flex align-items-center justify-content-between">
-                                        <span class="fw-bold fs-5" x-text="selectedMethodData.provider"></span>
-                                        <button type="button" class="btn btn-sm btn-light" @click="copyAddress('provider')">
-                                            <i class="fas fa-copy"></i>
-                                        </button>
-                                    </div>
-                                </div>
-                                <div class="mb-3" x-show="selectedMethodData.phone_number">
-                                    <label class="small text-white-50 d-block"><?php echo __('Phone Number'); ?></label>
-                                    <div class="d-flex align-items-center justify-content-between">
-                                        <span class="fw-bold fs-5" x-text="selectedMethodData.phone_number"></span>
-                                        <button type="button" class="btn btn-sm btn-light" @click="copyAddress('phone_number')">
-                                            <i class="fas fa-copy"></i>
-                                        </button>
-                                    </div>
-                                </div>
-                                <div x-show="selectedMethodData.account_name">
-                                    <label class="small text-white-50 d-block"><?php echo __('Account Holder'); ?></label>
-                                    <div class="d-flex align-items-center justify-content-between">
-                                        <span class="fw-bold" x-text="selectedMethodData.account_name"></span>
-                                        <button type="button" class="btn btn-sm btn-light" @click="copyAddress('account_name')">
-                                            <i class="fas fa-copy"></i>
-                                        </button>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Other Fields -->
-                        <div x-show="selectedMethodData.type === 'Other' && selectedMethodData.details" x-transition>
-                            <div class="bg-white bg-opacity-10 rounded-3 p-3 mb-4">
-                                <span x-text="selectedMethodData.details"></span>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Upload Proof -->
-                    <div class="mt-auto pt-4">
-                        <div class="mb-3">
-                            <label class="small fw-bold text-white mb-2"><?php echo __('Upload Proof of Payment'); ?></label>
-
-                            <div class="upload-zone dark-mode">
-                                <div x-show="!previewUrl" class="d-flex flex-column align-items-center justify-content-center w-100 h-100 p-3">
-                                    <input type="file" id="proofInput" class="position-absolute top-0 start-0 w-100 h-100 opacity-0" style="cursor: pointer; z-index: 10" @change="handleFileChange($event)" accept="image/*" />
-                                    <i class="fas fa-cloud-upload-alt fa-2x mb-2 opacity-75"></i>
-                                    <span class="small fw-bold"><?php echo __('Click to Upload Screenshot'); ?></span>
-                                    <span class="text-white-50 small mt-1" style="font-size: 0.7rem"><?php echo __('Max size 5MB (JPG/PNG)'); ?></span>
-                                </div>
-
-                                <div x-show="previewUrl" class="w-100 h-100 position-relative" style="display: none">
-                                    <img :src="previewUrl" class="w-100 h-100" style="object-fit: cover; opacity: 0.8; border-radius: 0.5rem;" />
-
-                                    <div class="position-absolute bottom-0 start-0 w-100 p-2 bg-dark bg-opacity-75 d-flex align-items-center justify-content-between" style="border-radius: 0 0 0.5rem 0.5rem;">
-                                        <span class="text-white small text-truncate" x-text="fileName" style="max-width: 70%"></span>
-                                        <button type="button" class="btn btn-sm btn-danger py-0 px-2 small" @click.stop="removeFile()">
-                                            <i class="fas fa-times"></i>
-                                        </button>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Desktop: Submit button -->
-                        <div class="d-none d-lg-block">
-                            <button type="button" @click="submitDeposit()" class="btn btn-light w-100 py-3 rounded-pill fw-bold text-primary shadow-lg" :disabled="loading || (!previewUrl && selectedMethodData.type !== 'auto')" :class="{ 'opacity-50': !previewUrl }">
-                                <span x-show="!loading"><i class="fas fa-check-circle me-2"></i> <?php echo __('Confirm Deposit'); ?></span>
-                                <span x-show="loading" style="display:none"><i class="fas fa-spinner fa-spin me-2"></i> <?php echo __('Processing…'); ?></span>
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <form id="depositForm" action="/actions/deposit-submit.php" method="POST" enctype="multipart/form-data" class="d-none" x-ref="depositFormHidden">
-            <input type="hidden" name="csrf_token" value="<?php echo csrf_token(); ?>">
-            <input type="hidden" name="payment_method" x-model="selectedMethod">
-            <input type="hidden" name="amount" x-model="amount">
-            <input type="hidden" name="local_currency_amount" x-ref="localAmountInput">
-            <input type="file" name="proof" x-ref="proofFileHidden" class="d-none">
-        </form>
-    </div>
-
-    <!-- Recent Deposits -->
-    <div class="row mt-4">
-        <div class="col-12">
-            <div class="card border-0 shadow-sm" style="border-radius: 1.25rem;">
-                <div class="card-header bg-transparent border-bottom p-4">
-                    <h5 class="fw-bold mb-0"><?php echo __('Recent Deposits'); ?></h5>
-                </div>
-                <div class="card-body p-0">
-                    <div class="table-responsive">
-                        <table class="table table-hover mb-0">
-                            <thead class="bg-light">
-                                <tr>
-                                    <th class="py-3 px-4 text-uppercase small fw-bold text-muted" style="font-size: 0.75rem;"><?php echo __('Date'); ?></th>
-                                    <th class="py-3 px-4 text-uppercase small fw-bold text-muted" style="font-size: 0.75rem;"><?php echo __('Method'); ?></th>
-                                    <th class="py-3 px-4 text-uppercase small fw-bold text-muted" style="font-size: 0.75rem;"><?php echo __('You Sent'); ?></th>
-                                    <th class="py-3 px-4 text-uppercase small fw-bold text-muted" style="font-size: 0.75rem;"><?php echo __('Credited'); ?></th>
-                                    <th class="py-3 px-4 text-uppercase small fw-bold text-muted" style="font-size: 0.75rem;"><?php echo __('Status'); ?></th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <?php if ($recent_deposits): foreach ($recent_deposits as $d): ?>
-                                        <tr>
-                                            <td class="py-3 px-4"><?php echo format_date($d['created_at']); ?></td>
-                                            <td class="py-3 px-4"><?php echo e($d['payment_method']); ?></td>
-                                            <td class="py-3 px-4 fw-bold">
-                                                <?php if (!empty($d['local_currency_amount'])): ?>
-                                                    <?php echo get_currency_symbol($d['local_currency_code']); ?><?php echo number_format($d['local_currency_amount'], 2); ?>
-                                                    <!-- <?php echo e($d['local_currency_code']); ?> -->
-                                                <?php else: ?>
-                                                    —
-                                                <?php endif; ?>
-                                            </td>
-                                            <td class="py-3 px-4 fw-bold">
-                                                <?php if ($d['status'] === 'pending'): ?>
-                                                    <?php echo __('Pending'); ?>
-                                                <?php else: ?>
-                                                    <?php if (!empty($d['fee_amount']) && floatval($d['fee_amount']) > 0): ?>
-                                                        <?php echo format_money($d['net_amount']); ?>
-                                                    <?php else: ?>
-                                                        <?php echo format_money($d['amount']); ?>
-                                                    <?php endif; ?>
-                                                <?php endif; ?>
-                                            </td>
-                                            <td class="py-3 px-4">
-                                                <?php if ($d['status'] === 'pending'): ?>
-                                                    <span class="badge bg-warning bg-opacity-10 text-warning rounded-pill px-3 py-2"><?php echo __('Pending'); ?></span>
-                                                <?php elseif ($d['status'] === 'approved' || $d['status'] === 'completed'): ?>
-                                                    <span class="badge bg-success bg-opacity-10 text-success rounded-pill px-3 py-2"><?php echo __('Completed'); ?></span>
-                                                <?php else: ?>
-                                                    <span class="badge bg-danger bg-opacity-10 text-danger rounded-pill px-3 py-2"><?php echo __(ucfirst($d['status'])); ?></span>
-                                                <?php endif; ?>
-                                            </td>
-                                        </tr>
-                                    <?php endforeach;
-                                else: ?>
-                                    <tr>
-                                        <td colspan="5" class="py-5 text-center text-muted"><?php echo __('No deposits yet.'); ?></td>
-                                    </tr>
-                                <?php endif; ?>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-<?php endif; ?>
-
-<style>
-    /* Method Card */
-    .method-card {
-        border: 2px solid #f1f5f9;
-        border-radius: 1rem;
-        padding: 1.25rem;
-        cursor: pointer;
-        transition: all 0.2s;
-        display: flex;
-        align-items: center;
-        gap: 1rem;
-        background: white;
+<style type="text/tailwindcss">
+    input[type="number"]::-webkit-inner-spin-button,
+    input[type="number"]::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
+    input[type="number"] { -moz-appearance: textfield; }
+    .premium-input {
+        @apply w-full bg-brand-dark border border-zinc-800 text-zinc-100 text-lg font-semibold rounded-xl px-4 py-3.5 focus:outline-none focus:border-brand-accent/50 focus:ring-1 focus:ring-brand-accent/50 transition-all placeholder:text-zinc-700;
     }
-
-    .method-card:hover {
-        border-color: #cbd5e1;
-        background: #f8fafc;
-    }
-
-    .method-card.active {
-        border-color: var(--primary);
-        background: rgba(79, 70, 229, 0.02);
-        box-shadow: 0 4px 12px rgba(79, 70, 229, 0.1);
-    }
-
-    .method-icon {
-        width: 42px;
-        height: 42px;
-        border-radius: 50%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 1.2rem;
-        flex-shrink: 0;
-    }
-
-    /* Copy Field */
-    .copy-input-group {
-        background: #f8fafc;
-        border: 1px solid #e2e8f0;
-        border-radius: 1rem;
-        padding: 0.5rem;
-        display: flex;
-        align-items: center;
-    }
-
-    .copy-input {
-        border: none;
-        background: transparent;
-        font-weight: 600;
-        color: #334155;
-        flex-grow: 1;
-        padding: 0.5rem 1rem;
-        outline: none;
-        font-family: monospace;
-        font-size: 0.95rem;
-    }
-
-    /* Upload Zone */
-    .upload-zone {
-        border: 2px dashed #cbd5e1;
-        border-radius: 1rem;
-        padding: 0;
-        height: 160px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        transition: all 0.2s;
-        background: #f8fafc;
-        cursor: pointer;
-        position: relative;
-        overflow: hidden;
-    }
-
-    .upload-zone:hover {
-        border-color: var(--primary);
-        background: rgba(79, 70, 229, 0.02);
-    }
-
-    .upload-zone.dark-mode {
-        background: rgba(255, 255, 255, 0.1);
-        border-color: rgba(255, 255, 255, 0.25);
-        color: white;
-    }
-
-    .upload-zone.dark-mode:hover {
-        background: rgba(255, 255, 255, 0.15);
-        border-color: white;
-    }
-
-    /* QR Code Placeholder */
-    .qr-placeholder {
-        width: 160px;
-        height: 160px;
-        background: white;
-        padding: 10px;
-        border-radius: 1rem;
-        border: 1px solid #e2e8f0;
-        margin: 0 auto;
-    }
-
-    /* Form Label */
-    .form-label {
-        font-size: 0.85rem;
-        font-weight: 700;
-        color: var(--text-muted);
-        margin-bottom: 0.5rem;
-        text-transform: uppercase;
-        letter-spacing: 0.5px;
-    }
-
-    /* Payment Details Card - ensure bg opacity is visible */
-    .bg-white.bg-opacity-10 {
-        background-color: rgba(255, 255, 255, 0.15) !important;
-        border: 1px solid rgba(255, 255, 255, 0.1);
-    }
-
-    /* Copy buttons in payment details */
-    .bg-white.bg-opacity-10 .btn-light {
-        background-color: rgba(255, 255, 255, 0.9);
-        border-color: rgba(255, 255, 255, 0.9);
-        color: #333;
-    }
-
-    .bg-white.bg-opacity-10 .btn-light:hover {
-        background-color: #fff;
-        border-color: #fff;
-        color: #000;
-    }
-
-    .bg-white.bg-opacity-10 .btn-light:active {
-        background-color: #e9ecef;
-        border-color: #e9ecef;
-    }
+    .method-card { transition: all 0.2s ease; }
 </style>
+<?php
+$extra_css = ob_get_clean();
 
+ob_start();
+?>
 <script>
     window.depositData = {
         translations: {
@@ -645,7 +91,9 @@ if (get_maintenance_mode()) {
             rateLabel: <?php echo json_encode(sprintf(__('Rate: 1 %s = '), $base_currency_code)); ?>,
             updatedLabel: <?php echo json_encode(__(' · Updated ')); ?>,
             youSend: <?php echo json_encode(__('You Send')); ?>,
-            estimatedLocalReceipt: <?php echo json_encode(__('estimated local receipt')); ?>
+            estimatedLocalReceipt: <?php echo json_encode(__('estimated local receipt')); ?>,
+            enterValidAmount: <?php echo json_encode(__('Please enter a valid amount')); ?>,
+            uploadProof: <?php echo json_encode(__('Please upload proof of payment')); ?>
         },
         baseCurrencyCode: <?php echo json_encode($base_currency_code); ?>
     };
@@ -654,18 +102,17 @@ if (get_maintenance_mode()) {
         return {
             amount: '',
             loading: false,
-            selectedMethod: '<?php echo !empty($payment_methods) ? key($payment_methods) : ''; ?>',
+            selectedMethod: <?php echo json_encode(!empty($payment_methods) ? key($payment_methods) : ''); ?>,
             copied: false,
             fileName: null,
             previewUrl: null,
-            depositFeePercent: <?php echo $deposit_fee_percentage; ?>,
-            _currencySymbol: '<?php echo e($currency_symbol); ?>',
+            depositFeePercent: <?php echo json_encode($deposit_fee_percentage); ?>,
+            _currencySymbol: <?php echo json_encode($currency_symbol); ?>,
             hasLocalCurrency: <?php echo json_encode($has_local_currency); ?>,
-            localCurrencyCode: '<?php echo e($local_currency_code ?? ''); ?>',
-            localCurrencySymbol: '<?php echo e($local_currency_symbol ?? ''); ?>',
+            localCurrencyCode: <?php echo json_encode($local_currency_code ?? ''); ?>,
+            localCurrencySymbol: <?php echo json_encode($local_currency_symbol ?? ''); ?>,
             exchangeRate: <?php echo json_encode($exchange_rate ?? 0); ?>,
             localCurrencyAmount: '',
-
             methods: <?php echo json_encode($payment_methods); ?>,
 
             init() {
@@ -762,12 +209,12 @@ if (get_maintenance_mode()) {
 
             submitDeposit() {
                 if (!this.amount || this.numericAmount <= 0) {
-                    alert(<?php echo json_encode(__('Please enter a valid amount')); ?>);
+                    alert(window.depositData.translations.enterValidAmount);
                     return;
                 }
 
                 if (!this.previewUrl && this.selectedMethodData.type !== 'auto') {
-                    alert(<?php echo json_encode(__('Please upload proof of payment')); ?>);
+                    alert(window.depositData.translations.uploadProof);
                     return;
                 }
 
@@ -779,23 +226,474 @@ if (get_maintenance_mode()) {
 
                 // Copy file from visible input to hidden form
                 const fileInput = document.getElementById('proofInput');
-                const hiddenFileInput = this.$refs.proofFileHidden;
                 if (fileInput && fileInput.files.length > 0) {
                     const dt = new DataTransfer();
                     dt.items.add(fileInput.files[0]);
-                    hiddenFileInput.files = dt.files;
+                    this.$refs.proofFileHidden.files = dt.files;
                 }
 
                 this.loading = true;
                 this.$nextTick(() => {
                     form.submit();
                 });
-            },
+            }
         };
     }
 </script>
+<?php
+$extra_scripts = ob_get_clean();
 
-<?php require ROOT . '/includes/footer.php'; ?>
-</body>
+require ROOT . '/includes/new-head.php';
+require ROOT . '/includes/new-header.php';
+require_once ROOT . '/includes/currency-conversion.php';
 
-</html>
+if (get_maintenance_mode()): ?>
+    <div class="mb-4 rounded-xl border border-amber-500/20 bg-amber-500/10 px-4 py-3 text-amber-400 flex items-start justify-between shadow-sm" role="alert">
+        <span class="text-sm font-medium"><?php echo __('Platform is temporarily under maintenance. Deposits, withdrawals, and investments are disabled.'); ?></span>
+    </div>
+<?php endif; ?>
+
+<!-- Page Header -->
+<header class="flex flex-col sm:flex-row sm:items-end justify-between gap-4 border-b border-zinc-900 pb-6">
+    <div>
+        <h1 class="text-2xl md:text-4xl font-bold text-zinc-50 mb-1 tracking-tight"><?php echo __('Deposit Funds'); ?></h1>
+        <p class="text-zinc-400 text-sm"><?php echo __('Securely add funds to your wallet'); ?></p>
+    </div>
+    <a href="/contact" class="w-full sm:w-auto px-4 py-2.5 bg-zinc-900 border border-zinc-800 hover:border-zinc-700 rounded-xl text-zinc-300 hover:text-white flex items-center justify-center gap-2 transition-colors text-sm font-medium">
+        <i class="fa-solid fa-headset text-xs"></i> <?php echo __('Help'); ?>
+    </a>
+</header>
+
+<?php if (empty($payment_methods)): ?>
+    <div class="bg-brand-card rounded-3xl p-8 border border-zinc-800 flex flex-col items-center justify-center text-center h-64 relative overflow-hidden">
+        <div class="absolute -left-6 -bottom-6 w-24 h-24 bg-zinc-800/10 rounded-full blur-xl"></div>
+        <div class="w-14 h-14 rounded-full bg-zinc-800/60 border border-zinc-700/60 flex items-center justify-center text-zinc-500 mb-4">
+            <i class="fa-solid fa-credit-card text-xl"></i>
+        </div>
+        <h4 class="text-zinc-50 font-bold mb-1"><?php echo __('No Payment Methods Available'); ?></h4>
+        <p class="text-zinc-500 text-sm"><?php echo __('Please check back later for available deposit options.'); ?></p>
+    </div>
+<?php else: ?>
+    <!-- Alpine.js Component -->
+    <div x-data="depositApp()" x-init="init()">
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+            <!-- Left Column - Method Selection & Amount -->
+            <div class="col-span-1 lg:col-span-7 space-y-6">
+                <!-- Method Selection -->
+                <div class="bg-brand-card border border-zinc-800/80 rounded-3xl p-6 shadow-sm">
+                    <div class="flex items-center gap-3 mb-5">
+                        <span class="w-6 h-6 rounded-full bg-brand-accent/10 border border-brand-accent/30 text-brand-accent text-xs font-bold flex items-center justify-center">1</span>
+                        <h3 class="text-sm font-bold text-zinc-300 uppercase tracking-wider"><?php echo __('Select Payment Method'); ?></h3>
+                    </div>
+
+                    <div class="space-y-3">
+                        <?php foreach ($payment_methods as $key => $method):
+                            $icon = 'fa-credit-card';
+                            $color = 'zinc';
+                            if (stripos($method['type'], 'crypto') !== false || stripos($method['type'], 'bitcoin') !== false || stripos($method['type'], 'usdt') !== false) {
+                                $icon = 'fa-coins';
+                                $color = 'amber';
+                            } elseif (stripos($method['type'], 'bank') !== false) {
+                                $icon = 'fa-university';
+                                $color = 'sky';
+                            } elseif (stripos($method['type'], 'mobile') !== false) {
+                                $icon = 'fa-mobile-alt';
+                                $color = 'emerald';
+                            } elseif (stripos($method['type'], 'wallet') !== false) {
+                                $icon = 'fa-wallet';
+                                $color = 'violet';
+                            }
+                        ?>
+                            <div class="method-card bg-brand-dark border-2 border-zinc-800 rounded-2xl p-4 flex items-center justify-between cursor-pointer"
+                                @click="selectMethod('<?php echo e($key); ?>')"
+                                :class="{ 'border-brand-accent shadow-[0_0_20px_rgba(16,185,129,0.05)]': selectedMethod === '<?php echo e($key); ?>', 'border-zinc-800 hover:border-zinc-700': selectedMethod !== '<?php echo e($key); ?>' }">
+                                <div class="flex items-center gap-4">
+                                    <div class="w-12 h-12 rounded-xl bg-<?php echo $color; ?>-500/10 border border-<?php echo $color; ?>-500/20 text-<?php echo $color; ?>-500 flex items-center justify-center text-xl">
+                                        <i class="fa-solid <?php echo $icon; ?>"></i>
+                                    </div>
+                                    <div>
+                                        <h4 class="text-white font-bold text-base"><?php echo e($method['name']); ?></h4>
+                                        <span class="inline-flex items-center px-2 py-0.5 rounded-md text-[10px] font-semibold bg-zinc-800 text-zinc-400 border border-zinc-700 uppercase tracking-wider mt-0.5"><?php echo e(__($method['type'])); ?></span>
+                                    </div>
+                                </div>
+                                <div x-show="selectedMethod === '<?php echo e($key); ?>'" class="w-5 h-5 rounded-full bg-brand-accent text-brand-dark flex items-center justify-center text-[10px] font-bold">
+                                    <i class="fa-solid fa-check"></i>
+                                </div>
+                            </div>
+                        <?php endforeach; ?>
+                    </div>
+                </div>
+
+                <!-- Amount -->
+                <div class="bg-brand-card border border-zinc-800/80 rounded-3xl p-6 shadow-sm">
+                    <div class="flex items-center gap-3 mb-5">
+                        <span class="w-6 h-6 rounded-full bg-brand-accent/10 border border-brand-accent/30 text-brand-accent text-xs font-bold flex items-center justify-center">2</span>
+                        <h3 class="text-sm font-bold text-zinc-300 uppercase tracking-wider">
+                            <?php if ($has_local_currency): ?>
+                                <?php echo __('Enter Amount (Your Local Currency)'); ?>
+                            <?php else: ?>
+                                <?php echo __('Enter Amount'); ?>
+                            <?php endif; ?>
+                        </h3>
+                    </div>
+
+                    <form @submit.prevent="submitDeposit()" class="space-y-4">
+                        <input type="hidden" name="csrf_token" value="<?php echo csrf_token(); ?>">
+                        <input type="hidden" name="payment_method" x-model="selectedMethod">
+                        <?php if ($has_local_currency): ?>
+                            <input type="hidden" name="local_currency_amount" x-model="localCurrencyAmount">
+                        <?php endif; ?>
+
+                        <div class="relative flex items-center">
+                            <span class="absolute left-4 text-zinc-500 font-bold text-lg select-none">
+                                <?php if ($has_local_currency): ?><?php echo e($local_currency_code); ?><?php else: ?><?php echo e($currency_symbol); ?><?php endif; ?>
+                            </span>
+                            <input type="number" name="amount" class="premium-input pl-20" x-model="amount" @input="updateLocalEstimate()" placeholder="0.00" min="1" step="0.01" required style="padding-left: 55px !important;" />
+                        </div>
+
+                        <?php if ($has_local_currency): ?>
+                            <!-- Local Currency Estimate -->
+                            <div class="p-3.5 bg-zinc-900/60 border border-zinc-800/80 rounded-xl flex items-center justify-between text-xs">
+                                <span class="text-zinc-500 flex items-center gap-2"><i class="fa-solid fa-circle-info text-brand-accent"></i> <?php echo __('Estimated Credit'); ?></span>
+                                <span class="font-mono text-zinc-300" x-text="'≈ ' + '<?php echo e($currency_symbol); ?>' + usdEstimate + ' ' + window.depositData.translations.willBeCredited"></span>
+                            </div>
+
+                            <!-- Rate Note -->
+                            <div class="text-zinc-500 text-xs flex items-center gap-1">
+                                <i class="fa-solid fa-exchange-alt"></i>
+                                <span>
+                                    <?php echo sprintf(__('Rate: 1 %s = '), $base_currency_code); ?><?php echo e($local_currency_symbol); ?><span x-text="exchangeRate.toFixed(2)"></span><?php echo __(' · Updated '); ?><?php echo $rate_updated_at ? time_ago($rate_updated_at) : __('Unknown'); ?>
+                                </span>
+                            </div>
+                        <?php endif; ?>
+
+                        <!-- Summary -->
+                        <div class="bg-zinc-900/30 border border-zinc-800/60 rounded-2xl p-4 space-y-3 font-medium text-sm">
+                            <?php if ($has_local_currency): ?>
+                                <div class="flex justify-between items-center">
+                                    <span class="text-zinc-500"><?php echo __('You Send'); ?></span>
+                                    <span class="text-zinc-300 font-semibold font-mono" x-text="localCurrencySymbol + localAmount.toFixed(2)"></span>
+                                </div>
+                            <?php else: ?>
+                                <div class="flex justify-between items-center">
+                                    <span class="text-zinc-500"><?php echo __('Amount'); ?></span>
+                                    <span class="text-zinc-300 font-semibold font-mono" x-text="'<?php echo e($currency_symbol); ?>' + numericAmount.toFixed(2)"></span>
+                                </div>
+                            <?php endif; ?>
+
+                            <?php if ($deposit_fee_percentage > 0): ?>
+                                <div class="flex justify-between items-center">
+                                    <span class="text-zinc-500"><?php echo __('Processing Fee'); ?> (<span x-text="depositFeePercent + '%'"></span>)</span>
+                                    <span class="text-zinc-300 font-semibold font-mono" x-text="'<?php echo e($currency_symbol); ?>' + feeAmount"></span>
+                                </div>
+                            <?php endif; ?>
+
+                            <div class="h-px bg-zinc-800/60 w-full"></div>
+
+                            <div class="flex justify-between items-center">
+                                <span class="text-zinc-400 font-semibold"><?php echo __('You Receive'); ?></span>
+                                <span class="text-brand-accent font-bold text-base font-mono" x-text="'<?php echo e($currency_symbol); ?>' + totalAmount"></span>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Right Column - Payment Details -->
+            <div class="col-span-1 lg:col-span-5" x-ref="paymentDetails">
+                <div class="bg-gradient-to-b from-brand-card to-zinc-900 border border-zinc-800 rounded-3xl p-6 shadow-2xl relative overflow-hidden flex flex-col">
+                    <div class="absolute -right-12 -top-12 w-36 h-36 bg-brand-accent/5 rounded-full blur-2xl pointer-events-none"></div>
+
+                    <h3 class="text-lg font-bold text-white tracking-tight mb-2"><?php echo __('Complete Payment'); ?></h3>
+
+                    <!-- Instructions -->
+                    <div class="mb-4" x-show="selectedMethodData.instructions">
+                        <div class="p-3.5 bg-brand-accent/10 border border-brand-accent/20 rounded-xl text-brand-accent text-xs flex items-start gap-2">
+                            <i class="fa-solid fa-circle-info mt-0.5"></i>
+                            <span x-text="selectedMethodData.instructions"></span>
+                        </div>
+                    </div>
+
+                    <!-- QR Code for Crypto -->
+                    <div x-show="selectedMethodData.normalized_type === 'crypto'" class="text-center mb-6" x-transition>
+                        <div x-show="selectedMethodData.qr_code" class="bg-white p-3 rounded-2xl border border-zinc-800 inline-block mb-3">
+                            <img :src="selectedMethodData.qr_code" alt="<?php echo e(__('QR Code')); ?>" class="w-36 h-36 object-contain rounded-xl">
+                        </div>
+                        <p class="text-xs text-zinc-400 mb-0" x-show="selectedMethodData.qr_code"><?php echo __('Scan QR code or copy address below'); ?></p>
+                        <p class="text-xs text-amber-400 mb-0" x-show="!selectedMethodData.qr_code"><i class="fa-solid fa-exclamation-circle me-1"></i><?php echo __('QR code not available - contact admin'); ?></p>
+                    </div>
+
+                    <!-- Type-Specific Payment Details -->
+                    <div class="mb-6 space-y-4">
+                        <!-- Cryptocurrency -->
+                        <div x-show="selectedMethodData.normalized_type === 'crypto'" x-transition>
+                            <div x-show="selectedMethodData.wallet_address" class="bg-brand-dark/80 border border-zinc-800 rounded-2xl p-4">
+                                <p class="text-[10px] font-bold text-zinc-500 uppercase tracking-wider mb-1.5"><?php echo __('Wallet Address'); ?></p>
+                                <div class="flex items-center justify-between gap-3">
+                                    <span class="text-sm font-mono font-bold text-brand-accent break-all" x-text="selectedMethodData.wallet_address"></span>
+                                    <button type="button" class="shrink-0 p-2 bg-zinc-900 hover:bg-zinc-800 border border-zinc-800 rounded-xl text-zinc-400 hover:text-white transition-colors" @click="copyAddress('wallet_address')">
+                                        <i class="fa-regular fa-copy"></i>
+                                    </button>
+                                </div>
+                            </div>
+
+                            <div class="mt-3 p-3.5 bg-amber-500/10 border border-amber-500/20 rounded-xl text-amber-400 text-xs flex gap-2">
+                                <i class="fa-solid fa-triangle-exclamation mt-0.5"></i>
+                                <div>
+                                    <?php echo __('Please ensure you are sending via the correct network.'); ?>
+                                    <span x-show="selectedMethodData.network"><strong>(<span x-text="selectedMethodData.network"></span>)</strong></span>
+                                    <?php echo __('Transactions sent to the wrong network may not be recoverable.'); ?>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Bank Transfer -->
+                        <div x-show="selectedMethodData.normalized_type === 'bank'" x-transition>
+                            <div class="bg-brand-dark/80 border border-zinc-800 rounded-2xl p-4 space-y-4">
+                                <div x-show="selectedMethodData.bank_name" class="flex justify-between items-center">
+                                    <div>
+                                        <p class="text-[10px] font-bold text-zinc-500 uppercase tracking-wider mb-0.5"><?php echo __('Bank Name'); ?></p>
+                                        <p class="text-sm font-bold text-white" x-text="selectedMethodData.bank_name"></p>
+                                    </div>
+                                    <button type="button" class="p-2 bg-zinc-900 hover:bg-zinc-800 border border-zinc-800 rounded-xl text-zinc-400 hover:text-white transition-colors" @click="copyAddress('bank_name')">
+                                        <i class="fa-regular fa-copy"></i>
+                                    </button>
+                                </div>
+                                <div x-show="selectedMethodData.account_name" class="flex justify-between items-center">
+                                    <div>
+                                        <p class="text-[10px] font-bold text-zinc-500 uppercase tracking-wider mb-0.5"><?php echo __('Account Name'); ?></p>
+                                        <p class="text-sm font-bold text-white" x-text="selectedMethodData.account_name"></p>
+                                    </div>
+                                    <button type="button" class="p-2 bg-zinc-900 hover:bg-zinc-800 border border-zinc-800 rounded-xl text-zinc-400 hover:text-white transition-colors" @click="copyAddress('account_name')">
+                                        <i class="fa-regular fa-copy"></i>
+                                    </button>
+                                </div>
+                                <div x-show="selectedMethodData.account_number" class="flex justify-between items-center">
+                                    <div>
+                                        <p class="text-[10px] font-bold text-zinc-500 uppercase tracking-wider mb-0.5"><?php echo __('Account Number'); ?></p>
+                                        <p class="text-sm font-mono font-bold text-white" x-text="selectedMethodData.account_number"></p>
+                                    </div>
+                                    <button type="button" class="p-2 bg-zinc-900 hover:bg-zinc-800 border border-zinc-800 rounded-xl text-zinc-400 hover:text-white transition-colors" @click="copyAddress('account_number')">
+                                        <i class="fa-regular fa-copy"></i>
+                                    </button>
+                                </div>
+                                <div x-show="selectedMethodData.swift_code" class="flex justify-between items-center">
+                                    <div>
+                                        <p class="text-[10px] font-bold text-zinc-500 uppercase tracking-wider mb-0.5"><?php echo __('SWIFT / Routing'); ?></p>
+                                        <p class="text-sm font-mono font-bold text-white" x-text="selectedMethodData.swift_code"></p>
+                                    </div>
+                                    <button type="button" class="p-2 bg-zinc-900 hover:bg-zinc-800 border border-zinc-800 rounded-xl text-zinc-400 hover:text-white transition-colors" @click="copyAddress('swift_code')">
+                                        <i class="fa-regular fa-copy"></i>
+                                    </button>
+                                </div>
+                            </div>
+
+                            <div class="mt-3 p-3.5 bg-sky-500/10 border border-sky-500/20 rounded-xl text-sky-400 text-xs flex gap-2">
+                                <i class="fa-solid fa-circle-info mt-0.5"></i>
+                                <div><?php echo __('Use your Username as the payment reference/memo.'); ?></div>
+                            </div>
+                        </div>
+
+                        <!-- E-Wallet -->
+                        <div x-show="selectedMethodData.normalized_type === 'ewallet'" x-transition>
+                            <div class="bg-brand-dark/80 border border-zinc-800 rounded-2xl p-4 space-y-4">
+                                <div x-show="selectedMethodData.provider" class="flex justify-between items-center">
+                                    <div>
+                                        <p class="text-[10px] font-bold text-zinc-500 uppercase tracking-wider mb-0.5"><?php echo __('Provider'); ?></p>
+                                        <p class="text-sm font-bold text-white" x-text="selectedMethodData.provider"></p>
+                                    </div>
+                                    <button type="button" class="p-2 bg-zinc-900 hover:bg-zinc-800 border border-zinc-800 rounded-xl text-zinc-400 hover:text-white transition-colors" @click="copyAddress('provider')">
+                                        <i class="fa-regular fa-copy"></i>
+                                    </button>
+                                </div>
+                                <div x-show="selectedMethodData.wallet_id" class="flex justify-between items-center">
+                                    <div>
+                                        <p class="text-[10px] font-bold text-zinc-500 uppercase tracking-wider mb-0.5"><?php echo __('Wallet ID / Email'); ?></p>
+                                        <p class="text-sm font-mono font-bold text-white" x-text="selectedMethodData.wallet_id"></p>
+                                    </div>
+                                    <button type="button" class="p-2 bg-zinc-900 hover:bg-zinc-800 border border-zinc-800 rounded-xl text-zinc-400 hover:text-white transition-colors" @click="copyAddress('wallet_id')">
+                                        <i class="fa-regular fa-copy"></i>
+                                    </button>
+                                </div>
+                                <div x-show="selectedMethodData.account_name" class="flex justify-between items-center">
+                                    <div>
+                                        <p class="text-[10px] font-bold text-zinc-500 uppercase tracking-wider mb-0.5"><?php echo __('Account Holder'); ?></p>
+                                        <p class="text-sm font-bold text-white" x-text="selectedMethodData.account_name"></p>
+                                    </div>
+                                    <button type="button" class="p-2 bg-zinc-900 hover:bg-zinc-800 border border-zinc-800 rounded-xl text-zinc-400 hover:text-white transition-colors" @click="copyAddress('account_name')">
+                                        <i class="fa-regular fa-copy"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Mobile Money -->
+                        <div x-show="selectedMethodData.normalized_type === 'momo'" x-transition>
+                            <div class="bg-brand-dark/80 border border-zinc-800 rounded-2xl p-4 space-y-4">
+                                <div x-show="selectedMethodData.provider" class="flex justify-between items-center">
+                                    <div>
+                                        <p class="text-[10px] font-bold text-zinc-500 uppercase tracking-wider mb-0.5"><?php echo __('Provider'); ?></p>
+                                        <p class="text-sm font-bold text-white" x-text="selectedMethodData.provider"></p>
+                                    </div>
+                                    <button type="button" class="p-2 bg-zinc-900 hover:bg-zinc-800 border border-zinc-800 rounded-xl text-zinc-400 hover:text-white transition-colors" @click="copyAddress('provider')">
+                                        <i class="fa-regular fa-copy"></i>
+                                    </button>
+                                </div>
+                                <div x-show="selectedMethodData.phone_number" class="flex justify-between items-center">
+                                    <div>
+                                        <p class="text-[10px] font-bold text-zinc-500 uppercase tracking-wider mb-0.5"><?php echo __('Phone Number'); ?></p>
+                                        <p class="text-sm font-mono font-bold text-brand-accent" x-text="selectedMethodData.phone_number"></p>
+                                    </div>
+                                    <button type="button" class="p-2 bg-zinc-900 hover:bg-zinc-800 border border-zinc-800 rounded-xl text-zinc-400 hover:text-white transition-colors" @click="copyAddress('phone_number')">
+                                        <i class="fa-regular fa-copy"></i>
+                                    </button>
+                                </div>
+                                <div x-show="selectedMethodData.account_name" class="flex justify-between items-center border-t border-zinc-800/60 pt-3">
+                                    <div>
+                                        <p class="text-[10px] font-bold text-zinc-500 uppercase tracking-wider mb-0.5"><?php echo __('Account Holder'); ?></p>
+                                        <p class="text-xs font-bold text-zinc-300" x-text="selectedMethodData.account_name"></p>
+                                    </div>
+                                    <button type="button" class="p-2 bg-zinc-900 hover:bg-zinc-800 border border-zinc-800 rounded-xl text-zinc-400 hover:text-white transition-colors" @click="copyAddress('account_name')">
+                                        <i class="fa-regular fa-copy"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Other -->
+                        <div x-show="selectedMethodData.normalized_type === 'other' && selectedMethodData.details" x-transition>
+                            <div class="bg-brand-dark/80 border border-zinc-800 rounded-2xl p-4">
+                                <p class="text-sm text-zinc-300 leading-relaxed" x-text="selectedMethodData.details"></p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Upload Proof -->
+                    <div class="mt-auto pt-2 space-y-4">
+                        <label class="block text-xs font-bold text-zinc-400 uppercase tracking-wider px-1"><?php echo __('Upload Proof of Payment'); ?></label>
+
+                        <div class="border-2 border-dashed border-zinc-800 hover:border-brand-accent/40 bg-brand-dark/40 rounded-2xl p-6 text-center cursor-pointer group transition-all relative overflow-hidden min-h-[160px] flex items-center justify-center"
+                            :class="{ 'border-brand-accent/40': previewUrl }">
+                            <input type="file" id="proofInput" class="absolute inset-0 opacity-0 cursor-pointer z-10" @change="handleFileChange($event)" accept="image/*" />
+
+                            <div x-show="!previewUrl" class="flex flex-col items-center justify-center">
+                                <div class="w-12 h-12 rounded-full bg-zinc-900 text-zinc-500 group-hover:text-brand-accent border border-zinc-800 flex items-center justify-center mx-auto mb-3 transition-colors">
+                                    <i class="fa-solid fa-cloud-arrow-up text-lg"></i>
+                                </div>
+                                <h4 class="text-sm font-semibold text-zinc-300 group-hover:text-white transition-colors"><?php echo __('Click to Upload Screenshot'); ?></h4>
+                                <p class="text-xs text-zinc-600 mt-1"><?php echo __('Max size 5MB (JPG/PNG)'); ?></p>
+                            </div>
+
+                            <div x-show="previewUrl" class="w-full h-full absolute inset-0" style="display: none">
+                                <img :src="previewUrl" class="w-full h-full object-cover opacity-80" alt="<?php echo e(__('Payment proof preview')); ?>">
+                                <div class="absolute bottom-0 left-0 w-full p-2 bg-black/70 flex items-center justify-between" style="border-radius: 0 0 1rem 1rem;">
+                                    <span class="text-white text-xs truncate max-w-[70%]" x-text="fileName"></span>
+                                    <button type="button" class="p-1.5 bg-rose-500/20 border border-rose-500/30 rounded-lg text-rose-400 hover:text-rose-300 transition-colors" @click.stop="removeFile()">
+                                        <i class="fa-solid fa-times text-xs"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Confirm Deposit -->
+                        <button type="button" @click="submitDeposit()" class="w-full py-4 mt-2 bg-brand-accent hover:bg-emerald-400 text-brand-dark font-bold text-base rounded-xl transition-all shadow-[0_4px_25px_rgba(16,185,129,0.25)] hover:shadow-[0_4px_30px_rgba(16,185,129,0.4)] flex items-center justify-center gap-2 disabled:opacity-60 disabled:cursor-not-allowed"
+                            :disabled="loading || (!previewUrl && selectedMethodData.type !== 'auto')">
+                            <span x-show="!loading"><i class="fa-solid fa-circle-check"></i> <?php echo __('Confirm Deposit'); ?></span>
+                            <span x-show="loading" style="display:none"><i class="fa-solid fa-spinner fa-spin"></i> <?php echo __('Processing…'); ?></span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Hidden real submission form -->
+        <form id="depositForm" action="/actions/deposit-submit.php" method="POST" enctype="multipart/form-data" class="hidden" x-ref="depositFormHidden">
+            <input type="hidden" name="csrf_token" value="<?php echo csrf_token(); ?>">
+            <input type="hidden" name="payment_method" :value="selectedMethod">
+            <input type="hidden" name="amount" :value="amount">
+            <input type="hidden" name="local_currency_amount" x-ref="localAmountInput" :value="numericAmount">
+            <input type="file" name="proof" x-ref="proofFileHidden" class="hidden">
+        </form>
+
+        <!-- Recent Deposits -->
+        <div class="pt-8">
+            <h3 class="text-lg font-bold text-zinc-50 mb-4 tracking-tight px-1"><?php echo __('Recent Deposits'); ?></h3>
+            <div class="bg-brand-card rounded-3xl border border-zinc-800/80 overflow-hidden shadow-sm">
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left border-collapse">
+                        <thead>
+                            <tr class="border-b border-zinc-800/80 text-[10px] font-bold text-zinc-500 uppercase tracking-widest bg-zinc-900/20">
+                                <th class="p-4 pl-6 whitespace-nowrap"><?php echo __('Date'); ?></th>
+                                <th class="p-4 whitespace-nowrap"><?php echo __('Method'); ?></th>
+                                <th class="p-4 whitespace-nowrap"><?php echo __('You Sent'); ?></th>
+                                <th class="p-4 whitespace-nowrap"><?php echo __('Credited'); ?></th>
+                                <th class="p-4 pr-6 text-right whitespace-nowrap"><?php echo __('Status'); ?></th>
+                            </tr>
+                        </thead>
+                        <tbody class="text-sm font-medium">
+                            <?php if ($recent_deposits): foreach ($recent_deposits as $d):
+                                    $status = strtolower($d['status']);
+                                    if (in_array($status, ['pending', 'processing'])) {
+                                        $status_color = 'amber';
+                                    } elseif (in_array($status, ['approved', 'completed', 'success'])) {
+                                        $status_color = 'emerald';
+                                    } elseif (in_array($status, ['rejected', 'failed', 'cancelled'])) {
+                                        $status_color = 'rose';
+                                    } else {
+                                        $status_color = 'zinc';
+                                    }
+                                    if (in_array($status, ['approved', 'completed', 'success'])) {
+                                        $status_label = __('Completed');
+                                    } else {
+                                        $status_label = __(ucfirst($d['status']));
+                                    }
+                            ?>
+                                    <tr class="border-b border-zinc-800/40 hover:bg-zinc-900/40 transition-colors">
+                                        <td class="p-4 pl-6 text-zinc-300 font-mono"><?php echo format_date($d['created_at']); ?></td>
+                                        <td class="p-4 text-zinc-400"><?php echo e($d['payment_method']); ?></td>
+                                        <td class="p-4 text-zinc-400 font-mono">
+                                            <?php if (!empty($d['local_currency_amount'])): ?>
+                                                <?php echo get_currency_symbol($d['local_currency_code']); ?><?php echo number_format($d['local_currency_amount'], 2); ?>
+                                            <?php else: ?>
+                                                —
+                                            <?php endif; ?>
+                                        </td>
+                                        <td class="p-4 text-brand-accent font-bold font-mono">
+                                            <?php if ($d['status'] === 'pending'): ?>
+                                                <?php echo __('Pending'); ?>
+                                            <?php else: ?>
+                                                <?php if (!empty($d['fee_amount']) && floatval($d['fee_amount']) > 0): ?>
+                                                    <?php echo format_money($d['net_amount']); ?>
+                                                <?php else: ?>
+                                                    <?php echo format_money($d['amount']); ?>
+                                                <?php endif; ?>
+                                            <?php endif; ?>
+                                        </td>
+                                        <td class="p-4 pr-6 text-right">
+                                            <span class="inline-flex items-center px-2.5 py-1 rounded-md text-[10px] font-bold bg-<?php echo $status_color; ?>-500/10 text-<?php echo $status_color; ?>-500 border border-<?php echo $status_color; ?>-500/20 uppercase tracking-wider">
+                                                <?php echo e($status_label); ?>
+                                            </span>
+                                        </td>
+                                    </tr>
+                                <?php endforeach;
+                            else: ?>
+                                <tr>
+                                    <td colspan="5" class="p-8 text-center text-zinc-500">
+                                        <div class="flex flex-col items-center justify-center">
+                                            <div class="w-12 h-12 rounded-full bg-zinc-800/60 border border-zinc-700/60 flex items-center justify-center text-zinc-500 mb-3">
+                                                <i class="fa-solid fa-history text-xl"></i>
+                                            </div>
+                                            <p class="text-zinc-500 text-sm mb-0"><?php echo __('No deposits yet.'); ?></p>
+                                        </div>
+                                    </td>
+                                </tr>
+                            <?php endif; ?>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+<?php endif; ?>
+
+<?php require ROOT . '/includes/new-footer.php'; ?>

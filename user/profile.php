@@ -7,6 +7,7 @@ require_once ROOT . '/includes/translation-functions.php';
 
 init_translation(get_user_language($_SESSION['user_id']));
 $page_title = __('Account Settings');
+$active_nav = 'profile';
 $user_id = $_SESSION['user_id'];
 
 // Get user data
@@ -27,522 +28,536 @@ $kyc_status = $user['kyc_status'] ?? 'not_submitted';
 $countries = get_countries();
 
 $profile_picture_url = $user['profile_picture'] ?? null;
-?>
-<?php require ROOT . '/includes/header.php'; ?>
+$initial = strtoupper(substr($user['name'] ?? 'U', 0, 1));
+$member_year = !empty($user['created_at']) ? date('y', strtotime($user['created_at'])) : date('y');
 
-<!-- Page Header -->
-<div class="d-flex justify-content-between align-items-end mb-4 flex-wrap gap-3">
-    <div class="d-flex align-items-center gap-3">
-        <div>
-            <h3 class="fw-bold text-dark mb-1" style="font-size: clamp(1.5rem, 3vw, 2rem)"><?php echo __('Account Settings'); ?></h3>
-            <p class="text-secondary mb-0 small"><?php echo __('Manage your profile, security and verification'); ?></p>
+// Extra CSS for premium inputs, drop zones and modal transitions
+ob_start();
+?>
+<style type="text/tailwindcss">
+    .premium-input {
+        @apply w-full bg-[#09090b] border border-zinc-800 text-zinc-100 text-sm rounded-xl px-4 py-3.5 focus:outline-none focus:border-brand-accent/50 focus:ring-1 focus:ring-brand-accent/50 transition-all placeholder:text-zinc-600;
+    }
+    .premium-input[readonly],
+    .premium-input:disabled {
+        @apply text-zinc-500 cursor-not-allowed opacity-70;
+    }
+    .premium-input-select {
+        @apply appearance-none cursor-pointer;
+    }
+    .upload-zone {
+        @apply relative border-2 border-dashed border-zinc-700 rounded-2xl p-6 text-center transition-all bg-zinc-900/50 cursor-pointer hover:border-brand-accent/50 hover:bg-brand-accent/5;
+    }
+    .upload-zone-selected {
+        @apply border-solid border-brand-accent bg-brand-accent/10;
+    }
+</style>
+<?php
+$extra_css = ob_get_clean();
+
+// Extra inline profile scripts
+ob_start();
+?>
+<script>
+    function openModal(modalId) {
+        const modal = document.getElementById(modalId);
+        if (!modal) return;
+        const modalBox = modal.querySelector('.modal-box');
+        modal.classList.remove('opacity-0', 'invisible');
+        if (modalBox) modalBox.classList.remove('scale-95');
+        document.body.style.overflow = 'hidden';
+    }
+
+    function closeModal(modalId) {
+        const modal = document.getElementById(modalId);
+        if (!modal) return;
+        const modalBox = modal.querySelector('.modal-box');
+        modal.classList.add('opacity-0', 'invisible');
+        if (modalBox) modalBox.classList.add('scale-95');
+        document.body.style.overflow = 'auto';
+    }
+</script>
+<?php
+$extra_scripts = ob_get_clean();
+
+require ROOT . '/includes/new-head.php';
+require ROOT . '/includes/new-header.php';
+?>
+
+<div class="w-full max-w-3xl mx-auto relative z-10"
+     x-data="{
+         profilePreview: <?php echo htmlspecialchars(json_encode($profile_picture_url ? '/' . ltrim($profile_picture_url, '/') : null), ENT_QUOTES, 'UTF-8'); ?>,
+         defaultAvatarUrl: <?php echo htmlspecialchars(json_encode('https://ui-avatars.com/api/?name=' . urlencode($user['name'] ?? 'User') . '&background=10b981&color=09090b'), ENT_QUOTES, 'UTF-8'); ?>,
+         selectedFiles: { id_passport: null, proof_address: null, selfie: null },
+         allSelected() {
+             return !!(this.selectedFiles.id_passport && this.selectedFiles.proof_address && this.selectedFiles.selfie);
+         },
+         previewImage(event) {
+             const file = event.target.files[0];
+             if (file) {
+                 const reader = new FileReader();
+                 reader.onload = (e) => { this.profilePreview = e.target.result; };
+                 reader.readAsDataURL(file);
+             }
+         }
+     }"
+     x-init="if (window.location.hash === '#kyc') setTimeout(() => openModal('modal-kyc'), 100)">
+
+    <!-- Mobile header -->
+    <div class="md:hidden flex items-center justify-between mb-8">
+        <h1 class="text-2xl font-bold text-white tracking-tight"><?php echo e(__('My Profile')); ?></h1>
+        <button type="button" class="w-10 h-10 rounded-xl bg-brand-card border border-zinc-800 flex items-center justify-center text-zinc-400">
+            <i class="fa-regular fa-bell"></i>
+        </button>
+    </div>
+
+    <!-- Profile hero card -->
+    <div class="bg-brand-card/80 backdrop-blur-md border border-zinc-800/60 rounded-3xl p-6 md:p-8 flex flex-col md:flex-row items-center gap-6 relative overflow-hidden shadow-2xl mb-8">
+        <div class="absolute -right-10 -top-10 w-40 h-40 bg-brand-accent/10 rounded-full blur-3xl"></div>
+
+        <div class="relative group cursor-pointer shrink-0 z-10">
+            <?php if ($profile_picture_url): ?>
+                <img id="avatarPreview"
+                     :src="profilePreview || defaultAvatarUrl"
+                     src="<?php echo e('/' . ltrim($profile_picture_url, '/')); ?>"
+                     class="w-24 h-24 rounded-full object-cover border-2 border-brand-accent/30 shadow-[0_0_20px_rgba(16,185,129,0.15)] group-hover:border-brand-accent transition-colors z-10 relative"
+                     alt="<?php echo e($user['name'] ?? 'User'); ?>">
+            <?php else: ?>
+                <div class="w-24 h-24 rounded-full bg-brand-dark border-2 border-brand-accent/30 flex items-center justify-center text-4xl font-bold text-brand-accent shadow-[0_0_20px_rgba(16,185,129,0.15)] group-hover:border-brand-accent transition-colors z-10 relative">
+                    <?php echo e($initial); ?>
+                </div>
+            <?php endif; ?>
+            <button type="button"
+                    class="absolute bottom-0 right-0 w-8 h-8 bg-zinc-800 rounded-full border-2 border-brand-card flex items-center justify-center text-zinc-300 z-20 hover:bg-zinc-700 transition-colors"
+                    onclick="document.getElementById('avatarUpload').click()">
+                <i class="fa-solid fa-camera text-xs"></i>
+            </button>
+        </div>
+
+        <div class="text-center md:text-left flex-1 z-10">
+            <h2 class="text-2xl font-bold text-white flex items-center justify-center md:justify-start gap-2">
+                <?php echo e($user['name'] ?? 'User'); ?>
+                <?php if ($kyc_enabled && $kyc_status === 'approved'): ?>
+                    <i class="fa-solid fa-circle-check text-brand-accent text-sm" title="<?php echo e(__('Verified Account')); ?>"></i>
+                <?php endif; ?>
+            </h2>
+            <p class="text-zinc-400 mt-1"><?php echo e($user['email'] ?? ''); ?></p>
+
+            <div class="mt-4 flex flex-wrap items-center justify-center md:justify-start gap-3">
+                <?php if ($kyc_enabled): ?>
+                    <?php if ($kyc_status === 'approved'): ?>
+                        <span class="inline-flex items-center gap-2 bg-emerald-500/10 border border-emerald-500/20 px-3 py-1.5 rounded-full text-emerald-500 text-xs font-semibold">
+                            <i class="fa-solid fa-shield-halved"></i> <?php echo e(__('Verified')); ?>
+                        </span>
+                    <?php elseif ($kyc_status === 'pending'): ?>
+                        <span class="inline-flex items-center gap-2 bg-amber-500/10 border border-amber-500/20 px-3 py-1.5 rounded-full text-amber-500 text-xs font-semibold">
+                            <i class="fa-solid fa-clock"></i> <?php echo e(__('KYC Pending')); ?>
+                        </span>
+                    <?php elseif ($kyc_status === 'rejected'): ?>
+                        <span class="inline-flex items-center gap-2 bg-rose-500/10 border border-rose-500/20 px-3 py-1.5 rounded-full text-rose-500 text-xs font-semibold">
+                            <i class="fa-solid fa-circle-exclamation"></i> <?php echo e(__('Rejected')); ?>
+                        </span>
+                    <?php else: ?>
+                        <span class="inline-flex items-center gap-2 bg-zinc-800/50 border border-zinc-700/50 px-3 py-1.5 rounded-full text-zinc-300 text-xs font-medium">
+                            <i class="fa-solid fa-user"></i> <?php echo e(__('Not Verified')); ?>
+                        </span>
+                    <?php endif; ?>
+                <?php endif; ?>
+                <span class="inline-flex items-center gap-2 bg-zinc-800/50 border border-zinc-700/50 px-3 py-1.5 rounded-full text-zinc-300 text-xs font-medium">
+                    <?php echo e(__('Member since')); ?> '<?php echo e($member_year); ?>
+                </span>
+            </div>
         </div>
     </div>
 
-    <a href="/contact" class="btn btn-white border shadow-sm rounded-pill px-3 py-2 small fw-bold text-secondary">
-        <i class="fas fa-headset me-2"></i><?php echo __('Contact Support'); ?>
-    </a>
-</div>
-
-<!-- Alpine.js Component -->
-<div class="row g-4" x-data="{ 
-    activeTab: 'profile',
-    kycStatus: '<?php echo $kyc_status; ?>',
-    profilePreview: '<?php echo e($profile_picture_url ? '/' . $profile_picture_url : ''); ?>',
-    defaultAvatarUrl: 'https://ui-avatars.com/api/?name=<?php echo urlencode($user['name'] ?? 'User'); ?>&background=4f46e5&color=fff',
-    selectedFiles: { id_passport: null, proof_address: null, selfie: null },
-    switchTab(tabName) {
-        this.activeTab = tabName;
-        if (window.innerWidth < 992) {
-            this.$nextTick(() => {
-                const el = document.getElementById('tab-' + tabName);
-                if (el) {
-                    setTimeout(() => {
-                        el.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                    }, 100);
-                }
-            });
-        }
-    },
-    allSelected() {
-        return !!(this.selectedFiles.id_passport && this.selectedFiles.proof_address && this.selectedFiles.selfie);
-    },
-    previewImage(event) {
-        const file = event.target.files[0];
-        if (file) {
-            const reader = new FileReader();
-            reader.onload = (e) => {
-                this.profilePreview = e.target.result;
-            };
-            reader.readAsDataURL(file);
-        }
-    }
-}"
-    x-init="if (window.location.hash === '#kyc') activeTab = 'kyc'">
-    <!-- Left Sidebar -->
-    <div class="col-lg-4">
-        <!-- Profile Card -->
-        <div class="card border-0 shadow-sm mb-4 overflow-hidden" style="border-radius: 1.25rem;">
-            <div class="profile-cover position-relative">
-                <!-- Decorative circles -->
-                <div class="position-absolute" style="top: -50%; right: -10%; width: 200px; height: 200px; background: rgba(255,255,255,0.1); border-radius: 50%; pointer-events: none;"></div>
-                <div class="position-absolute" style="bottom: -30%; left: -5%; width: 150px; height: 150px; background: rgba(255,255,255,0.08); border-radius: 50%; pointer-events: none;"></div>
-            </div>
-
-            <div class="card-body p-0 text-center pb-4">
-                <div class="position-relative d-inline-block">
-                    <img x-bind:src="profilePreview || defaultAvatarUrl"
-                        class="profile-avatar"
-                        alt="<?php echo e($user['name'] ?? 'User'); ?>" />
-                    <button class="btn btn-sm btn-dark rounded-circle position-absolute bottom-0 end-0 shadow-sm border border-2 border-white"
-                        style="width: 32px; height: 32px; padding: 0; right: 0; bottom: 5px"
-                        onclick="document.getElementById('avatarUpload').click()">
-                        <i class="fas fa-camera small text-white"></i>
-                    </button>
-                </div>
-
-                <div class="mt-3 px-3">
-                    <h5 class="fw-bold text-dark mb-1"><?php echo e($user['name'] ?? 'User'); ?></h5>
-                    <p class="text-secondary small mb-3"><?php echo e($user['email'] ?? ''); ?></p>
-
-                    <?php if ($kyc_enabled): ?>
-                        <div class="d-flex justify-content-center gap-2">
-                            <?php if ($kyc_status === 'approved'): ?>
-                                <span class="badge bg-success bg-opacity-10 text-success border border-success border-opacity-10 rounded-pill px-3 py-2">
-                                    <i class="fas fa-check-circle me-1"></i> <?php echo __('Verified'); ?>
-                                </span>
-                            <?php elseif ($kyc_status === 'pending'): ?>
-                                <span class="badge bg-warning bg-opacity-10 text-warning border border-warning border-opacity-10 rounded-pill px-3 py-2">
-                                    <i class="fas fa-clock me-1"></i> <?php echo __('KYC Pending'); ?>
-                                </span>
-                            <?php elseif ($kyc_status === 'rejected'): ?>
-                                <span class="badge bg-danger bg-opacity-10 text-danger border border-danger border-opacity-10 rounded-pill px-3 py-2">
-                                    <i class="fas fa-exclamation-circle me-1"></i> <?php echo __('Failed'); ?>
-                                </span>
-                            <?php else: ?>
-                                <span class="badge bg-secondary bg-opacity-10 text-secondary border border-secondary border-opacity-10 rounded-pill px-3 py-2">
-                                    <i class="fas fa-user me-1"></i> <?php echo __('Not Verified'); ?>
-                                </span>
-                            <?php endif; ?>
-                        </div>
-                    <?php endif; ?>
-                </div>
-            </div>
-        </div>
-
-        <!-- Settings Navigation -->
-        <div class="card border-0 shadow-sm" style="border-radius: 1.25rem;">
-            <div class="card-body p-2 settings-nav d-flex flex-column gap-1">
-                <button class="btn-nav" :class="{ 'active': activeTab === 'profile' }" @click="switchTab('profile')">
-                    <span><i class="fas fa-user-circle me-3 opacity-50"></i> <?php echo __('Personal Details'); ?></span>
-                    <i class="fas fa-chevron-right small opacity-50"></i>
-                </button>
-
-                <button class="btn-nav" :class="{ 'active': activeTab === 'security' }" @click="switchTab('security')">
-                    <span><i class="fas fa-shield-alt me-3 opacity-50"></i> <?php echo __('Security'); ?></span>
-                    <i class="fas fa-chevron-right small opacity-50"></i>
+    <!-- Settings list -->
+    <div class="space-y-6">
+        <!-- Account Setup -->
+        <div>
+            <h3 class="text-xs font-bold text-zinc-500 uppercase tracking-wider px-2 mb-3"><?php echo e(__('Account Setup')); ?></h3>
+            <div class="bg-brand-dark/50 border border-zinc-800/60 rounded-3xl p-2 space-y-1">
+                <button type="button" onclick="openModal('modal-personal-info')" class="flex items-center gap-4 hover:bg-brand-card p-3 rounded-2xl transition-all group cursor-pointer w-full text-left">
+                    <div class="w-12 h-12 rounded-xl bg-blue-500/10 text-blue-400 flex items-center justify-center border border-blue-500/20 group-hover:scale-105 transition-transform shrink-0">
+                        <i class="fa-regular fa-id-badge text-lg"></i>
+                    </div>
+                    <div class="flex-1">
+                        <h4 class="text-zinc-100 font-semibold text-sm group-hover:text-brand-accent transition-colors"><?php echo e(__('Personal Information')); ?></h4>
+                        <p class="text-xs text-zinc-500 mt-0.5"><?php echo e(__('Update your identity details & contact')); ?></p>
+                    </div>
+                    <i class="fa-solid fa-chevron-right text-zinc-600 group-hover:text-zinc-300 transition-colors mr-2"></i>
                 </button>
 
                 <?php if ($kyc_enabled): ?>
-                    <button class="btn-nav" :class="{ 'active': activeTab === 'kyc' }" @click="switchTab('kyc')">
-                        <span><i class="fas fa-id-card me-3 opacity-50"></i> <?php echo __('KYC Verification'); ?></span>
-                        <div class="d-flex align-items-center">
+                    <button type="button" onclick="openModal('modal-kyc')" class="flex items-center gap-4 hover:bg-brand-card p-3 rounded-2xl transition-all group cursor-pointer w-full text-left">
+                        <div class="w-12 h-12 rounded-xl bg-emerald-500/10 text-emerald-500 flex items-center justify-center border border-emerald-500/20 group-hover:scale-105 transition-transform shrink-0">
+                            <i class="fa-solid fa-id-card text-lg"></i>
+                        </div>
+                        <div class="flex-1">
+                            <h4 class="text-zinc-100 font-semibold text-sm group-hover:text-brand-accent transition-colors"><?php echo e(__('KYC Verification')); ?></h4>
+                            <p class="text-xs text-zinc-500 mt-0.5">
+                                <?php if ($kyc_status === 'approved'): ?>
+                                    <?php echo e(__('Your identity is verified')); ?>
+                                <?php elseif ($kyc_status === 'pending'): ?>
+                                    <?php echo e(__('Documents under review')); ?>
+                                <?php elseif ($kyc_status === 'rejected'): ?>
+                                    <?php echo e(__('Verification rejected - resubmit')); ?>
+                                <?php else: ?>
+                                    <?php echo e(__('Upload documents to unlock full access')); ?>
+                                <?php endif; ?>
+                            </p>
+                        </div>
+                        <div class="flex items-center gap-2 mr-2">
                             <?php if ($kyc_status !== 'approved'): ?>
-                                <span class="bg-danger rounded-circle d-inline-block me-2" style="width: 8px; height: 8px"></span>
+                                <span class="bg-rose-500 rounded-full inline-block" style="width: 8px; height: 8px"></span>
                             <?php endif; ?>
-                            <i class="fas fa-chevron-right small opacity-50"></i>
+                            <i class="fa-solid fa-chevron-right text-zinc-600 group-hover:text-zinc-300 transition-colors"></i>
                         </div>
                     </button>
                 <?php endif; ?>
             </div>
         </div>
+
+        <!-- Security -->
+        <div>
+            <h3 class="text-xs font-bold text-zinc-500 uppercase tracking-wider px-2 mb-3"><?php echo e(__('Security')); ?></h3>
+            <div class="bg-brand-dark/50 border border-zinc-800/60 rounded-3xl p-2 space-y-1">
+                <button type="button" onclick="openModal('modal-password')" class="flex items-center gap-4 hover:bg-brand-card p-3 rounded-2xl transition-all group cursor-pointer w-full text-left">
+                    <div class="w-12 h-12 rounded-xl bg-amber-500/10 text-amber-500 flex items-center justify-center border border-amber-500/20 group-hover:scale-105 transition-transform shrink-0">
+                        <i class="fa-solid fa-lock text-lg"></i>
+                    </div>
+                    <div class="flex-1">
+                        <h4 class="text-zinc-100 font-semibold text-sm group-hover:text-brand-accent transition-colors"><?php echo e(__('Change Password')); ?></h4>
+                        <p class="text-xs text-zinc-500 mt-0.5"><?php echo e(__('Ensure your account stays secure')); ?></p>
+                    </div>
+                    <i class="fa-solid fa-chevron-right text-zinc-600 group-hover:text-zinc-300 transition-colors mr-2"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- Support & About -->
+        <div>
+            <h3 class="text-xs font-bold text-zinc-500 uppercase tracking-wider px-2 mb-3"><?php echo e(__('Support & About')); ?></h3>
+            <div class="bg-brand-dark/50 border border-zinc-800/60 rounded-3xl p-2 space-y-1">
+                <button type="button" onclick="openModal('modal-help')" class="flex items-center gap-4 hover:bg-brand-card p-3 rounded-2xl transition-all group cursor-pointer w-full text-left">
+                    <div class="w-12 h-12 rounded-xl bg-zinc-800 text-zinc-300 flex items-center justify-center border border-zinc-700 group-hover:scale-105 transition-transform shrink-0">
+                        <i class="fa-solid fa-headset text-lg"></i>
+                    </div>
+                    <div class="flex-1">
+                        <h4 class="text-zinc-100 font-semibold text-sm group-hover:text-brand-accent transition-colors"><?php echo e(__('Help Center')); ?></h4>
+                        <p class="text-xs text-zinc-500 mt-0.5"><?php echo e(__('Contact support for assistance')); ?></p>
+                    </div>
+                    <i class="fa-solid fa-chevron-right text-zinc-600 group-hover:text-zinc-300 transition-colors mr-2"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- Sign out -->
+        <?php if (!isset($_SESSION['admin_original_id'])): ?>
+            <a href="/logout" class="w-full mt-6 flex items-center justify-center gap-3 p-4 rounded-2xl bg-rose-500/10 text-rose-500 font-bold border border-rose-500/20 hover:bg-rose-500 hover:text-white transition-all hover:shadow-[0_0_20px_rgba(244,63,94,0.2)]">
+                <i class="fa-solid fa-power-off"></i> <?php echo e(__('Secure Sign Out')); ?>
+            </a>
+        <?php else: ?>
+            <form method="POST" action="/admin/actions/exit-login-as" class="w-full mt-6">
+                <input type="hidden" name="csrf_token" value="<?php echo csrf_token(); ?>">
+                <button type="submit" class="w-full flex items-center justify-center gap-3 p-4 rounded-2xl bg-rose-500/10 text-rose-500 font-bold border border-rose-500/20 hover:bg-rose-500 hover:text-white transition-all hover:shadow-[0_0_20px_rgba(244,63,94,0.2)]">
+                    <i class="fa-solid fa-arrow-right-from-bracket"></i> <?php echo e(__('Back To Admin')); ?>
+                </button>
+            </form>
+        <?php endif; ?>
     </div>
 
-    <!-- Right Content -->
-    <div class="col-lg-8 position-relative" style="min-height: 500px;">
-        <!-- Profile Tab -->
-        <div id="tab-profile" x-show="activeTab === 'profile'"
-            x-transition:enter="tab-enter"
-            x-transition:enter-start="tab-enter-start"
-            x-transition:enter-end="tab-enter-end"
-            x-transition:leave="tab-leave"
-            x-transition:leave-start="tab-leave-start"
-            x-transition:leave-end="tab-leave-end">
-            <div class="card border-0 shadow-sm" style="border-radius: 1.25rem;">
-                <div class="card-header bg-transparent border-bottom p-4">
-                    <h5 class="fw-bold mb-0"><?php echo __('Personal Information'); ?></h5>
-                </div>
-                <div class="card-body p-4">
-                    <form action="/actions/profile-update.php" method="POST" enctype="multipart/form-data">
-                        <input type="hidden" name="csrf_token" value="<?php echo csrf_token(); ?>">
-                        <input type="file" id="avatarUpload" name="profile_picture" class="d-none" accept="image/*" @change="previewImage($event)">
+    <!-- Personal Information Modal -->
+    <div id="modal-personal-info" class="fixed inset-0 z-[60] flex items-center justify-center px-4 opacity-0 invisible transition-all duration-300">
+    <div class="absolute inset-0 bg-black/70 backdrop-blur-sm" onclick="closeModal('modal-personal-info')"></div>
+    <div class="relative bg-brand-card border border-zinc-800/60 rounded-3xl w-full max-w-md overflow-hidden shadow-2xl transform scale-95 transition-transform duration-300 modal-box">
+        <div class="h-1 w-full bg-gradient-to-r from-blue-500/10 via-blue-500 to-blue-500/10"></div>
 
-                        <div class="row g-4 mb-4">
-                            <div class="col-md-6">
-                                <label class="small fw-bold text-secondary mb-2"><?php echo __('Full Name'); ?></label>
-                                <input type="text" name="name" class="form-control" value="<?php echo e($user['name'] ?? ''); ?>" />
-                            </div>
-                            <div class="col-md-6">
-                                <label class="small fw-bold text-secondary mb-2"><?php echo __('Email Address'); ?></label>
-                                <input type="email" class="form-control bg-light text-muted" value="<?php echo e($user['email'] ?? ''); ?>" readonly />
-                                <div class="form-text small mt-1"><i class="fas fa-lock me-1"></i> <?php echo __('Email cannot be changed'); ?></div>
-                            </div>
-                            <div class="col-md-6">
-                                <label class="small fw-bold text-secondary mb-2"><?php echo __('Phone Number'); ?></label>
-                                <input type="tel" name="phone" class="form-control" value="<?php echo e($user['phone'] ?? ''); ?>" />
-                            </div>
-                            <div class="col-md-6">
-                                <label class="small fw-bold text-secondary mb-2"><?php echo __('Country'); ?></label>
-                                <select name="country" class="form-select" disabled>
-                                    <option value=""><?php echo __('Select Country'); ?></option>
-                                    <?php foreach ($countries as $code => $name): ?>
-                                        <option value="<?php echo e($code); ?>" <?php if (($user['country'] ?? '') == $code) echo 'selected'; ?>><?php echo e($name); ?></option>
-                                    <?php endforeach; ?>
-                                </select>
-                                <div class="form-text small mt-1"><i class="fas fa-lock me-1"></i> <?php echo __('Country cannot be changed'); ?></div>
-                            </div>
-                        </div>
-
-                        <div class="d-flex justify-content-end pt-3 border-top">
-                            <button type="submit" class="btn btn-primary rounded-pill px-4 fw-bold shadow-sm"><?php echo __('Save Changes'); ?></button>
-                        </div>
-                    </form>
-                </div>
+        <div class="p-6 overflow-y-auto max-h-[85vh]">
+            <div class="flex justify-between items-center mb-6">
+                <h3 class="text-xl font-bold text-white tracking-tight"><?php echo e(__('Personal Info')); ?></h3>
+                <button type="button" onclick="closeModal('modal-personal-info')" class="w-8 h-8 rounded-full bg-zinc-800 text-zinc-400 hover:text-white flex items-center justify-center transition-colors">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
             </div>
+
+            <form action="/actions/profile-update.php" method="POST" enctype="multipart/form-data" class="space-y-4">
+                <input type="hidden" name="csrf_token" value="<?php echo csrf_token(); ?>">
+                <input type="file" id="avatarUpload" name="profile_picture" class="hidden" accept="image/*" @change="previewImage($event)">
+
+                <div>
+                    <label class="block text-xs font-medium text-zinc-400 mb-1.5 uppercase tracking-wide"><?php echo e(__('Full Name')); ?></label>
+                    <input type="text" name="name" class="premium-input" value="<?php echo e($user['name'] ?? ''); ?>">
+                </div>
+                <div>
+                    <label class="block text-xs font-medium text-zinc-400 mb-1.5 uppercase tracking-wide"><?php echo e(__('Email Address')); ?></label>
+                    <input type="email" class="premium-input" value="<?php echo e($user['email'] ?? ''); ?>" readonly title="<?php echo e(__('Contact support to change email')); ?>">
+                </div>
+                <div>
+                    <label class="block text-xs font-medium text-zinc-400 mb-1.5 uppercase tracking-wide"><?php echo e(__('Phone Number')); ?></label>
+                    <input type="tel" name="phone" class="premium-input" value="<?php echo e($user['phone'] ?? ''); ?>" placeholder="<?php echo e(__('Phone Number')); ?>">
+                </div>
+                <div>
+                    <label class="block text-xs font-medium text-zinc-400 mb-1.5 uppercase tracking-wide"><?php echo e(__('Country')); ?></label>
+                    <select name="country" class="premium-input premium-input-select" disabled>
+                        <option value=""><?php echo e(__('Select Country')); ?></option>
+                        <?php foreach ($countries as $code => $name): ?>
+                            <option value="<?php echo e($code); ?>" <?php if (($user['country'] ?? '') == $code) echo 'selected'; ?>><?php echo e($name); ?></option>
+                        <?php endforeach; ?>
+                    </select>
+                    <p class="text-zinc-500 text-xs mt-1.5"><i class="fa-solid fa-lock me-1"></i> <?php echo e(__('Country cannot be changed')); ?></p>
+                </div>
+
+                <div class="pt-4">
+                    <button type="submit" class="w-full py-3.5 bg-brand-accent text-brand-dark font-bold rounded-xl hover:bg-emerald-400 transition-colors shadow-[0_0_20px_rgba(16,185,129,0.2)]"><?php echo e(__('Save Changes')); ?></button>
+                </div>
+            </form>
         </div>
-
-        <!-- Security Tab -->
-        <div id="tab-security" x-show="activeTab === 'security'"
-            x-transition:enter="tab-enter"
-            x-transition:enter-start="tab-enter-start"
-            x-transition:enter-end="tab-enter-end"
-            x-transition:leave="tab-leave"
-            x-transition:leave-start="tab-leave-start"
-            x-transition:leave-end="tab-leave-end"
-            style="display: none">
-            <div class="card border-0 shadow-sm" style="border-radius: 1.25rem;">
-                <div class="card-header bg-transparent border-bottom p-4">
-                    <h5 class="fw-bold mb-0"><?php echo __('Security Settings'); ?></h5>
-                </div>
-                <div class="card-body p-4">
-                    <form action="/actions/change-password.php" method="POST" class="mb-5">
-                        <input type="hidden" name="csrf_token" value="<?php echo csrf_token(); ?>">
-
-                        <h6 class="fw-bold text-dark mb-3"><?php echo __('Change Password'); ?></h6>
-                        <div class="mb-3">
-                            <label class="small fw-bold text-secondary mb-2"><?php echo __('Current Password'); ?></label>
-                            <input type="password" name="current_password" class="form-control" placeholder="••••••••" />
-                        </div>
-                        <div class="row g-3 mb-4">
-                            <div class="col-md-6">
-                                <label class="small fw-bold text-secondary mb-2"><?php echo __('New Password'); ?></label>
-                                <input type="password" name="new_password" class="form-control" placeholder="<?php echo __('New password'); ?>" />
-                            </div>
-                            <div class="col-md-6">
-                                <label class="small fw-bold text-secondary mb-2"><?php echo __('Confirm Password'); ?></label>
-                                <input type="password" name="confirm_password" class="form-control" placeholder="<?php echo __('Confirm new password'); ?>" />
-                            </div>
-                        </div>
-                        <div class="d-flex justify-content-end">
-                            <button type="submit" class="btn btn-primary rounded-pill px-4 fw-bold shadow-sm"><?php echo __('Update Password'); ?></button>
-                        </div>
-                    </form>
-
-                    <hr class="text-secondary opacity-10 my-4" />
-
-                    <div class="d-flex align-items-center justify-content-between p-3 bg-light rounded-3">
-                        <div>
-                            <h6 class="fw-bold mb-1"><?php echo __('Two-Factor Authentication (2FA)'); ?></h6>
-                            <p class="text-secondary small mb-0"><?php echo __('Add an extra layer of security to your account.'); ?></p>
-                        </div>
-                        <div class="form-check form-switch">
-                            <input class="form-check-input" type="checkbox" role="switch" id="2faSwitch" style="width: 3rem; height: 1.5rem" disabled />
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <?php if ($kyc_enabled): ?>
-            <!-- KYC Tab -->
-            <div id="tab-kyc" x-show="activeTab === 'kyc'"
-                x-transition:enter="tab-enter"
-                x-transition:enter-start="tab-enter-start"
-                x-transition:enter-end="tab-enter-end"
-                x-transition:leave="tab-leave"
-                x-transition:leave-start="tab-leave-start"
-                x-transition:leave-end="tab-leave-end"
-                style="display: none">
-                <div class="card border-0 shadow-sm" style="border-radius: 1.25rem;">
-                    <div class="card-header bg-transparent border-bottom p-4">
-                        <div class="d-flex justify-content-between align-items-center">
-                            <h5 class="fw-bold mb-0"><?php echo __('Identity Verification'); ?></h5>
-                            <?php if ($kyc_status === 'approved'): ?>
-                                <span class="badge bg-success bg-opacity-10 text-success px-3 py-2 rounded-pill"><?php echo __('Verified'); ?></span>
-                            <?php elseif ($kyc_status === 'pending'): ?>
-                                <span class="badge bg-warning bg-opacity-10 text-warning px-3 py-2 rounded-pill"><?php echo __('Pending'); ?></span>
-                            <?php elseif ($kyc_status === 'rejected'): ?>
-                                <span class="badge bg-danger bg-opacity-10 text-danger px-3 py-2 rounded-pill"><?php echo __('Rejected'); ?></span>
-                            <?php else: ?>
-                                <span class="badge bg-secondary bg-opacity-10 text-secondary px-3 py-2 rounded-pill"><?php echo __('Not Submitted'); ?></span>
-                            <?php endif; ?>
-                        </div>
-                    </div>
-                    <div class="card-body p-4">
-                        <?php if ($kyc_status === 'pending' || $kyc_status === 'approved'): ?>
-                            <!-- Pending/Approved: show uploaded documents -->
-                            <div class="mb-4">
-                                <h6 class="fw-bold text-dark mb-3"><?php echo __('Uploaded Documents'); ?></h6>
-                                <?php
-                                $doc_items = [];
-                                if ($kyc) {
-                                    if ($kyc['id_passport_path']) {
-                                        $doc_items[] = ['type' => __('ID/Passport'), 'path' => $kyc['id_passport_path'], 'date' => $kyc['created_at'], 'status' => $kyc['status']];
-                                    }
-                                    if ($kyc['proof_address_path']) {
-                                        $doc_items[] = ['type' => __('Proof of Address'), 'path' => $kyc['proof_address_path'], 'date' => $kyc['created_at'], 'status' => $kyc['status']];
-                                    }
-                                    if ($kyc['selfie_path']) {
-                                        $doc_items[] = ['type' => __('Selfie with ID'), 'path' => $kyc['selfie_path'], 'date' => $kyc['created_at'], 'status' => $kyc['status']];
-                                    }
-                                }
-                                ?>
-                                <?php if (!empty($doc_items)): ?>
-                                    <div class="list-group">
-                                        <?php foreach ($doc_items as $item): ?>
-                                            <div class="list-group-item d-flex justify-content-between align-items-center">
-                                                <div class="d-flex align-items-center gap-3">
-                                                    <div class="bg-light rounded p-2">
-                                                        <i class="fas fa-file-image text-primary"></i>
-                                                    </div>
-                                                    <div>
-                                                        <span class="fw-bold"><?php echo e($item['type']); ?></span>
-                                                        <div class="small text-muted"><?php echo format_date($item['date']); ?></div>
-                                                    </div>
-                                                </div>
-                                                <span class="badge <?php echo $item['status'] === 'approved' ? 'bg-success' : ($item['status'] === 'rejected' ? 'bg-danger' : 'bg-warning'); ?> rounded-pill">
-                                                    <?php echo __(ucfirst($item['status'])); ?>
-                                                </span>
-                                            </div>
-                                        <?php endforeach; ?>
-                                    </div>
-                                <?php else: ?>
-                                    <p class="text-muted"><?php echo __('No documents uploaded yet.'); ?></p>
-                                <?php endif; ?>
-                            </div>
-                        <?php else: ?>
-                            <!-- Not Submitted/Rejected: show single upload form -->
-                            <div class="mb-4">
-                                <div class="alert alert-primary bg-primary bg-opacity-10 border-0 d-flex align-items-start gap-3 mb-4 rounded-3">
-                                    <i class="fas fa-info-circle mt-1 text-primary"></i>
-                                    <div class="small text-primary-emphasis">
-                                        <strong><?php echo __('Why verify?'); ?></strong>
-                                        <?php echo __('Verified users get higher withdrawal limits and priority support. Please upload clear photos of your government-issued ID.'); ?>
-                                    </div>
-                                </div>
-
-                                <form action="/actions/kyc-upload.php" method="POST" enctype="multipart/form-data">
-                                    <input type="hidden" name="csrf_token" value="<?php echo csrf_token(); ?>">
-
-                                    <div class="row g-4">
-                                        <div class="col-md-6">
-                                            <label class="small fw-bold text-secondary mb-2"><?php echo __('Government ID / Passport'); ?></label>
-                                            <div class="upload-zone position-relative" :class="selectedFiles.id_passport ? 'upload-zone-selected' : ''">
-                                                <input type="file" name="id_passport" class="position-absolute top-0 start-0 w-100 h-100 opacity-0" style="cursor: pointer" accept="image/*,application/pdf" @change="selectedFiles.id_passport = $event.target.files[0]?.name ?? null" />
-                                                <template x-if="!selectedFiles.id_passport">
-                                                    <div class="text-center">
-                                                        <i class="fas fa-id-card fa-2x text-primary mb-3 opacity-50"></i>
-                                                        <h6 class="fw-bold small mb-1"><?php echo __('Click to Upload'); ?></h6>
-                                                        <p class="text-muted small mb-0" style="font-size: 0.75rem;"><?php echo __('JPG, PNG or PDF, max 5MB'); ?></p>
-                                                    </div>
-                                                </template>
-                                                <template x-if="selectedFiles.id_passport">
-                                                    <div class="d-flex flex-column align-items-center text-success">
-                                                        <i class="fas fa-check-circle fa-2x mb-2"></i>
-                                                        <strong x-text="selectedFiles.id_passport.length > 36 ? selectedFiles.id_passport.slice(0,36) + '...' : selectedFiles.id_passport"></strong>
-                                                        <div class="small text-muted"><?php echo __('Ready to upload'); ?></div>
-                                                    </div>
-                                                </template>
-                                            </div>
-                                        </div>
-
-                                        <div class="col-md-6">
-                                            <label class="small fw-bold text-secondary mb-2"><?php echo __('Proof of Address'); ?></label>
-                                            <div class="upload-zone position-relative" :class="selectedFiles.proof_address ? 'upload-zone-selected' : ''">
-                                                <input type="file" name="proof_address" class="position-absolute top-0 start-0 w-100 h-100 opacity-0" style="cursor: pointer" accept="image/*,application/pdf" @change="selectedFiles.proof_address = $event.target.files[0]?.name ?? null" />
-                                                <template x-if="!selectedFiles.proof_address">
-                                                    <div class="text-center">
-                                                        <i class="fas fa-file-alt fa-2x text-primary mb-3 opacity-50"></i>
-                                                        <h6 class="fw-bold small mb-1"><?php echo __('Click to Upload'); ?></h6>
-                                                        <p class="text-muted small mb-0" style="font-size: 0.75rem;"><?php echo __('Utility bill or bank statement'); ?></p>
-                                                    </div>
-                                                </template>
-                                                <template x-if="selectedFiles.proof_address">
-                                                    <div class="d-flex flex-column align-items-center text-success">
-                                                        <i class="fas fa-check-circle fa-2x mb-2"></i>
-                                                        <strong x-text="selectedFiles.proof_address.length > 36 ? selectedFiles.proof_address.slice(0,36) + '...' : selectedFiles.proof_address"></strong>
-                                                        <div class="small text-muted"><?php echo __('Ready to upload'); ?></div>
-                                                    </div>
-                                                </template>
-                                            </div>
-                                        </div>
-
-                                        <div class="col-12">
-                                            <label class="small fw-bold text-secondary mb-2"><?php echo __('Selfie with ID'); ?></label>
-                                            <div class="upload-zone position-relative" :class="selectedFiles.selfie ? 'upload-zone-selected' : ''">
-                                                <input type="file" name="selfie" class="position-absolute top-0 start-0 w-100 h-100 opacity-0" style="cursor: pointer" accept="image/*" @change="selectedFiles.selfie = $event.target.files[0]?.name ?? null" />
-                                                <template x-if="!selectedFiles.selfie">
-                                                    <div class="text-center">
-                                                        <i class="fas fa-camera fa-2x text-primary mb-3 opacity-50"></i>
-                                                        <h6 class="fw-bold small mb-1"><?php echo __('Take a Selfie'); ?></h6>
-                                                        <p class="text-muted small mb-0" style="font-size: 0.75rem;"><?php echo __('Hold your ID next to your face. Ensure good lighting.'); ?></p>
-                                                    </div>
-                                                </template>
-                                                <template x-if="selectedFiles.selfie">
-                                                    <div class="d-flex flex-column align-items-center text-success">
-                                                        <i class="fas fa-check-circle fa-2x mb-2"></i>
-                                                        <strong x-text="selectedFiles.selfie.length > 36 ? selectedFiles.selfie.slice(0,36) + '...' : selectedFiles.selfie"></strong>
-                                                        <div class="small text-muted"><?php echo __('Ready to upload'); ?></div>
-                                                    </div>
-                                                </template>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <div class="d-flex justify-content-end pt-4 border-top mt-4">
-                                        <button type="submit" :disabled="!allSelected()" class="btn btn-primary rounded-pill px-4 fw-bold shadow-sm"><?php echo __('Submit All Documents'); ?></button>
-                                    </div>
-                                </form>
-                            </div>
-                        <?php endif; ?>
-                    </div>
-                </div>
-            </div>
-        <?php endif; ?>
     </div>
 </div>
 
-<style>
-    /* Profile Cover */
-    .profile-cover {
-        height: 120px;
-        background: var(--gradient-card);
-        position: relative;
-    }
+<!-- Password Modal -->
+<div id="modal-password" class="fixed inset-0 z-[60] flex items-center justify-center px-4 opacity-0 invisible transition-all duration-300">
+    <div class="absolute inset-0 bg-black/70 backdrop-blur-sm" onclick="closeModal('modal-password')"></div>
+    <div class="relative bg-brand-card border border-zinc-800/60 rounded-3xl w-full max-w-md overflow-hidden shadow-2xl transform scale-95 transition-transform duration-300 modal-box">
+        <div class="h-1 w-full bg-gradient-to-r from-amber-500/10 via-amber-500 to-amber-500/10"></div>
 
-    /* Profile Avatar */
-    .profile-avatar {
-        width: 100px;
-        height: 100px;
-        border-radius: 50%;
-        border: 4px solid white;
-        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-        object-fit: cover;
-        margin-top: -50px;
-        background: white;
-        position: relative;
-    }
+        <div class="p-6 overflow-y-auto max-h-[85vh]">
+            <div class="flex justify-between items-center mb-6">
+                <h3 class="text-xl font-bold text-white tracking-tight"><?php echo e(__('Security')); ?></h3>
+                <button type="button" onclick="closeModal('modal-password')" class="w-8 h-8 rounded-full bg-zinc-800 text-zinc-400 hover:text-white flex items-center justify-center transition-colors">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
 
-    /* Settings Navigation */
-    .settings-nav .btn-nav {
-        width: 100%;
-        text-align: left;
-        padding: 1rem 1.25rem;
-        border: none;
-        background: transparent;
-        color: var(--text-muted);
-        font-weight: 600;
-        border-radius: 0.75rem;
-        transition: all 0.2s;
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-    }
+            <form action="/actions/change-password.php" method="POST" class="space-y-4">
+                <input type="hidden" name="csrf_token" value="<?php echo csrf_token(); ?>">
 
-    .settings-nav .btn-nav:hover {
-        background-color: #f8fafc;
-        color: var(--primary);
-    }
+                <div>
+                    <label class="block text-xs font-medium text-zinc-400 mb-1.5 uppercase tracking-wide"><?php echo e(__('Current Password')); ?></label>
+                    <input type="password" name="current_password" class="premium-input" placeholder="<?php echo e(__('Current password')); ?>">
+                </div>
+                <div>
+                    <label class="block text-xs font-medium text-zinc-400 mb-1.5 uppercase tracking-wide"><?php echo e(__('New Password')); ?></label>
+                    <input type="password" name="new_password" class="premium-input" placeholder="<?php echo e(__('New password')); ?>">
+                </div>
+                <div>
+                    <label class="block text-xs font-medium text-zinc-400 mb-1.5 uppercase tracking-wide"><?php echo e(__('Confirm New Password')); ?></label>
+                    <input type="password" name="confirm_password" class="premium-input" placeholder="<?php echo e(__('Confirm new password')); ?>">
+                </div>
 
-    .settings-nav .btn-nav.active {
-        background-color: rgba(79, 70, 229, 0.1);
-        color: var(--primary);
-    }
+                <div class="pt-4">
+                    <button type="submit" class="w-full py-3.5 bg-brand-accent text-brand-dark font-bold rounded-xl hover:bg-emerald-400 transition-colors shadow-[0_0_20px_rgba(16,185,129,0.2)]"><?php echo e(__('Update Password')); ?></button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
 
-    /* Upload Zone */
-    .upload-zone {
-        border: 2px dashed #cbd5e1;
-        border-radius: 1rem;
-        padding: 2rem;
-        text-align: center;
-        transition: all 0.2s;
-        background: #f8fafc;
-        cursor: pointer;
-    }
+<?php if ($kyc_enabled): ?>
+    <!-- KYC Modal -->
+    <div id="modal-kyc" class="fixed inset-0 z-[60] flex items-center justify-center px-4 opacity-0 invisible transition-all duration-300">
+        <div class="absolute inset-0 bg-black/70 backdrop-blur-sm" onclick="closeModal('modal-kyc')"></div>
+        <div class="relative bg-brand-card border border-zinc-800/60 rounded-3xl w-full max-w-2xl overflow-hidden shadow-2xl transform scale-95 transition-transform duration-300 modal-box">
+            <div class="h-1 w-full bg-gradient-to-r from-emerald-500/10 via-emerald-500 to-emerald-500/10"></div>
 
-    .upload-zone:hover {
-        border-color: var(--primary);
-        background: rgba(79, 70, 229, 0.02);
-    }
+            <div class="p-6 overflow-y-auto max-h-[85vh]">
+                <div class="flex justify-between items-center mb-6">
+                    <h3 class="text-xl font-bold text-white tracking-tight"><?php echo e(__('Identity Verification')); ?></h3>
+                    <button type="button" onclick="closeModal('modal-kyc')" class="w-8 h-8 rounded-full bg-zinc-800 text-zinc-400 hover:text-white flex items-center justify-center transition-colors">
+                        <i class="fa-solid fa-xmark"></i>
+                    </button>
+                </div>
 
-    .upload-zone-selected {
-        border-style: solid !important;
-        border-width: 2px !important;
-        border-color: #10b981 !important;
-        /* success */
-        background: rgba(16, 185, 129, 0.04) !important;
-    }
+                <?php if ($kyc_status === 'approved'): ?>
+                    <span class="inline-flex items-center px-3 py-1.5 rounded-full bg-emerald-500/10 text-emerald-500 text-xs font-semibold border border-emerald-500/20 mb-4">
+                        <?php echo e(__('Verified')); ?>
+                    </span>
+                <?php elseif ($kyc_status === 'pending'): ?>
+                    <span class="inline-flex items-center px-3 py-1.5 rounded-full bg-amber-500/10 text-amber-500 text-xs font-semibold border border-amber-500/20 mb-4">
+                        <?php echo e(__('Pending')); ?>
+                    </span>
+                <?php elseif ($kyc_status === 'rejected'): ?>
+                    <span class="inline-flex items-center px-3 py-1.5 rounded-full bg-rose-500/10 text-rose-500 text-xs font-semibold border border-rose-500/20 mb-4">
+                        <?php echo e(__('Rejected')); ?>
+                    </span>
+                <?php else: ?>
+                    <span class="inline-flex items-center px-3 py-1.5 rounded-full bg-zinc-800/50 text-zinc-300 text-xs font-semibold border border-zinc-700/50 mb-4">
+                        <?php echo e(__('Not Submitted')); ?>
+                    </span>
+                <?php endif; ?>
 
-    /* Smooth Tab Transitions */
-    .tab-enter {
-        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    }
+                <?php if ($kyc_status === 'pending' || $kyc_status === 'approved'): ?>
+                    <?php
+                    $doc_items = [];
+                    if ($kyc) {
+                        if ($kyc['id_passport_path']) {
+                            $doc_items[] = ['type' => __('ID/Passport'), 'path' => $kyc['id_passport_path'], 'date' => $kyc['created_at'], 'status' => $kyc['status']];
+                        }
+                        if ($kyc['proof_address_path']) {
+                            $doc_items[] = ['type' => __('Proof of Address'), 'path' => $kyc['proof_address_path'], 'date' => $kyc['created_at'], 'status' => $kyc['status']];
+                        }
+                        if ($kyc['selfie_path']) {
+                            $doc_items[] = ['type' => __('Selfie with ID'), 'path' => $kyc['selfie_path'], 'date' => $kyc['created_at'], 'status' => $kyc['status']];
+                        }
+                    }
+                    ?>
+                    <h6 class="text-sm font-bold text-zinc-100 mb-4"><?php echo e(__('Uploaded Documents')); ?></h6>
+                    <?php if (!empty($doc_items)): ?>
+                        <div class="space-y-3 mb-4">
+                            <?php foreach ($doc_items as $item):
+                                $status_color = $item['status'] === 'approved' ? 'emerald' : ($item['status'] === 'rejected' ? 'rose' : 'amber');
+                            ?>
+                                <div class="flex items-center justify-between p-4 rounded-2xl bg-zinc-900/50 border border-zinc-800 hover:border-zinc-700/80 transition-all">
+                                    <div class="flex items-center gap-3 min-w-0">
+                                        <div class="w-10 h-10 rounded-xl bg-brand-accent/10 text-brand-accent flex items-center justify-center border border-brand-accent/20 shrink-0">
+                                            <i class="fa-solid fa-file-image"></i>
+                                        </div>
+                                        <div class="min-w-0">
+                                            <p class="text-zinc-100 font-semibold text-sm truncate"><?php echo e($item['type']); ?></p>
+                                            <p class="text-zinc-500 text-xs"><?php echo e(format_date($item['date'])); ?></p>
+                                        </div>
+                                    </div>
+                                    <span class="px-3 py-1 rounded-full text-xs font-semibold border bg-<?php echo $status_color; ?>-500/10 text-<?php echo $status_color; ?>-500 border-<?php echo $status_color; ?>-500/20 shrink-0 ml-3">
+                                        <?php echo e(__(ucfirst($item['status']))); ?>
+                                    </span>
+                                </div>
+                            <?php endforeach; ?>
+                        </div>
+                    <?php else: ?>
+                        <p class="text-zinc-500 text-sm mb-4"><?php echo e(__('No documents uploaded yet.')); ?></p>
+                    <?php endif; ?>
+                <?php else: ?>
+                    <div class="mb-5 rounded-xl border border-brand-accent/20 bg-brand-accent/10 px-4 py-4 text-brand-accent flex items-start gap-3" role="alert">
+                        <i class="fa-solid fa-circle-info mt-0.5"></i>
+                        <div class="text-sm">
+                            <strong class="block mb-0.5"><?php echo e(__('Why verify?')); ?></strong>
+                            <?php echo e(__('Verified users get higher withdrawal limits and priority support. Please upload clear photos of your government-issued ID.')); ?>
+                        </div>
+                    </div>
 
-    .tab-enter-start {
-        opacity: 0;
-        transform: translateX(20px);
-    }
+                    <form action="/actions/kyc-upload.php" method="POST" enctype="multipart/form-data">
+                        <input type="hidden" name="csrf_token" value="<?php echo csrf_token(); ?>">
 
-    .tab-enter-end {
-        opacity: 1;
-        transform: translateX(0);
-    }
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-5 mb-2">
+                            <div>
+                                <label class="block text-xs font-medium text-zinc-400 mb-1.5 uppercase tracking-wide"><?php echo e(__('Government ID / Passport')); ?></label>
+                                <div class="upload-zone" :class="selectedFiles.id_passport ? 'upload-zone-selected' : ''">
+                                    <input type="file" name="id_passport" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer" accept="image/*,application/pdf" @change="selectedFiles.id_passport = $event.target.files[0]?.name ?? null">
+                                    <template x-if="!selectedFiles.id_passport">
+                                        <div class="text-center">
+                                            <i class="fa-solid fa-id-card text-2xl text-brand-accent mb-3 opacity-50"></i>
+                                            <h6 class="text-zinc-100 font-semibold text-sm mb-1"><?php echo e(__('Click to Upload')); ?></h6>
+                                            <p class="text-zinc-500 text-xs"><?php echo e(__('JPG, PNG or PDF, max 5MB')); ?></p>
+                                        </div>
+                                    </template>
+                                    <template x-if="selectedFiles.id_passport">
+                                        <div class="flex flex-col items-center text-emerald-500">
+                                            <i class="fa-solid fa-circle-check text-2xl mb-2"></i>
+                                            <strong class="text-sm" x-text="selectedFiles.id_passport.length > 36 ? selectedFiles.id_passport.slice(0,36) + '...' : selectedFiles.id_passport"></strong>
+                                            <span class="text-zinc-500 text-xs"><?php echo e(__('Ready to upload')); ?></span>
+                                        </div>
+                                    </template>
+                                </div>
+                            </div>
 
-    .tab-leave {
-        transition: all 0.2s cubic-bezier(0.4, 0, 1, 1);
-        position: absolute;
-        width: 100%;
-        top: 0;
-        left: 0;
-    }
+                            <div>
+                                <label class="block text-xs font-medium text-zinc-400 mb-1.5 uppercase tracking-wide"><?php echo e(__('Proof of Address')); ?></label>
+                                <div class="upload-zone" :class="selectedFiles.proof_address ? 'upload-zone-selected' : ''">
+                                    <input type="file" name="proof_address" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer" accept="image/*,application/pdf" @change="selectedFiles.proof_address = $event.target.files[0]?.name ?? null">
+                                    <template x-if="!selectedFiles.proof_address">
+                                        <div class="text-center">
+                                            <i class="fa-solid fa-file-invoice text-2xl text-brand-accent mb-3 opacity-50"></i>
+                                            <h6 class="text-zinc-100 font-semibold text-sm mb-1"><?php echo e(__('Click to Upload')); ?></h6>
+                                            <p class="text-zinc-500 text-xs"><?php echo e(__('Utility bill or bank statement')); ?></p>
+                                        </div>
+                                    </template>
+                                    <template x-if="selectedFiles.proof_address">
+                                        <div class="flex flex-col items-center text-emerald-500">
+                                            <i class="fa-solid fa-circle-check text-2xl mb-2"></i>
+                                            <strong class="text-sm" x-text="selectedFiles.proof_address.length > 36 ? selectedFiles.proof_address.slice(0,36) + '...' : selectedFiles.proof_address"></strong>
+                                            <span class="text-zinc-500 text-xs"><?php echo e(__('Ready to upload')); ?></span>
+                                        </div>
+                                    </template>
+                                </div>
+                            </div>
 
-    .tab-leave-start {
-        opacity: 1;
-        transform: translateX(0);
-    }
+                            <div class="md:col-span-2">
+                                <label class="block text-xs font-medium text-zinc-400 mb-1.5 uppercase tracking-wide"><?php echo e(__('Selfie with ID')); ?></label>
+                                <div class="upload-zone" :class="selectedFiles.selfie ? 'upload-zone-selected' : ''">
+                                    <input type="file" name="selfie" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer" accept="image/*" @change="selectedFiles.selfie = $event.target.files[0]?.name ?? null">
+                                    <template x-if="!selectedFiles.selfie">
+                                        <div class="text-center">
+                                            <i class="fa-solid fa-camera text-2xl text-brand-accent mb-3 opacity-50"></i>
+                                            <h6 class="text-zinc-100 font-semibold text-sm mb-1"><?php echo e(__('Take a Selfie')); ?></h6>
+                                            <p class="text-zinc-500 text-xs"><?php echo e(__('Hold your ID next to your face. Ensure good lighting.')); ?></p>
+                                        </div>
+                                    </template>
+                                    <template x-if="selectedFiles.selfie">
+                                        <div class="flex flex-col items-center text-emerald-500">
+                                            <i class="fa-solid fa-circle-check text-2xl mb-2"></i>
+                                            <strong class="text-sm" x-text="selectedFiles.selfie.length > 36 ? selectedFiles.selfie.slice(0,36) + '...' : selectedFiles.selfie"></strong>
+                                            <span class="text-zinc-500 text-xs"><?php echo e(__('Ready to upload')); ?></span>
+                                        </div>
+                                    </template>
+                                </div>
+                            </div>
+                        </div>
 
-    .tab-leave-end {
-        opacity: 0;
-        transform: translateX(-20px);
-    }
+                        <div class="pt-5 border-t border-zinc-800 flex justify-end">
+                            <button type="submit" :disabled="!allSelected()" class="w-full sm:w-auto px-8 py-3.5 bg-brand-accent text-brand-dark font-bold rounded-xl hover:bg-emerald-400 transition-colors shadow-[0_0_20px_rgba(16,185,129,0.2)] disabled:opacity-50 disabled:cursor-not-allowed">
+                                <?php echo e(__('Submit All Documents')); ?>
+                            </button>
+                        </div>
+                    </form>
+                <?php endif; ?>
+            </div>
+        </div>
+    </div>
+<?php endif; ?>
 
-    /* Form styling */
-    .form-control,
-    .form-select {
-        padding: 0.75rem 1rem;
-        border-radius: 0.75rem;
-        border: 1px solid #e2e8f0;
-        font-size: 0.95rem;
-    }
+<!-- Help Center Modal -->
+<div id="modal-help" class="fixed inset-0 z-[60] flex items-center justify-center px-4 opacity-0 invisible transition-all duration-300">
+    <div class="absolute inset-0 bg-black/70 backdrop-blur-sm" onclick="closeModal('modal-help')"></div>
+    <div class="relative bg-brand-card border border-zinc-800/60 rounded-3xl w-full max-w-md overflow-hidden shadow-2xl transform scale-95 transition-transform duration-300 modal-box">
+        <div class="h-1 w-full bg-gradient-to-r from-zinc-500/10 via-zinc-500 to-zinc-500/10"></div>
 
-    .form-control:focus,
-    .form-select:focus {
-        border-color: var(--primary);
-        box-shadow: 0 0 0 4px rgba(79, 70, 229, 0.1);
-    }
-</style>
+        <div class="p-6 overflow-y-auto max-h-[85vh]">
+            <div class="flex justify-between items-center mb-6">
+                <h3 class="text-xl font-bold text-white tracking-tight"><?php echo e(__('Contact Support')); ?></h3>
+                <button type="button" onclick="closeModal('modal-help')" class="w-8 h-8 rounded-full bg-zinc-800 text-zinc-400 hover:text-white flex items-center justify-center transition-colors">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
 
-<?php require ROOT . '/includes/footer.php'; ?>
-</body>
+            <form action="/actions/contact-submit.php" method="POST" class="space-y-4">
+                <input type="hidden" name="csrf_token" value="<?php echo csrf_token(); ?>">
+                <input type="hidden" name="website" value="">
+                <input type="hidden" name="name" value="<?php echo e($user['name'] ?? ''); ?>">
+                <input type="hidden" name="email" value="<?php echo e($user['email'] ?? ''); ?>">
 
-</html>
+                <div>
+                    <label class="block text-xs font-medium text-zinc-400 mb-1.5 uppercase tracking-wide"><?php echo e(__('Subject')); ?></label>
+                    <select name="subject" class="premium-input premium-input-select" required>
+                        <option value=""><?php echo e(__('Select a subject')); ?></option>
+                        <option value="<?php echo e(__('General Inquiry')); ?>"><?php echo e(__('General Inquiry')); ?></option>
+                        <option value="<?php echo e(__('Investment Issue')); ?>"><?php echo e(__('Investment Issue')); ?></option>
+                        <option value="<?php echo e(__('Deposit / Withdrawal')); ?>"><?php echo e(__('Deposit / Withdrawal')); ?></option>
+                        <option value="<?php echo e(__('Account Access')); ?>"><?php echo e(__('Account Access')); ?></option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-xs font-medium text-zinc-400 mb-1.5 uppercase tracking-wide"><?php echo e(__('Message')); ?></label>
+                    <textarea name="message" rows="4" class="premium-input resize-none" placeholder="<?php echo e(__('Describe your issue in detail...')); ?>" required></textarea>
+                </div>
+
+                <div class="pt-4">
+                    <button type="submit" class="w-full py-3.5 bg-brand-accent text-brand-dark font-bold rounded-xl hover:bg-emerald-400 transition-colors shadow-[0_0_20px_rgba(16,185,129,0.2)] flex items-center justify-center gap-2">
+                        <i class="fa-solid fa-paper-plane"></i> <?php echo e(__('Send Message')); ?>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<?php require ROOT . '/includes/new-footer.php'; ?>
