@@ -89,11 +89,11 @@ $nav_item = function ($key, $url, $icon, $label) use ($active_nav) {
 ?>
 
 <!-- Sticky glass navbar -->
-<nav class="glass-panel sticky top-0 z-40 px-6 <?php echo $has_logo_h ? '' : 'py-4'; ?> flex items-center justify-between">
+<nav class="glass-panel sticky top-0 z-40 px-6 <?php echo $has_logo_h ? 'py-2' : 'py-4'; ?> flex items-center justify-between">
     <div class="flex items-center gap-3 min-w-0">
         <a href="/user/dashboard" class="flex items-center gap-3 min-w-0">
             <?php if ($has_logo_h): ?>
-                <img src="/<?php echo e($site_logo_h); ?>" alt="<?php echo e($site_name); ?>" class="h-24 w-auto max-w-[200px] object-contain">
+                <img src="/<?php echo e($site_logo_h); ?>" alt="<?php echo e($site_name); ?>" class="h-10 md:h-12 w-auto max-w-[200px] object-contain">
             <?php else: ?>
                 <div class="w-10 h-10 rounded-full bg-gradient-to-tr from-brand-accent to-emerald-300 flex items-center justify-center text-brand-dark shadow-[0_0_15px_rgba(16,185,129,0.3)]">
                     <i class="fa-solid fa-bolt text-lg"></i>

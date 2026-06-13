@@ -343,7 +343,7 @@ require ROOT . '/includes/new-header.php';
         <?php endif; ?>
     </div>
 
-    <div class="col-span-1 md:col-span-12 grid grid-cols-1 md:grid-cols-2 xl:grid-cols-<?php echo count($active_investments) > 2 ? '3' : '2'; ?> gap-6">
+    <div class="col-span-1 md:col-span-12 grid grid-cols-1 md:grid-cols-2 xl:grid-cols-<?php echo count($active_investments) > 1 ? '3' : '2'; ?> gap-6">
         <?php if ($active_investments && count($active_investments)):
             $colors = ['emerald', 'sky', 'amber', 'violet'];
             $color_index = 0;
