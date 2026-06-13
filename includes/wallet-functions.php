@@ -29,6 +29,36 @@ function get_user_balance($user_id)
     return (float)$row[0]['balance'];
 }
 
+function get_user_referral_balance($user_id)
+{
+    $row = db_query("SELECT referral_balance FROM users WHERE id = ?", [$user_id]);
+    if (!$row || count($row) === 0) {
+        return 0.00;
+    }
+    return (float)$row[0]['referral_balance'];
+}
+
+function get_locked_referral_balance($user_id)
+{
+    $row = db_query("SELECT COALESCE(SUM(amount),0) AS locked FROM withdrawals WHERE user_id = ? AND status = 'pending' AND source = 'referral'", [$user_id]);
+    if (!$row || count($row) === 0) {
+        return 0.00;
+    }
+    return (float)$row[0]['locked'];
+}
+
+function get_available_referral_balance($user_id)
+{
+    $balance = get_user_referral_balance($user_id);
+    $locked = get_locked_referral_balance($user_id);
+    return $balance - $locked;
+}
+
+function has_sufficient_referral_balance($user_id, $amount)
+{
+    return get_available_referral_balance($user_id) >= (float)$amount;
+}
+
 /**
  * Get locked balance (pending withdrawals)
  * @param int $user_id
@@ -36,7 +66,7 @@ function get_user_balance($user_id)
  */
 function get_locked_balance($user_id)
 {
-    $row = db_query("SELECT COALESCE(SUM(amount),0) AS locked FROM withdrawals WHERE user_id = ? AND status = 'pending'", [$user_id]);
+    $row = db_query("SELECT COALESCE(SUM(amount),0) AS locked FROM withdrawals WHERE user_id = ? AND status = 'pending' AND (source IS NULL OR source = 'balance')", [$user_id]);
     if (!$row || count($row) === 0) {
         return 0.00;
     }
@@ -78,7 +108,7 @@ function has_sufficient_balance($user_id, $amount)
  */
 function create_transaction($user_id, $type, $amount, $status = 'pending', $details = null, $source_id = null)
 {
-    $valid_types = ['deposit', 'withdrawal', 'profit', 'referral', 'investment', 'refund', 'cancellation_penalty'];
+    $valid_types = ['deposit', 'withdrawal', 'profit', 'referral', 'referral_fund', 'investment', 'refund', 'cancellation_penalty'];
     if (!in_array($type, $valid_types)) {
         error_log("[" . date('c') . "] Invalid transaction type: $type\n", 3, __DIR__ . '/../logs/db-errors.log');
         return false;
@@ -141,6 +171,38 @@ function credit_wallet($user_id, $amount, $type, $details = null, $existing_db =
     }
 }
 
+function credit_referral_wallet($user_id, $amount, $type, $details = null, $existing_db = null)
+{
+    if ($amount <= 0) {
+        return false;
+    }
+    $valid_types = ['referral']; // bonuses earned
+    if (!in_array($type, $valid_types)) {
+        error_log("[" . date('c') . "] Invalid referral credit type: $type\n", 3, __DIR__ . '/../logs/db-errors.log');
+        return false;
+    }
+    $db = $existing_db ?? db_connect();
+    $is_nested = ($existing_db !== null);
+    try {
+        if (!$is_nested) {
+            $db->beginTransaction();
+        }
+        $stmt = $db->prepare("UPDATE users SET referral_balance = referral_balance + ? WHERE id = ?");
+        $stmt->execute([number_format((float)$amount, 30, '.', ''), $user_id]);
+        $tx_id = create_transaction($user_id, $type, $amount, 'completed', $details);
+        if (!$is_nested) {
+            $db->commit();
+        }
+        return $tx_id;
+    } catch (Exception $e) {
+        if ($db->inTransaction()) {
+            $db->rollBack();
+        }
+        error_log("[" . date('c') . "] Credit referral wallet error: " . $e->getMessage() . "\n", 3, __DIR__ . '/../logs/db-errors.log');
+        return false;
+    }
+}
+
 /**
  * Debit wallet and log transaction
  * @param int $user_id
@@ -184,3 +246,4 @@ function debit_wallet($user_id, $amount, $type, $details = null, $existing_db = 
         return false;
     }
 }
+

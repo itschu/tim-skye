@@ -18,6 +18,19 @@ $locked = get_locked_balance($user_id);
 $fee_percent = (float)get_setting('withdrawal_fee_percentage', 2);
 $minimum_withdrawal = (float)get_setting('minimum_withdrawal', 1);
 
+// Referral withdrawal support
+$is_referral_withdrawal = ($_GET['source'] ?? '') === 'referral';
+$rfw_mode = get_setting('referral_fund_withdraw_mode', 'exact');
+$rfw_exact = (float)get_setting('referral_exact_amount', 0);
+$rfw_min = (float)get_setting('referral_min_amount', 0);
+$rfw_max = (float)get_setting('referral_max_amount', 0);
+
+if ($is_referral_withdrawal) {
+    $page_title = __('Withdraw Referral Balance');
+    $available = get_available_referral_balance($user_id);
+    $locked = get_locked_referral_balance($user_id);
+}
+
 // Get withdrawal methods from settings
 $withdrawal_methods_json = get_setting('withdrawal_methods', '');
 $withdrawal_methods = [];
@@ -76,7 +89,7 @@ if (get_maintenance_mode()) {
 <!-- Page Header -->
 <div class="d-flex justify-content-between align-items-start mb-4 flex-wrap gap-3">
     <div>
-        <h3 class="fw-bold text-dark mb-1" style="font-size: clamp(1.5rem, 3vw, 2rem)"><?php echo __('Withdraw Funds'); ?></h3>
+        <h3 class="fw-bold text-dark mb-1" style="font-size: clamp(1.5rem, 3vw, 2rem)"><?php echo $is_referral_withdrawal ? __('Withdraw Referral Balance') : __('Withdraw Funds'); ?></h3>
         <p class="text-secondary mb-0 small"><?php echo __('Transfer earnings to your external account'); ?></p>
     </div>
     <div>
@@ -119,6 +132,11 @@ if (get_maintenance_mode()) {
                 localCurrencyCode: "<?php echo e($local_currency_code ?? ''); ?>",
                 localCurrencySymbol: "<?php echo e($local_currency_symbol ?? ''); ?>",
                 exchangeRate: <?php echo json_encode($exchange_rate ?? 0); ?>,
+                isReferral: <?php echo json_encode($is_referral_withdrawal); ?>,
+                referralMode: <?php echo json_encode($rfw_mode); ?>,
+                referralExact: <?php echo json_encode((float)$rfw_exact); ?>,
+                referralMin: <?php echo json_encode((float)$rfw_min); ?>,
+                referralMax: <?php echo json_encode((float)$rfw_max); ?>,
                 translations: {
                     noAddress: <?php echo json_encode(__('No address entered')); ?>,
                     enterBank: <?php echo json_encode(__('Enter bank details')); ?>,
@@ -144,6 +162,11 @@ if (get_maintenance_mode()) {
                     localCurrencySymbol: window.withdrawData.localCurrencySymbol,
                     exchangeRate: window.withdrawData.exchangeRate,
                     currencySymbol: window.withdrawData.currencySymbol,
+                    isReferral: window.withdrawData.isReferral,
+                    referralMode: window.withdrawData.referralMode,
+                    referralExact: window.withdrawData.referralExact,
+                    referralMin: window.withdrawData.referralMin,
+                    referralMax: window.withdrawData.referralMax,
                     loading: false,
                     isLocalCurrency: false,
                     _suppressWatcher: false,
@@ -257,7 +280,20 @@ if (get_maintenance_mode()) {
 
                     get isValid() {
                         let val = parseFloat(this.baseAmount);
-                        let validAmount = val > 0 && val >= this.minimumWithdrawal && val <= this.availableBalance;
+                        let validAmount;
+                        if (this.isReferral) {
+                            validAmount = val > 0 && val <= this.availableBalance;
+                            if (this.referralMode === 'exact') {
+                                validAmount = validAmount && val === parseFloat(this.referralExact);
+                            } else {
+                                validAmount = validAmount && val >= parseFloat(this.referralMin);
+                                if (parseFloat(this.referralMax) > 0) {
+                                    validAmount = validAmount && val <= parseFloat(this.referralMax);
+                                }
+                            }
+                        } else {
+                            validAmount = val > 0 && val >= this.minimumWithdrawal && val <= this.availableBalance;
+                        }
 
                         if (!validAmount) return false;
 
@@ -329,12 +365,16 @@ if (get_maintenance_mode()) {
                     },
 
                     setMax() {
-                        this.baseAmount = this.availableBalance;
+                        let maxAmount = this.availableBalance;
+                        if (this.isReferral && this.referralMode === 'exact') {
+                            maxAmount = parseFloat(this.referralExact);
+                        }
+                        this.baseAmount = maxAmount;
                         this._suppressWatcher = true;
                         if (this.isLocalCurrency && this.exchangeRate) {
-                            this.displayAmount = parseFloat((this.availableBalance * this.exchangeRate).toFixed(2));
+                            this.displayAmount = parseFloat((maxAmount * this.exchangeRate).toFixed(2));
                         } else {
-                            this.displayAmount = this.availableBalance;
+                            this.displayAmount = maxAmount;
                         }
                         this.$nextTick(() => {
                             this._suppressWatcher = false;
@@ -369,8 +409,8 @@ if (get_maintenance_mode()) {
                         <!-- Balance Card -->
                         <div class="balance-card">
                             <div>
-                                <span class="d-block text-white-50 small fw-bold text-uppercase ls-1 mb-1"><?php echo __('Available Balance'); ?></span>
-                                <h3 class="fw-bold text-white mb-0" x-text="formatCurrency(isLocalCurrency && exchangeRate ? availableBalance * exchangeRate : availableBalance)"></h3>
+                                <span class="d-block text-white-50 small fw-bold text-uppercase ls-1 mb-1"><?php echo $is_referral_withdrawal ? __('Available Referral Balance') : __('Available Balance'); ?></span>
+                                <h3 class="fw-bold text-white mb-0" x-text="formatCurrency(availableBalance)"></h3>
                             </div>
                             <div class="bg-white bg-opacity-10 text-white rounded-circle p-3">
                                 <i class="fas fa-wallet fa-lg"></i>
@@ -479,6 +519,19 @@ if (get_maintenance_mode()) {
                             </div>
                         </div>
 
+                        <?php if ($is_referral_withdrawal): ?>
+                            <?php if ($rfw_mode === 'exact'): ?>
+                                <div class="alert alert-info bg-light text-dark border-0 mb-3 small" style="border-radius: 1rem;">
+                                    <i class="fas fa-info-circle me-2"></i>
+                                    <span><?php echo sprintf(__('Referral withdrawals must be exactly %s'), format_money($rfw_exact)); ?></span>
+                                </div>
+                            <?php else: ?>
+                                <div class="alert alert-info bg-light text-dark border-0 mb-3 small" style="border-radius: 1rem;">
+                                    <i class="fas fa-info-circle me-2"></i>
+                                    <span><?php echo sprintf(__('Referral withdrawals must be at least %s'), format_money($rfw_min)) . ($rfw_max > 0 ? ' ' . sprintf(__('and at most %s'), format_money($rfw_max)) : ''); ?></span>
+                                </div>
+                            <?php endif; ?>
+                        <?php endif; ?>
                         <h6 class="form-label mb-3"><?php echo __('3. Withdrawal Amount'); ?></h6>
                         <div class="position-relative mb-2">
                             <span class="position-absolute top-50 start-0 translate-middle-y ps-3 text-secondary fw-bold" x-text="isLocalCurrency ? localCurrencySymbol : currencySymbol"><?php echo e($currency_symbol); ?></span>
@@ -496,11 +549,23 @@ if (get_maintenance_mode()) {
                                 <span x-text="'≈ ' + currencySymbol + (baseAmount ? parseFloat(baseAmount).toFixed(2) : '0.00') + ' ' + <?php echo htmlspecialchars(json_encode(__('base currency')), ENT_QUOTES, 'UTF-8'); ?>"></span>
                             </div>
                         <?php endif; ?>
-                        <div x-show="parseFloat(baseAmount) > 0 && parseFloat(baseAmount) < minimumWithdrawal" class="text-danger small fw-bold mt-2" style="display: none">
+                        <div x-show="!isReferral && parseFloat(baseAmount) > 0 && parseFloat(baseAmount) < minimumWithdrawal" class="text-danger small fw-bold mt-2" style="display: none">
                             <i class="fas fa-times-circle me-1"></i> <?php echo __('Minimum withdrawal is'); ?> <span x-text="formatCurrency(minimumWithdrawal)"></span>
                         </div>
                         <div x-show="parseFloat(baseAmount) > availableBalance" class="text-danger small fw-bold mt-2" style="display: none">
                             <i class="fas fa-times-circle me-1"></i> <?php echo __('Insufficient balance'); ?>
+                        </div>
+                        <div x-show="isReferral && referralMode === 'exact' && parseFloat(baseAmount) > 0 && parseFloat(baseAmount) !== parseFloat(referralExact)" class="text-danger small fw-bold mt-2" style="display: none">
+                            <i class="fas fa-times-circle me-1"></i>
+                            <?php echo sprintf(__('Amount must be exactly %s'), '<span x-text="formatCurrency(referralExact)"></span>'); ?>
+                        </div>
+                        <div x-show="isReferral && referralMode === 'range' && parseFloat(baseAmount) > 0 && parseFloat(baseAmount) < parseFloat(referralMin)" class="text-danger small fw-bold mt-2" style="display: none">
+                            <i class="fas fa-times-circle me-1"></i>
+                            <?php echo sprintf(__('Minimum referral withdrawal is %s'), '<span x-text="formatCurrency(referralMin)"></span>'); ?>
+                        </div>
+                        <div x-show="isReferral && referralMode === 'range' && parseFloat(referralMax) > 0 && parseFloat(baseAmount) > parseFloat(referralMax)" class="text-danger small fw-bold mt-2" style="display: none">
+                            <i class="fas fa-times-circle me-1"></i>
+                            <?php echo sprintf(__('Maximum referral withdrawal is %s'), '<span x-text="formatCurrency(referralMax)"></span>'); ?>
                         </div>
                     </div>
                 </div>
@@ -561,8 +626,11 @@ if (get_maintenance_mode()) {
                         </div>
 
                         <div>
-                            <form action="/actions/withdraw-submit.php" method="POST" @submit="loading = true">
+                            <form action="<?php echo $is_referral_withdrawal ? '/actions/referral-withdraw.php' : '/actions/withdraw-submit.php'; ?>" method="POST" @submit="loading = true">
                                 <input type="hidden" name="csrf_token" value="<?php echo csrf_token(); ?>">
+                                <?php if ($is_referral_withdrawal): ?>
+                                    <input type="hidden" name="source" value="referral">
+                                <?php endif; ?>
                                 <input type="hidden" name="method" x-model="selectedMethod">
                                 <input type="hidden" name="amount" x-model="baseAmount">
                                 <input type="hidden" name="local_currency_amount" :value="isLocalCurrency ? displayAmount : ''">

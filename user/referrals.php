@@ -13,7 +13,29 @@ $user_id = $_SESSION['user_id'];
 $user = db_query("SELECT * FROM users WHERE id = ?", [$user_id])[0] ?? null;
 $code = $user['referral_code'] ?? '';
 $stats = get_referral_detailed_stats($user_id);
-$referred = get_referral_list($user_id);
+$referral_balance = get_user_referral_balance($user_id);
+$available_referral = get_available_referral_balance($user_id);
+
+// Status filter
+$valid_statuses = ['all', 'successful', 'active', 'pending'];
+$status_filter = $_GET['status'] ?? 'all';
+if (!in_array($status_filter, $valid_statuses, true)) {
+    $status_filter = 'all';
+}
+
+// Pagination
+$page = max(1, intval($_GET['page'] ?? 1));
+$per_page = 5;
+$offset = ($page - 1) * $per_page;
+$total_referrals = get_referral_list_count($user_id, $status_filter);
+$total_pages = max(1, ceil($total_referrals / $per_page));
+$referred = get_referral_list($user_id, $status_filter, $per_page, $offset);
+
+// Referral fund/withdraw settings for JS
+$rfw_mode = get_setting('referral_fund_withdraw_mode', 'exact');
+$rfw_exact = (float)get_setting('referral_exact_amount', 0);
+$rfw_min = (float)get_setting('referral_min_amount', 0);
+$rfw_max = (float)get_setting('referral_max_amount', 0);
 $referral_url = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == 'on' ? 'https' : 'http') . '://' . $_SERVER['HTTP_HOST'] . '/register?ref=' . $code;
 
 // Get referral settings
@@ -125,7 +147,7 @@ $current_messages = $trigger_messages[$referral_bonus_trigger] ?? $trigger_messa
     <!-- Stats Cards -->
     <div class="row g-4 mb-4">
         <!-- Total Earnings -->
-        <div class="col-md-4 col-lg-6">
+        <div class="col-md-4 col-lg-4">
             <div class="card border-0 shadow-sm h-100 p-4 stat-card" style="border-radius: 1.25rem;">
                 <div class="d-flex align-items-center gap-3 mb-2">
                     <div class="icon-box bg-success bg-opacity-10 text-success">
@@ -143,8 +165,32 @@ $current_messages = $trigger_messages[$referral_bonus_trigger] ?? $trigger_messa
             </div>
         </div>
 
+        <!-- Referral Balance -->
+        <div class="col-md-4 col-lg-4">
+            <div class="card border-0 shadow-sm h-100 p-4 stat-card" style="border-radius: 1.25rem;">
+                <div class="d-flex align-items-center gap-3 mb-2">
+                    <div class="icon-box bg-primary bg-opacity-10 text-primary">
+                        <i class="fas fa-piggy-bank"></i>
+                    </div>
+                    <h6 class="text-secondary fw-bold mb-0"><?php echo __('Referral Balance'); ?></h6>
+                </div>
+                <h2 class="fw-bold text-dark mb-0 mt-2" x-text="formatCurrency(<?php echo $available_referral; ?>)"><?php echo format_money($available_referral); ?></h2>
+                <?php if ($referral_balance > $available_referral): ?>
+                    <p class="text-secondary small mt-1 mb-0"><?php echo sprintf(__('Total: %s (pending withdrawals locked)'), format_money($referral_balance)); ?></p>
+                <?php endif; ?>
+                <div class="d-flex gap-2 mt-3">
+                    <button class="btn btn-primary btn-sm rounded-pill px-4 py-2 fw-bold" data-bs-toggle="modal" data-bs-target="#fundWalletModal">
+                        <i class="fas fa-wallet me-1"></i> <?php echo __('Fund Wallet'); ?>
+                    </button>
+                    <a href="/user/withdraw?source=referral" class="btn btn-outline-primary btn-sm rounded-pill px-4 py-2 fw-bold">
+                        <i class="fas fa-money-bill-transfer me-1"></i> <?php echo __('Withdraw'); ?>
+                    </a>
+                </div>
+            </div>
+        </div>
+
         <!-- Commission Rate -->
-        <div class="col-md-4 col-lg-6">
+        <div class="col-md-4 col-lg-4">
             <div class="card border-0 shadow-sm h-100 p-4 position-relative overflow-hidden stat-card" style="border-radius: 1.25rem;">
                 <div class="position-absolute top-0 end-0 p-3 opacity-10">
                     <i class="fas fa-percentage fa-4x text-primary"></i>
@@ -232,13 +278,25 @@ $current_messages = $trigger_messages[$referral_bonus_trigger] ?? $trigger_messa
                         </div>
                     </div>
 
-                    <div class="d-flex gap-3">
+                    <div class="d-flex gap-3 mb-3">
                         <div class="step-circle">3</div>
                         <div>
                             <h6 class="fw-bold mb-1"><?php echo $current_messages['step3']; ?></h6>
                             <p class="text-white-50 small mb-0"><?php echo $current_messages['step3_desc']; ?></p>
                         </div>
                     </div>
+
+                    <?php if ($rfw_mode === 'exact' && $rfw_exact > 0): ?>
+                        <div class="alert bg-white bg-opacity-10 text-white border-0 mb-0 small" style="border-radius: 1rem;">
+                            <i class="fas fa-info-circle me-2"></i>
+                            <span><?php echo sprintf(__('Referral fund and withdrawal amounts must be exactly %s'), format_money($rfw_exact)); ?></span>
+                        </div>
+                    <?php elseif ($rfw_mode === 'range'): ?>
+                        <div class="alert bg-white bg-opacity-10 text-white border-0 mb-0 small" style="border-radius: 1rem;">
+                            <i class="fas fa-info-circle me-2"></i>
+                            <span><?php echo sprintf(__('Referral fund and withdrawal amounts must be at least %s'), format_money($rfw_min)) . ($rfw_max > 0 ? ' ' . sprintf(__('and at most %s'), format_money($rfw_max)) : ''); ?></span>
+                        </div>
+                    <?php endif; ?>
                 </div>
             </div>
 
@@ -282,16 +340,16 @@ $current_messages = $trigger_messages[$referral_bonus_trigger] ?? $trigger_messa
         </div>
 
         <!-- Right Column - Referral History -->
-        <div class="col-lg-7">
+        <div class="col-lg-7" id="referralHistorySection">
             <div class="card border-0 shadow-sm h-100" style="border-radius: 1.25rem;">
                 <div class="card-header bg-transparent border-bottom p-4 d-flex flex-wrap justify-content-between align-items-center gap-3">
                     <h5 class="fw-bold mb-0"><?php echo __('Referral History'); ?></h5>
 
                     <div class="nav nav-pills nav-pills-custom">
-                        <button class="nav-link" :class="{ 'active': activeTab === 'all' }" @click="activeTab = 'all'"><?php echo __('All'); ?></button>
-                        <button class="nav-link" :class="{ 'active': activeTab === 'successful' }" @click="activeTab = 'successful'"><?php echo __('Successful'); ?></button>
-                        <button class="nav-link" :class="{ 'active': activeTab === 'active' }" @click="activeTab = 'active'"><?php echo __('Active'); ?></button>
-                        <button class="nav-link" :class="{ 'active': activeTab === 'pending' }" @click="activeTab = 'pending'"><?php echo __('Pending'); ?></button>
+                        <a href="?status=all" class="nav-link <?php echo $status_filter === 'all' ? 'active' : ''; ?>"><?php echo __('All'); ?></a>
+                        <a href="?status=successful" class="nav-link <?php echo $status_filter === 'successful' ? 'active' : ''; ?>"><?php echo __('Successful'); ?></a>
+                        <a href="?status=active" class="nav-link <?php echo $status_filter === 'active' ? 'active' : ''; ?>"><?php echo __('Active'); ?></a>
+                        <a href="?status=pending" class="nav-link <?php echo $status_filter === 'pending' ? 'active' : ''; ?>"><?php echo __('Pending'); ?></a>
                     </div>
                 </div>
 
@@ -326,7 +384,6 @@ $current_messages = $trigger_messages[$referral_bonus_trigger] ?? $trigger_messa
                                 $config = $status_config[$status] ?? $status_config['pending'];
                         ?>
                                 <div class="list-group-item p-4 border-bottom-light referral-item"
-                                    x-show="activeTab === 'all' || activeTab === '<?php echo $status; ?>'"
                                     x-transition:enter="transition ease-out duration-200"
                                     x-transition:enter-start="opacity-0"
                                     x-transition:enter-end="opacity-100">
@@ -374,9 +431,112 @@ $current_messages = $trigger_messages[$referral_bonus_trigger] ?? $trigger_messa
                         <?php endif; ?>
                     </div>
                 </div>
+                <?php if ($total_pages > 1): ?>
+                    <div class="card-footer bg-white border-top py-3">
+                        <nav>
+                            <ul class="pagination justify-content-center mb-0 gap-2">
+                                <?php if ($page > 1): ?>
+                                    <li class="page-item">
+                                        <a class="page-link rounded-circle border-0 bg-light text-dark d-flex align-items-center justify-content-center" href="?status=<?php echo e($status_filter);
+                                                                                                                                                                        ?>&page=<?php echo $page - 1; ?>" style="width: 40px; height: 40px">
+                                            <i class="fas fa-chevron-left"></i>
+                                        </a>
+                                    </li>
+                                <?php else: ?>
+                                    <li class="page-item disabled">
+                                        <span class="page-link rounded-circle border-0 bg-light text-secondary d-flex align-items-center justify-content-center" style="width: 40px; height: 40px">
+                                            <i class="fas fa-chevron-left"></i>
+                                        </span>
+                                    </li>
+                                <?php endif; ?>
+
+                                <?php for ($p = 1; $p <= $total_pages; $p++): ?>
+                                    <?php if ($p == $page): ?>
+                                        <li class="page-item active">
+                                            <span class="page-link rounded-circle border-0 bg-primary text-white d-flex align-items-center justify-content-center" style="width: 40px; height: 40px"><?php
+                                                                                                                                                                                                        echo $p; ?></span>
+                                        </li>
+                                    <?php else: ?>
+                                        <li class="page-item">
+                                            <a class="page-link rounded-circle border-0 bg-light text-dark d-flex align-items-center justify-content-center" href="?status=<?php echo e($status_filter);
+                                                                                                                                                                            ?>&page=<?php echo $p; ?>" style="width: 40px; height: 40px"><?php echo $p; ?></a>
+                                        </li>
+                                    <?php endif; ?>
+                                <?php endfor; ?>
+
+                                <?php if ($page < $total_pages): ?>
+                                    <li class="page-item">
+                                        <a class="page-link rounded-circle border-0 bg-light text-dark d-flex align-items-center justify-content-center" href="?status=<?php echo e($status_filter);
+                                                                                                                                                                        ?>&page=<?php echo $page + 1; ?>" style="width: 40px; height: 40px">
+                                            <i class="fas fa-chevron-right"></i>
+                                        </a>
+                                    </li>
+                                <?php else: ?>
+                                    <li class="page-item disabled">
+                                        <span class="page-link rounded-circle border-0 bg-light text-secondary d-flex align-items-center justify-content-center" style="width: 40px; height: 40px">
+                                            <i class="fas fa-chevron-right"></i>
+                                        </span>
+                                    </li>
+                                <?php endif; ?>
+                            </ul>
+                        </nav>
+                    </div>
+                <?php endif; ?>
             </div>
         </div>
     </div>
+
+    <!-- Fund Wallet Modal -->
+    <div class="modal fade" id="fundWalletModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content border-0 shadow" style="border-radius: 1.25rem;">
+                <div class="modal-header border-0">
+                    <h5 class="modal-title fw-bold"><?php echo __('Fund Wallet from Referrals'); ?></h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p class="text-secondary small"><?php echo __('Available referral balance:'); ?> <strong><?php echo format_money($available_referral); ?></strong></p>
+                    <form action="/actions/referral-fund.php" method="POST" x-data="{ amount: '', mode: '<?php echo e($rfw_mode); ?>', exact: <?php echo json_encode($rfw_exact); ?>, minAmt: <?php echo json_encode($rfw_min); ?>, maxAmt: <?php echo json_encode($rfw_max); ?>, get isValid() { let a = parseFloat(this.amount); if (isNaN(a) || a <= 0) return false; if (a > <?php echo json_encode((float)$available_referral); ?>) return false; if (this.mode === 'exact') { return a === parseFloat(this.exact); } else { return a >= parseFloat(this.minAmt) && (parseFloat(this.maxAmt) <= 0 || a <= parseFloat(this.maxAmt)); } } }">
+                        <input type="hidden" name="csrf_token" value="<?php echo csrf_token(); ?>">
+                        <div class="mb-3">
+                            <label class="form-label fw-bold small"><?php echo __('Amount'); ?></label>
+                            <div class="input-group">
+                                <span class="input-group-text bg-light border-0 fw-bold"><?php echo get_currency_symbol(); ?></span>
+                                <input type="number" name="amount" step="0.01" class="form-control form-control-lg fw-bold" x-model="amount" placeholder="0.00" required>
+                            </div>
+                            <div class="mt-2 small">
+                                <span x-show="mode === 'exact'" class="text-info"><?php echo __('Must be exactly'); ?> <?php echo format_money($rfw_exact); ?></span>
+                                <span x-show="mode === 'range'" class="text-info"><?php echo __('Min:'); ?> <?php echo format_money($rfw_min); ?> <?php if ($rfw_max > 0) echo ' | ' . __('Max:') . ' ' . format_money($rfw_max); ?></span>
+                            </div>
+                            <div x-show="parseFloat(amount) > <?php echo json_encode((float)$available_referral); ?>" class="text-danger small mt-1" style="display:none">
+                                <?php echo __('Insufficient referral balance'); ?>
+                            </div>
+                            <div x-show="!isValid && amount !== ''" class="text-danger small mt-1" style="display:none">
+                                <?php echo __('Please enter a valid amount.'); ?>
+                            </div>
+                        </div>
+                        <button type="submit" class="btn btn-primary w-100 rounded-pill fw-bold py-2" :disabled="!isValid">
+                            <?php echo __('Confirm Fund Transfer'); ?>
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <?php if (isset($_GET['status']) || isset($_GET['page'])): ?>
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                const section = document.getElementById('referralHistorySection');
+                if (section) {
+                    section.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        </script>
+    <?php endif; ?>
 </div>
 
 <style>

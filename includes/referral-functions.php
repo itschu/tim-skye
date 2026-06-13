@@ -119,7 +119,7 @@ function process_referral_bonus($referred_user_id, $trigger_event, $transaction_
         try {
             $db->beginTransaction();
 
-            $tx_id = credit_wallet($referrer_id, $bonus_amount, 'referral', 'Referral bonus for user #' . $referred_user_id, $db);
+            $tx_id = credit_referral_wallet($referrer_id, $bonus_amount, 'referral', 'Referral bonus for user #' . $referred_user_id, $db);
             if ($tx_id === false) {
                 throw new Exception('Failed to credit wallet');
             }
@@ -285,31 +285,83 @@ function get_referral_detailed_stats($user_id)
 }
 
 /**
+ * Build status-aware WHERE filter for referral lists.
+ * Valid statuses: all, successful, active, pending.
+ *
+ * @param string $status
+ * @return array{where_sql: string, params: array}
+ */
+function _get_referral_status_filter($status)
+{
+    $valid = ['all', 'successful', 'active', 'pending'];
+    if (!in_array($status, $valid, true)) {
+        $status = 'all';
+    }
+
+    if ($status === 'all') {
+        return ['where_sql' => '', 'params' => []];
+    }
+
+    // successful = has investments
+    // active     = has deposits but no investments
+    // pending    = no deposits and no investments
+    if ($status === 'successful') {
+        return [
+            'where_sql' => " AND EXISTS (SELECT 1 FROM investments i WHERE i.user_id = u.id LIMIT 1)",
+            'params' => []
+        ];
+    }
+
+    if ($status === 'active') {
+        return [
+            'where_sql' => " AND NOT EXISTS (SELECT 1 FROM investments i WHERE i.user_id = u.id LIMIT 1)"
+                . " AND EXISTS (SELECT 1 FROM deposits d WHERE d.user_id = u.id AND d.status = 'approved' LIMIT 1)",
+            'params' => []
+        ];
+    }
+
+    // pending
+    return [
+        'where_sql' => " AND NOT EXISTS (SELECT 1 FROM investments i WHERE i.user_id = u.id LIMIT 1)"
+            . " AND NOT EXISTS (SELECT 1 FROM deposits d WHERE d.user_id = u.id AND d.status = 'approved' LIMIT 1)",
+        'params' => []
+    ];
+}
+
+/**
  * Get referral list for a referrer with detailed status
  * @param int $user_id
+ * @param string $status one of all|successful|active|pending
+ * @param int|null $limit
+ * @param int|null $offset
  * @return array
  */
-function get_referral_list($user_id)
+function get_referral_list($user_id, $status = 'all', $limit = null, $offset = null)
 {
     try {
-        // Get all referred users from users table (not referrals table)
-        $rows = db_query(
-            "SELECT u.id as referred_id, u.name as referred_name, u.email as referred_email, u.created_at as registered_at 
-             FROM users u 
-             WHERE u.referred_by = ? 
-             ORDER BY u.created_at DESC",
-            [$user_id]
-        );
+        $filter = _get_referral_status_filter($status);
+        $params = array_merge([$user_id], $filter['params']);
+
+        $sql = "SELECT u.id as referred_id, u.name as referred_name, u.email as referred_email, u.created_at as registered_at
+               FROM users u
+               WHERE u.referred_by = ?" . $filter['where_sql'] . "
+               ORDER BY u.created_at DESC";
+
+        if ($limit !== null) {
+            $sql .= " LIMIT " . (int)$limit;
+            if ($offset !== null) {
+                $sql .= " OFFSET " . (int)$offset;
+            }
+        }
+        $rows = db_query($sql, $params);
 
         if (empty($rows)) {
             return [];
         }
 
-        // Enhance with investment/deposit status and bonus info
         foreach ($rows as &$row) {
             $referred_id = $row['referred_id'];
 
-            // Check investments
             $investments = db_query(
                 "SELECT COUNT(*) as count, COALESCE(SUM(amount), 0) as total FROM investments WHERE user_id = ?",
                 [$referred_id]
@@ -318,7 +370,6 @@ function get_referral_list($user_id)
             $row['investment_count'] = $investments[0]['count'] ?? 0;
             $row['investment_total'] = $investments[0]['total'] ?? 0;
 
-            // Check deposits - use net credited amounts for totals
             $deposits = db_query(
                 "SELECT COUNT(*) as count, COALESCE(SUM(net_amount), 0) as total FROM deposits WHERE user_id = ? AND status = 'approved'",
                 [$referred_id]
@@ -327,16 +378,14 @@ function get_referral_list($user_id)
             $row['deposit_count'] = $deposits[0]['count'] ?? 0;
             $row['deposit_total'] = $deposits[0]['total'] ?? 0;
 
-            // Determine status
             if ($row['has_investments']) {
-                $row['status'] = 'successful';  // Has invested
+                $row['status'] = 'successful';
             } elseif ($row['has_deposits']) {
-                $row['status'] = 'active';      // Has deposited but not invested
+                $row['status'] = 'active';
             } else {
-                $row['status'] = 'pending';     // Registered only
+                $row['status'] = 'pending';
             }
 
-            // Get bonus amount from referrals table
             $bonus = db_query(
                 "SELECT COALESCE(SUM(bonus_amount), 0) as total FROM referrals WHERE referrer_id = ? AND referred_id = ? AND status = 'credited'",
                 [$user_id, $referred_id]
@@ -349,4 +398,60 @@ function get_referral_list($user_id)
         error_log("[Referral List Error] " . $e->getMessage(), 3, __DIR__ . '/../logs/db-errors.log');
         return [];
     }
+}
+
+/**
+ * Get total count of referred users for pagination, optionally filtered by status
+ * @param int $user_id
+ * @param string $status one of all|successful|active|pending
+ * @return int
+ */
+function get_referral_list_count($user_id, $status = 'all')
+{
+    try {
+        $filter = _get_referral_status_filter($status);
+        $params = array_merge([$user_id], $filter['params']);
+
+        $sql = "SELECT COUNT(*) as c FROM users u WHERE u.referred_by = ?" . $filter['where_sql'];
+        $row = db_query($sql, $params);
+        return $row && count($row) ? (int)($row[0]['c'] ?? 0) : 0;
+    } catch (Exception $e) {
+        error_log("[Referral List Count Error] " . $e->getMessage(), 3, __DIR__ . '/../logs/db-errors.log');
+        return 0;
+    }
+}
+
+/**
+ * Validate referral fund/withdraw amount against admin settings
+ * @param float $amount
+ * @return true|string true on pass, error message on fail
+ */
+function validate_referral_fund_withdraw_amount($amount)
+{
+    $mode = get_setting('referral_fund_withdraw_mode', 'exact');
+    $amount = (float)$amount;
+    if ($amount <= 0) {
+        return __('Amount must be greater than zero');
+    }
+    if ($mode === 'exact') {
+        $exact = (float)get_setting('referral_exact_amount', 0);
+        $check = db_query("SELECT CAST(? AS DECIMAL(65,30)) = CAST(? AS DECIMAL(65,30)) AS ok", [number_format($amount, 30, '.', ''), number_format($exact, 30, '.', '')]);
+        if (!($check[0]['ok'] ?? 0)) {
+            return sprintf(__('Amount must be exactly %s'), format_money($exact));
+        }
+    } else {
+        $min = (float)get_setting('referral_min_amount', 0);
+        $max = (float)get_setting('referral_max_amount', 0);
+        $below = db_query("SELECT CAST(? AS DECIMAL(65,30)) < CAST(? AS DECIMAL(65,30)) AS below", [number_format($amount, 30, '.', ''), number_format($min, 30, '.', '')]);
+        if ($below[0]['below'] ?? 0) {
+            return sprintf(__('Minimum amount is %s'), format_money($min));
+        }
+        if ($max > 0) {
+            $above = db_query("SELECT CAST(? AS DECIMAL(65,30)) > CAST(? AS DECIMAL(65,30)) AS above", [number_format($amount, 30, '.', ''), number_format($max, 30, '.', '')]);
+            if ($above[0]['above'] ?? 0) {
+                return sprintf(__('Maximum amount is %s'), format_money($max));
+            }
+        }
+    }
+    return true;
 }

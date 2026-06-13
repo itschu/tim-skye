@@ -67,6 +67,10 @@ $deposit_fee_percentage = isset($all_settings['deposit_fee_percentage']) ? $all_
 $referral_bonus_type = isset($all_settings['referral_bonus_type']) ? $all_settings['referral_bonus_type'] : 'flat';
 $referral_bonus_amount = isset($all_settings['referral_bonus_amount']) ? $all_settings['referral_bonus_amount'] : '10';
 $referral_bonus_trigger = isset($all_settings['referral_bonus_trigger']) ? $all_settings['referral_bonus_trigger'] : 'first_deposit';
+$referral_fund_withdraw_mode = isset($all_settings['referral_fund_withdraw_mode']) ? $all_settings['referral_fund_withdraw_mode'] : 'exact';
+$referral_exact_amount = isset($all_settings['referral_exact_amount']) ? $all_settings['referral_exact_amount'] : '0';
+$referral_min_amount = isset($all_settings['referral_min_amount']) ? $all_settings['referral_min_amount'] : '0';
+$referral_max_amount = isset($all_settings['referral_max_amount']) ? $all_settings['referral_max_amount'] : '0';
 
 // Cancellation Settings
 $cancellation_penalty_mode = isset($all_settings['cancellation_penalty_mode']) ? $all_settings['cancellation_penalty_mode'] : 'percentage';
@@ -823,6 +827,76 @@ require_once ROOT . '/includes/admin-header.php';
                                         // Run on page load
                                         updateTriggerOptions();
                                     })();
+                                </script>
+
+                                <hr class="my-4">
+                                <h6 class="card-title mb-4 text-white"><?php echo __('Referral Wallet Limits'); ?></h6>
+
+                                <div class="mb-4">
+                                    <label class="form-label text-muted-custom small fw-medium mb-3">
+                                        <i class="fas fa-sliders-h text-info"></i> <?php echo __('Limit Mode'); ?>
+                                    </label>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="referral_fund_withdraw_mode" id="rfw_exact" value="exact" <?php echo $referral_fund_withdraw_mode === 'exact' ? 'checked' : ''; ?>>
+                                        <label class="form-check-label" for="rfw_exact">
+                                            <?php echo __('Exact Amount'); ?>
+                                        </label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="referral_fund_withdraw_mode" id="rfw_range" value="range" <?php echo $referral_fund_withdraw_mode === 'range' ? 'checked' : ''; ?>>
+                                        <label class="form-check-label" for="rfw_range">
+                                            <?php echo __('Minimum / Maximum'); ?>
+                                        </label>
+                                    </div>
+                                    <small class="form-text d-block mt-1" style="color: #a1a1aa;"><?php echo __('When Exact is chosen, users can only fund/withdraw the exact amount. When Range is chosen, they can choose any amount within the min/max bounds.'); ?></small>
+                                </div>
+
+                                <!-- Exact amount -->
+                                <div class="mb-4" id="rfw_exact_amount_wrapper" <?php echo $referral_fund_withdraw_mode !== 'exact' ? 'style="display:none;"' : ''; ?>>
+                                    <label for="referral_exact_amount" class="form-label text-muted-custom small fw-medium">
+                                        <i class="fas fa-bullseye text-info"></i> <?php echo __('Exact Amount'); ?>
+                                    </label>
+                                    <input type="number" class="form-control form-control-custom" id="referral_exact_amount" name="referral_exact_amount" value="<?php echo e($referral_exact_amount); ?>" step="0.01" min="0">
+                                    <small class="form-text d-block mt-1" style="color: #a1a1aa;"><?php echo __('Users must fund/withdraw exactly this amount each time'); ?></small>
+                                </div>
+
+                                <!-- Min / Max -->
+                                <div class="mb-4" id="rfw_range_wrapper" <?php echo $referral_fund_withdraw_mode !== 'range' ? 'style="display:none;"' : ''; ?>>
+                                    <div class="row g-3">
+                                        <div class="col-md-6">
+                                            <label for="referral_min_amount" class="form-label text-muted-custom small fw-medium">
+                                                <i class="fas fa-arrow-down text-info"></i> <?php echo __('Minimum Amount'); ?>
+                                            </label>
+                                            <input type="number" class="form-control form-control-custom" id="referral_min_amount" name="referral_min_amount" value="<?php echo e($referral_min_amount); ?>" step="0.01" min="0">
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label for="referral_max_amount" class="form-label text-muted-custom small fw-medium">
+                                                <i class="fas fa-arrow-up text-info"></i> <?php echo __('Maximum Amount'); ?>
+                                            </label>
+                                            <input type="number" class="form-control form-control-custom" id="referral_max_amount" name="referral_max_amount" value="<?php echo e($referral_max_amount); ?>" step="0.01" min="0">
+                                        </div>
+                                    </div>
+                                    <small class="form-text d-block mt-1" style="color: #a1a1aa;"><?php echo __('Set max to 0 for no upper limit'); ?></small>
+                                </div>
+
+                                <script>
+                                (function() {
+                                    const modeRadios = document.querySelectorAll('input[name="referral_fund_withdraw_mode"]');
+                                    const exactWrapper = document.getElementById('rfw_exact_amount_wrapper');
+                                    const rangeWrapper = document.getElementById('rfw_range_wrapper');
+                                    function updateMode() {
+                                        const mode = document.querySelector('input[name="referral_fund_withdraw_mode"]:checked').value;
+                                        if (mode === 'exact') {
+                                            exactWrapper.style.display = '';
+                                            rangeWrapper.style.display = 'none';
+                                        } else {
+                                            exactWrapper.style.display = 'none';
+                                            rangeWrapper.style.display = '';
+                                        }
+                                    }
+                                    modeRadios.forEach(r => r.addEventListener('change', updateMode));
+                                    updateMode();
+                                })();
                                 </script>
 
                                 <div class="d-flex gap-2">

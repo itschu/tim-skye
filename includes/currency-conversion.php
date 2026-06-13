@@ -47,6 +47,7 @@ function convert_all_monetary_values(string $rate, string $old_base, string $new
 
         // --- User balances ---
         db_query("UPDATE `users` SET `balance` = `balance` / {$d} WHERE `balance` <> 0", [$rate]);
+        db_query("UPDATE `users` SET `referral_balance` = `referral_balance` / {$d} WHERE `referral_balance` <> 0", [$rate]);
 
         // --- Investment plan thresholds ---
         db_query(
@@ -111,6 +112,27 @@ function convert_all_monetary_values(string $rate, string $old_base, string $new
                 $result = db_query("SELECT CAST(? AS DECIMAL(65,30)) / {$d} AS v", [$referral_bonus_amount, $rate]);
                 update_setting('referral_bonus_amount', $result[0]['v']);
             }
+        }
+
+        // --- Settings: referral_exact_amount (always convert if numeric) ---
+        $referral_exact_amount = get_setting('referral_exact_amount');
+        if (is_numeric($referral_exact_amount)) {
+            $result = db_query("SELECT CAST(? AS DECIMAL(65,30)) / {$d} AS v", [$referral_exact_amount, $rate]);
+            update_setting('referral_exact_amount', $result[0]['v']);
+        }
+
+        // --- Settings: referral_min_amount (always convert if numeric) ---
+        $referral_min_amount = get_setting('referral_min_amount');
+        if (is_numeric($referral_min_amount)) {
+            $result = db_query("SELECT CAST(? AS DECIMAL(65,30)) / {$d} AS v", [$referral_min_amount, $rate]);
+            update_setting('referral_min_amount', $result[0]['v']);
+        }
+
+        // --- Settings: referral_max_amount (always convert if numeric) ---
+        $referral_max_amount = get_setting('referral_max_amount');
+        if (is_numeric($referral_max_amount)) {
+            $result = db_query("SELECT CAST(? AS DECIMAL(65,30)) / {$d} AS v", [$referral_max_amount, $rate]);
+            update_setting('referral_max_amount', $result[0]['v']);
         }
 
         // Do NOT convert percentage-based settings:

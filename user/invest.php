@@ -260,7 +260,7 @@ if (get_maintenance_mode()) {
                         </div>
                     </div>
                     <div class="mt-3 small text-muted">
-                        <?php echo __('Available Balance'); ?>: <strong x-text="formatCurrency(isLocalCurrency && localRate ? availableBalance * localRate : availableBalance)"><?php echo format_money($available); ?></strong>
+                        <?php echo __('Available Balance'); ?>: <strong x-text="formatCurrency(availableBalance)"><?php echo format_money($available); ?></strong>
                     </div>
                 </div>
                 <!-- GRADIENT Projected Profit Section -->

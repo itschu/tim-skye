@@ -368,6 +368,10 @@ function handleReferralSettings()
     $referral_bonus_type = sanitize_input($_POST['referral_bonus_type'] ?? '');
     $referral_bonus_amount = sanitize_input($_POST['referral_bonus_amount'] ?? '');
     $referral_bonus_trigger = sanitize_input($_POST['referral_bonus_trigger'] ?? '');
+    $referral_fund_withdraw_mode = sanitize_input($_POST['referral_fund_withdraw_mode'] ?? '');
+    $referral_exact_amount = sanitize_input($_POST['referral_exact_amount'] ?? '');
+    $referral_min_amount = sanitize_input($_POST['referral_min_amount'] ?? '');
+    $referral_max_amount = sanitize_input($_POST['referral_max_amount'] ?? '');
 
     // Validate bonus type
     if (!in_array($referral_bonus_type, ['flat', 'percentage'])) {
@@ -387,10 +391,39 @@ function handleReferralSettings()
         return;
     }
 
+    // Validate limit mode
+    if (!in_array($referral_fund_withdraw_mode, ['exact', 'range'])) {
+        $_SESSION['error'] = __('Invalid limit mode.');
+        return;
+    }
+    if ($referral_fund_withdraw_mode === 'exact') {
+        if (!is_numeric($referral_exact_amount) || $referral_exact_amount < 0) {
+            $_SESSION['error'] = __('Exact amount must be a positive number.');
+            return;
+        }
+    } else {
+        if (!is_numeric($referral_min_amount) || $referral_min_amount < 0) {
+            $_SESSION['error'] = __('Minimum amount must be a positive number.');
+            return;
+        }
+        if (!is_numeric($referral_max_amount) || $referral_max_amount < 0) {
+            $_SESSION['error'] = __('Maximum amount must be a positive number.');
+            return;
+        }
+        if ((float)$referral_max_amount > 0 && (float)$referral_min_amount > (float)$referral_max_amount) {
+            $_SESSION['error'] = __('Minimum amount cannot be greater than maximum amount.');
+            return;
+        }
+    }
+
     // Update settings
     update_setting('referral_bonus_type', $referral_bonus_type);
     update_setting('referral_bonus_amount', $referral_bonus_amount);
     update_setting('referral_bonus_trigger', $referral_bonus_trigger);
+    update_setting('referral_fund_withdraw_mode', $referral_fund_withdraw_mode);
+    update_setting('referral_exact_amount', $referral_exact_amount);
+    update_setting('referral_min_amount', $referral_min_amount);
+    update_setting('referral_max_amount', $referral_max_amount);
 
     $_SESSION['success'] = __('Referral settings updated successfully.');
 }

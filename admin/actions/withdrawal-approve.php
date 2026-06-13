@@ -61,7 +61,11 @@ try {
     if (!empty($existing_tx)) {
         $existing_tx_id = $existing_tx[0]['id'];
         // Debit balance directly within transaction
-        $stmt = $db->prepare("UPDATE users SET balance = balance - ? WHERE id = ?");
+        if (isset($withdrawal['source']) && $withdrawal['source'] === 'referral') {
+            $stmt = $db->prepare("UPDATE users SET referral_balance = referral_balance - ? WHERE id = ?");
+        } else {
+            $stmt = $db->prepare("UPDATE users SET balance = balance - ? WHERE id = ?");
+        }
         $stmt->execute([number_format((float)$withdrawal['amount'], 30, '.', ''), $withdrawal['user_id']]);
 
         // Update existing transaction to completed
@@ -74,7 +78,11 @@ try {
         $transaction_id = $existing_tx_id;
     } else {
         // Backward compat: inline debit and create transaction within the current DB transaction
-        $stmt = $db->prepare("UPDATE users SET balance = balance - ? WHERE id = ?");
+        if (isset($withdrawal['source']) && $withdrawal['source'] === 'referral') {
+            $stmt = $db->prepare("UPDATE users SET referral_balance = referral_balance - ? WHERE id = ?");
+        } else {
+            $stmt = $db->prepare("UPDATE users SET balance = balance - ? WHERE id = ?");
+        }
         $stmt->execute([number_format((float)$withdrawal['amount'], 30, '.', ''), $withdrawal['user_id']]);
 
         $tx_data = [

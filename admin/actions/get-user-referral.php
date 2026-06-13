@@ -24,11 +24,12 @@ if ($user_id <= 0) {
     exit;
 }
 
-$user_check = db_query('SELECT id FROM users WHERE id = ?', [$user_id]);
+$user_check = db_query('SELECT id, referral_balance FROM users WHERE id = ?', [$user_id]);
 if (empty($user_check)) {
     echo json_encode(['success' => false, 'message' => __('User not found')]);
     exit;
 }
+$user_referral_balance = $user_check[0]['referral_balance'] ?? 0;
 
 try {
     // Query 1: count of users referred by this user
@@ -69,6 +70,7 @@ try {
         'users_referred_count' => $users_referred_count,
         'credited_bonus_events_count' => $credited_bonus_events_count,
         'total_earnings' => $total_earnings,
+        'referral_balance' => format_money($user_referral_balance),
         'upline' => $upline,
         'upline_of_upline' => $upline_of_upline,
     ]);

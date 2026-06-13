@@ -5771,3 +5771,7 @@ html body.dark-mode div.col-lg-5 div.card.border-0.summary-card form button.dark
 input.local-currency-extra-padding {
 	padding-left: 60px !important;
 }
+
+#referralHistorySection {
+	scroll-margin-top: 100px;
+}
