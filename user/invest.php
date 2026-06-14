@@ -759,9 +759,9 @@ $maintenance = get_maintenance_mode();
                             </div>
 
                             <button type="submit" :disabled="loading || !amountValidation.valid"
-                                class="w-full py-3.5 bg-brand-accent text-brand-dark font-bold rounded-xl hover:bg-emerald-400 transition-colors flex items-center justify-center gap-2 disabled:opacity-70 disabled:cursor-not-allowed"
+                                class="w-full py-3.5 bg-brand-accent text-brand-dark font-bold rounded-xl hover:bg-emerald-400 transition-colors flex items-center justify-center gap-2 disabled:opacity-70 disabled:cursor-not-allowed">
                                 <span x-show="!loading"><?php echo e(__('Confirm Investment')); ?></span>
-                                <span x-show="loading" class="flex items-center gap-2">
+                                <span x-show="loading" class="flex items-center gap-2" style="display: none;">
                                     <i class="fa-solid fa-circle-notch fa-spin"></i><?php echo e(__('Processing…')); ?>
                                 </span>
                             </button>
