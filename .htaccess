@@ -6,6 +6,10 @@ RewriteEngine On
 
 RewriteRule ^(includes|logs|locale|database)/ - [F,L]
 
+# Block any URL whose path segment starts with "old-" (legacy pages)
+
+RewriteRule (^|/)old- [F,L]
+
 # Allow cron entrypoint
 
 RewriteRule ^cron/process-investments\.php$ - [L]

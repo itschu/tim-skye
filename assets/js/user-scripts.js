@@ -80,14 +80,21 @@ function createCountdownTimer(targetDate, onTick) {
 		const distance = new Date(targetDate).getTime() - now;
 
 		if (distance <= 0) {
-			return { formatted: '00:00:00', expired: true };
+			return { formatted: '0h 0m 0s', expired: true };
 		}
 
+		const days = Math.floor(distance / (1000 * 60 * 60 * 24));
 		const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
 		const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
 		const seconds = Math.floor((distance % (1000 * 60)) / 1000);
 
-		const formatted = `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+		const timeParts = [];
+		if (days > 0) timeParts.push(`${days}d`);
+		timeParts.push(`${hours}h`);
+		timeParts.push(`${minutes}m`);
+		timeParts.push(`${seconds}s`);
+
+		const formatted = timeParts.join(' ');
 		return { formatted, expired: false };
 	}
 

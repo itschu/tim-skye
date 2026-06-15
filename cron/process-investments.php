@@ -224,9 +224,10 @@ function calculate_missed_payouts($investment)
     // Calculate time elapsed since next_payout_date
     $elapsed = $now - $next_payout_ts;
 
-    // Calculate missed count as the ceiling of elapsed / interval_seconds.
+    // Calculate missed count as the floor of elapsed / interval_seconds plus 1,
+    // matching the formula used by credit_profit() in includes/investment-functions.php.
     // Ensure at least 1 when next_payout_date is in the past (due now or overdue).
-    $missed_count = (int) ceil($elapsed / $interval_seconds);
+    $missed_count = (int) floor($elapsed / max(1, $interval_seconds)) + 1;
     if ($missed_count < 1) {
         $missed_count = 1;
     }

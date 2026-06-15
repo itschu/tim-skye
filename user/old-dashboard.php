@@ -230,7 +230,7 @@ $series = count($series_7d) > 0 ? $series_7d : [0, 0, 0, 0, 0, 0, 0];
                     <div class="bg-light rounded p-3 d-flex justify-content-between align-items-center">
                         <div>
                             <small class="text-secondary d-block" style="font-size: 0.7rem"><?php echo __('NEXT PAYOUT'); ?></small>
-                            <span class="fw-bold font-monospace countdown-timer" data-target="<?php echo $inv['next_payout_date']; ?>">--:--:--</span>
+                            <span class="fw-bold font-monospace countdown-timer" data-target="<?php echo $inv['next_payout_date']; ?>">--h --m --s</span>
                         </div>
                         <div class="text-end">
                             <small class="text-secondary d-block" style="font-size: 0.7rem"><?php echo __('PROFIT EARNED'); ?></small>
