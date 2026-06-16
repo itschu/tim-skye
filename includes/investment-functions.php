@@ -337,13 +337,13 @@ function credit_profit($investment_id)
     } else {
         $total_intervals = 1;
     }
-    $total_expected_profit = round($profit_per_interval * $total_intervals, 2);
+    $total_expected_profit = $profit_per_interval * $total_intervals;
 
     // Remaining profit that can still be credited
-    $remaining = round(max(0, $total_expected_profit - (float)$inv['total_profit_earned']), 2);
+    $remaining = max(0, $total_expected_profit - (float)$inv['total_profit_earned']);
 
     // Profit to credit now is profit_per_interval * due_count, but not exceeding remaining
-    $profit_to_credit = min(round($profit_per_interval * $due_count, 2), $remaining);
+    $profit_to_credit = min($profit_per_interval * $due_count, $remaining);
 
     if ($profit_to_credit <= 0) {
         // Nothing to credit (either not due or already paid)
@@ -535,27 +535,27 @@ FROM investments i JOIN investment_plans p ON i.plan_id = p.id WHERE i.id = ?", 
 
             // The term ROI stored in the plan represents the total ROI for the
             // investment term. The total expected profit therefore equals
-            // principal × term_roi. Compute that directly (rounded to cents)
+            // principal × term_roi. Compute that directly with full precision
             // to avoid floating-point root/pow artifacts that can cause test
             // mismatches across different interval inferences.
-            $total_expected_profit = round($P * $term_roi_decimal, 2);
+            $total_expected_profit = $P * $term_roi_decimal;
 
             // Logging compound details to cron log for traceability
             $cron_log = __DIR__ . '/../logs/cron.log';
-            $msg = sprintf("[%s] [INFO] Investment #%d: Compounding enabled - periods=%d, total_expected_profit=%.2f", date('Y-m-d H:i:s'), $investment_id, $n, $total_expected_profit);
+            $msg = sprintf("[%s] [INFO] Investment #%d: Compounding enabled - periods=%d, total_expected_profit=%.8f", date('Y-m-d H:i:s'), $investment_id, $n, $total_expected_profit);
             if (is_writable(dirname($cron_log))) {
                 @error_log($msg . "\n", 3, $cron_log);
             } else {
                 error_log($msg);
             }
 
-            // Compute remaining profit defensively and round values to cents
-            $remaining_expected = round(max(0, $total_expected_profit - round($total_profit_earned, 2)), 2);
+            // Compute remaining profit defensively with full precision
+            $remaining_expected = max(0, $total_expected_profit - $total_profit_earned);
             $profit_to_credit = $remaining_expected;
         } else {
             // Non-compounding: credit the full ROI (single payout) minus what was already credited
             $total_expected_profit = $amount * ($roi / 100.0);
-            $profit_to_credit = round($total_expected_profit - $total_profit_earned, 2);
+            $profit_to_credit = $total_expected_profit - $total_profit_earned;
         }
     } else {
         // For hourly/daily/custom: credit all accrued payouts between next_payout_date and end_date
@@ -607,13 +607,13 @@ FROM investments i JOIN investment_plans p ON i.plan_id = p.id WHERE i.id = ?", 
         } else {
             $total_intervals = 1;
         }
-        $total_expected_profit = round($per_interval * $total_intervals, 2);
+        $total_expected_profit = $per_interval * $total_intervals;
 
         // Profit due now (uncredited intervals up to end_date)
-        $profit_due = round($per_interval * $due_count, 2);
+        $profit_due = $per_interval * $due_count;
 
         // Don't credit more than the remaining total expected profit
-        $remaining = round(max(0, $total_expected_profit - $total_profit_earned), 2);
+        $remaining = max(0, $total_expected_profit - $total_profit_earned);
         $profit_to_credit = min($profit_due, $remaining);
 
         // Ensure we don't credit negative amounts

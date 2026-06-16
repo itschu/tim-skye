@@ -21,38 +21,6 @@ require_once ROOT . '/includes/investment-functions.php';
 require_once ROOT . '/includes/wallet-functions.php';
 
 require_once ROOT . '/includes/currency-conversion.php';
-if (get_maintenance_mode()) {
-    log_cron("Platform is in maintenance mode. Skipping investment processing.", 'WARNING');
-    exit("Platform under maintenance");
-}
-
-// ============================================================================
-// API KEY VALIDATION (after database initialization)
-// ============================================================================
-
-// Extract API key from query parameter
-$provided_key = isset($_GET['key']) ? $_GET['key'] : null;
-
-// Load expected key from environment
-$expected_key = $_ENV['CRON_API_KEY'] ?? null;
-
-// Validate API key using strict comparison
-if ($provided_key !== $expected_key || !$expected_key) {
-    http_response_code(401);
-    echo "Unauthorized";
-    exit;
-}
-
-// Include translation and utility functions for locale switching
-require_once ROOT . '/includes/translation-functions.php';
-require_once ROOT . '/includes/functions.php';
-
-
-// Define lock file path in cron directory
-$lock_file = __DIR__ . '/process-investments.lock';
-
-// Define TTL for stale lock recovery (10 minutes in seconds)
-$lock_ttl = 600;
 
 // ============================================================================
 // LOGGING HELPER FUNCTION
@@ -60,7 +28,7 @@ $lock_ttl = 600;
 
 /**
  * Log cron job messages with structured formatting
- * 
+ *
  * @param string $message The message to log
  * @param string $level The log level (INFO, ERROR, WARNING, SUCCESS)
  * @return void
@@ -101,6 +69,54 @@ function log_cron($message, $level = 'INFO')
         echo "WARNING: Failed to write to log file: $log_file\n";
     }
 }
+
+if (get_maintenance_mode()) {
+    log_cron("Platform is in maintenance mode. Skipping investment processing.", 'WARNING');
+    exit("Platform under maintenance");
+}
+
+// ============================================================================
+// API KEY VALIDATION (after database initialization)
+// ============================================================================
+
+// Extract API key from query parameter
+$provided_key = isset($_GET['key']) ? $_GET['key'] : null;
+
+// Load expected key from environment
+$expected_key = $_ENV['CRON_API_KEY'] ?? null;
+
+// Validate API key using strict comparison
+if ($provided_key !== $expected_key || !$expected_key) {
+    http_response_code(401);
+    log_cron("Invalid cron API key provided. Request rejected.", 'WARNING');
+    echo "Unauthorized";
+    exit;
+}
+
+// ============================================================================
+// ALIGN MYSQL SESSION TIMEZONE WITH PHP
+// ============================================================================
+
+// MySQL @@session.time_zone defaults to SYSTEM, which may differ from PHP's
+// configured timezone. Set it to PHP's current offset so NOW() comparisons
+// agree with PHP date math.
+try {
+    $php_timezone_offset = date('P');
+    db_query("SET time_zone = ?", [$php_timezone_offset]);
+} catch (PDOException $e) {
+    log_cron("Failed to set MySQL session time zone: " . $e->getMessage(), 'WARNING');
+}
+
+// Include translation and utility functions for locale switching
+require_once ROOT . '/includes/translation-functions.php';
+require_once ROOT . '/includes/functions.php';
+
+
+// Define lock file path in cron directory
+$lock_file = __DIR__ . '/process-investments.lock';
+
+// Define TTL for stale lock recovery (10 minutes in seconds)
+$lock_ttl = 600;
 
 // ============================================================================
 // STALE LOCK DETECTION AND RECOVERY

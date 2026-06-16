@@ -52,10 +52,10 @@ $full_title = 'Reset Password - ' . e($site_name);
     }
     ?>
 
-    <?php if (!empty($meta_description)): ?
+    <?php if (!empty($meta_description)): ?>
         <meta name="description" content="<?php echo e($meta_description); ?>" />
     <?php endif; ?>
-    <?php if (!empty($meta_keywords)): ?
+    <?php if (!empty($meta_keywords)): ?>
         <meta name="keywords" content="<?php echo e($meta_keywords); ?>" />
     <?php endif; ?>
 
@@ -64,18 +64,19 @@ $full_title = 'Reset Password - ' . e($site_name);
 
     <meta property="og:site_name" content="<?php echo e($site_name); ?>" />
     <meta property="og:title" content="<?php echo e($full_title); ?>" />
-    <?php if (!empty($meta_description)): ?
-        <meta property="og:description" content="<?php echo e($meta_description); ?>" /><?php endif; ?>
+    <?php if (!empty($meta_description)): ?>
+        <meta property="og:description" content="<?php echo e($meta_description); ?>" />
+    <?php endif; ?>
     <meta property="og:type" content="website" />
     <meta property="og:url" content="<?php echo e($current_url); ?>" />
-    <?php if (!empty($og_image)): ?
+    <?php if (!empty($og_image)): ?>
         <meta property="og:image" content="<?php echo e($og_image); ?>" /><?php endif; ?>
 
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content="<?php echo e($full_title); ?>" />
-    <?php if (!empty($meta_description)): ?
+    <?php if (!empty($meta_description)): ?>
         <meta name="twitter:description" content="<?php echo e($meta_description); ?>" /><?php endif; ?>
-    <?php if (!empty($og_image)): ?
+    <?php if (!empty($og_image)): ?>
         <meta name="twitter:image" content="<?php echo e($og_image); ?>" /><?php endif; ?>
 
     <link rel="icon" type="image/png" href="<?php echo e(SITE_ICON); ?>">
@@ -94,9 +95,9 @@ $full_title = 'Reset Password - ' . e($site_name);
         <div class="auth-left-overlay"></div>
         <div class="auth-left-glow"></div>
         <div class="auth-left-inner">
-            <?php if ($site_logo && file_exists(ROOT . '/' . $site_logo)): ?
+            <?php if ($site_logo && file_exists(ROOT . '/' . $site_logo)): ?>
                 <img src="/<?php echo e($site_logo); ?>" alt="<?php echo e($site_name); ?>" style="height:40px; width:auto; margin-bottom:1.5rem; opacity:0.9;">
-            <?php else: ?
+            <?php else: ?>
                 <div class="logo" style="margin-bottom:1.5rem;"><?php echo e($site_name); ?><em>.</em></div>
             <?php endif; ?>
             <h2><?php echo __('Account'); ?> <em><?php echo __('Recovery'); ?></em></h2>
@@ -108,9 +109,9 @@ $full_title = 'Reset Password - ' . e($site_name);
         <div class="auth-top-bar">
             <a href="/" class="auth-back" title="<?php echo __('Back to Home'); ?>">←</a>
 
-            <?php if (is_google_translate_enabled()): ?
+            <?php if (is_google_translate_enabled()): ?>
                 <div style="display:none;"><?php render_google_translate_widget('auth'); ?></div>
-            <?php else: ?
+            <?php else: ?>
                 <div class="relative" x-data="{ langOpen: false }" @click.away="langOpen = false">
                     <form method="POST" action="/actions/switch-language-public.php" id="authLangForm">
                         <input type="hidden" name="redirect" value="<?php echo e($current_page); ?>">
@@ -158,7 +159,7 @@ $full_title = 'Reset Password - ' . e($site_name);
                     <h2><?php echo __('Reset Password'); ?></h2>
                     <p class="auth-lead"><?php echo __('Enter a new password for your account.'); ?></p>
 
-                    <?php if ($error): ?
+                    <?php if ($error): ?>
                         <div x-data="{ show: true }" x-show="show" x-transition class="alert alert-red">
                             <span><?php echo e($error); ?></span>
                             <button @click="show = false" class="alert-close">✕</button>
@@ -174,8 +175,14 @@ $full_title = 'Reset Password - ' . e($site_name);
                             <div class="input-wrap" x-data="{ show: false }">
                                 <input :type="show ? 'text' : 'password'" name="password" required minlength="6">
                                 <button type="button" @click="show = !show" class="toggle-pass" aria-label="Toggle password">
-                                    <svg x-show="!show" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
-                                    <svg x-show="show" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:none;"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>
+                                    <svg x-show="!show" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                        <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
+                                        <circle cx="12" cy="12" r="3" />
+                                    </svg>
+                                    <svg x-show="show" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:none;">
+                                        <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24" />
+                                        <line x1="1" y1="1" x2="23" y2="23" />
+                                    </svg>
                                 </button>
                             </div>
                             <p class="hint"><?php echo __('Minimum 6 characters'); ?></p>
@@ -195,14 +202,14 @@ $full_title = 'Reset Password - ' . e($site_name);
                     <h2><?php echo __('Forgot Password'); ?></h2>
                     <p class="auth-lead"><?php echo __('Enter your email and we will send you a reset link.'); ?></p>
 
-                    <?php if ($error): ?
+                    <?php if ($error): ?>
                         <div x-data="{ show: true }" x-show="show" x-transition class="alert alert-red">
                             <span><?php echo e($error); ?></span>
                             <button @click="show = false" class="alert-close">✕</button>
                         </div>
                     <?php endif; ?>
 
-                    <?php if ($message): ?
+                    <?php if ($message): ?>
                         <div x-data="{ show: true }" x-show="show" x-transition class="alert alert-green">
                             <span><?php echo e($message); ?></span>
                             <button @click="show = false" class="alert-close">✕</button>
@@ -211,7 +218,7 @@ $full_title = 'Reset Password - ' . e($site_name);
 
                     <form x-data="{ loading: false }" @submit="loading = true" action="/actions/request-password-reset" method="POST">
                         <input type="hidden" name="csrf_token" value="<?php echo csrf_token(); ?>">
-                        <?php if (!empty($_SESSION['redirect_after_login'])): ?
+                        <?php if (!empty($_SESSION['redirect_after_login'])): ?>
                             <input type="hidden" name="redirect" value="<?php echo e($_SESSION['redirect_after_login']); ?>">
                         <?php endif; ?>
 
@@ -237,7 +244,7 @@ $full_title = 'Reset Password - ' . e($site_name);
         </div>
     </div>
 
-    <?php require_once ROOT . '/includes/auth-footer.php'; ?
+    <?php require_once ROOT . '/includes/auth-footer.php'; ?>
 
 </body>
 
