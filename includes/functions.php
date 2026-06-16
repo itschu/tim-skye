@@ -246,6 +246,18 @@ function format_date($datetime, $format = 'Y-m-d H:i:s')
 }
 
 /**
+ * Format a database datetime as an ISO 8601 string including the PHP timezone
+ * offset. Use this for dates that will be parsed by JavaScript so the browser
+ * displays the same wall-clock time as the server/database.
+ * @param string $datetime Datetime string
+ * @return string ISO 8601 datetime with offset (e.g. 2026-06-16T22:30:12+02:00)
+ */
+function format_datetime_iso($datetime)
+{
+    return date('c', strtotime($datetime));
+}
+
+/**
  * Get human-readable time difference
  * @param string $datetime Datetime string
  * @return string Time ago string

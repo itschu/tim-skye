@@ -388,7 +388,7 @@ require ROOT . '/includes/new-header.php';
                     <div class="bg-zinc-900/50 rounded-2xl p-4 flex justify-between items-center border border-zinc-800/60">
                         <div>
                             <small class="text-zinc-500 block text-[10px] uppercase tracking-wider"><?php echo __('Next Payout'); ?></small>
-                            <span class="font-bold font-mono text-zinc-200 countdown-timer" data-target="<?php echo e($inv['next_payout_date']); ?>">--h --m --s</span>
+                            <span class="font-bold font-mono text-zinc-200 countdown-timer" data-target="<?php echo e(format_datetime_iso($inv['next_payout_date'])); ?>">--h --m --s</span>
                         </div>
                         <div class="text-right">
                             <small class="text-zinc-500 block text-[10px] uppercase tracking-wider"><?php echo __('Profit Earned'); ?></small>

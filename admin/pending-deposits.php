@@ -131,7 +131,9 @@ $deposits = db_query($list_query, $list_params);
                         <?php foreach ($deposits as $dep):
                             $initial = substr($dep['name'], 0, 1);
                         ?>
-                            <tr @click="openSheet(<?php echo htmlspecialchars(json_encode($dep)); ?>)" style="cursor:pointer">
+                            <tr @click="openSheet(<?php echo htmlspecialchars(json_encode(array_merge($dep, [
+                                'created_at' => format_datetime_iso($dep['created_at']),
+                            ]))); ?>)" style="cursor:pointer">
                                 <td>
                                     <div class="d-flex align-items-center gap-2">
                                         <?php if (!empty($dep['profile_picture'])): ?>

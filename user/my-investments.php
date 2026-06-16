@@ -358,7 +358,11 @@ require ROOT . '/includes/new-header.php';
                         }
                     }
 
-                    $inv_json = htmlspecialchars(json_encode($inv), ENT_QUOTES, 'UTF-8');
+                    $inv_json = htmlspecialchars(json_encode(array_merge($inv, [
+                        'created_at' => format_datetime_iso($inv['created_at'] ?? null),
+                        'end_date' => format_datetime_iso($inv['end_date'] ?? null),
+                        'next_payout_date' => format_datetime_iso($inv['next_payout_date'] ?? null),
+                    ])), ENT_QUOTES, 'UTF-8');
                 ?>
                     <div class="bg-brand-card border border-zinc-800 rounded-2xl p-5 md:p-6 flex flex-col lg:flex-row lg:items-center justify-between gap-6 hover:border-zinc-700 transition-all group relative overflow-hidden">
                         <div class="absolute -left-10 -bottom-10 w-32 h-32 bg-brand-accent/5 rounded-full blur-2xl group-hover:bg-brand-accent/10 transition-colors pointer-events-none"></div>
