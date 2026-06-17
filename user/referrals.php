@@ -503,7 +503,7 @@ require ROOT . '/includes/new-header.php';
                     <label class="block text-xs font-bold text-zinc-400 uppercase tracking-wider mb-2"><?php echo e(__('Amount')); ?></label>
                     <div class="flex items-center bg-zinc-950 border border-zinc-800 rounded-xl overflow-hidden focus-within:border-brand-accent/40 transition-colors">
                         <span class="px-4 py-3 bg-zinc-900 text-zinc-300 text-sm font-bold border-r border-zinc-800"><?php echo e(get_currency_symbol()); ?></span>
-                        <input type="number" name="amount" step="0.01" x-model="amount"
+                        <input type="number" name="amount" step="any" x-model="amount"
                             class="w-full bg-transparent px-4 py-3 text-zinc-100 font-mono font-bold focus:outline-none"
                             placeholder="0.00" required>
                     </div>

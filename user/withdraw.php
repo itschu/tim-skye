@@ -302,10 +302,18 @@ $cc = get_currency_code();
             },
 
             get maxAmount() {
-                if (this.isLocalCurrency && this.exchangeRate) {
-                    return parseFloat((this.availableBalance * this.exchangeRate).toFixed(2));
+                let maxAmount = this.availableBalance;
+                if (this.isReferral) {
+                    if (this.referralMode === 'exact') {
+                        maxAmount = Math.min(maxAmount, parseFloat(this.referralExact));
+                    } else if (parseFloat(this.referralMax) > 0) {
+                        maxAmount = Math.min(maxAmount, parseFloat(this.referralMax));
+                    }
                 }
-                return this.availableBalance;
+                if (this.isLocalCurrency && this.exchangeRate) {
+                    return parseFloat((maxAmount * this.exchangeRate).toFixed(2));
+                }
+                return maxAmount;
             },
 
             get feeAmount() {
@@ -425,8 +433,12 @@ $cc = get_currency_code();
 
             setMax() {
                 let maxAmount = this.availableBalance;
-                if (this.isReferral && this.referralMode === 'exact') {
-                    maxAmount = parseFloat(this.referralExact);
+                if (this.isReferral) {
+                    if (this.referralMode === 'exact') {
+                        maxAmount = Math.min(maxAmount, parseFloat(this.referralExact));
+                    } else if (parseFloat(this.referralMax) > 0) {
+                        maxAmount = Math.min(maxAmount, parseFloat(this.referralMax));
+                    }
                 }
                 this.baseAmount = maxAmount;
                 this._suppressWatcher = true;
@@ -696,7 +708,7 @@ require ROOT . '/includes/new-header.php';
                                 </div>
                                 <div class="relative flex items-center border-b border-zinc-800 pb-2 focus-within:border-brand-accent/50 transition-colors">
                                     <span class="text-zinc-500 font-bold text-2xl mr-2" x-text="isLocalCurrency ? localCurrencySymbol : currencySymbol"></span>
-                                    <input type="number" step="0.01" x-model="displayAmount" class="amount-input w-full bg-transparent text-3xl font-bold text-white font-mono focus:outline-none placeholder:text-zinc-800" :max="maxAmount" placeholder="0.00" :class="{ 'local-currency-extra-padding': isLocalCurrency }" />
+                                    <input type="number" step="any" x-model="displayAmount" class="amount-input w-full bg-transparent text-3xl font-bold text-white font-mono focus:outline-none placeholder:text-zinc-800" :max="maxAmount" placeholder="0.00" :class="{ 'local-currency-extra-padding': isLocalCurrency }" />
                                 </div>
                             </div>
 

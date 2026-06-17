@@ -765,7 +765,7 @@ require_once ROOT . '/includes/admin-header.php';
                                         <i class="fas fa-calculator text-info"></i>
                                         <span id="bonus_label"><?php echo __('Bonus Amount'); ?></span>
                                     </label>
-                                    <input type="number" class="form-control form-control-custom" id="referral_bonus_amount" name="referral_bonus_amount" value="<?php echo e($referral_bonus_amount); ?>" step="0.01" min="0" required>
+                                    <input type="number" class="form-control form-control-custom" id="referral_bonus_amount" name="referral_bonus_amount" value="<?php echo e($referral_bonus_amount); ?>" step="any" min="0" required>
                                     <small class="form-text d-block mt-1" id="bonus_hint" style="color: #a1a1aa;"><?php echo __('Amount to reward for each successful referral'); ?></small>
                                 </div>
 
@@ -856,7 +856,7 @@ require_once ROOT . '/includes/admin-header.php';
                                     <label for="referral_exact_amount" class="form-label text-muted-custom small fw-medium">
                                         <i class="fas fa-bullseye text-info"></i> <?php echo __('Exact Amount'); ?>
                                     </label>
-                                    <input type="number" class="form-control form-control-custom" id="referral_exact_amount" name="referral_exact_amount" value="<?php echo e($referral_exact_amount); ?>" step="0.01" min="0">
+                                    <input type="number" class="form-control form-control-custom" id="referral_exact_amount" name="referral_exact_amount" value="<?php echo e($referral_exact_amount); ?>" step="any" min="0">
                                     <small class="form-text d-block mt-1" style="color: #a1a1aa;"><?php echo __('Users must fund/withdraw exactly this amount each time'); ?></small>
                                 </div>
 
@@ -867,13 +867,13 @@ require_once ROOT . '/includes/admin-header.php';
                                             <label for="referral_min_amount" class="form-label text-muted-custom small fw-medium">
                                                 <i class="fas fa-arrow-down text-info"></i> <?php echo __('Minimum Amount'); ?>
                                             </label>
-                                            <input type="number" class="form-control form-control-custom" id="referral_min_amount" name="referral_min_amount" value="<?php echo e($referral_min_amount); ?>" step="0.01" min="0">
+                                            <input type="number" class="form-control form-control-custom" id="referral_min_amount" name="referral_min_amount" value="<?php echo e($referral_min_amount); ?>" step="any" min="0">
                                         </div>
                                         <div class="col-md-6">
                                             <label for="referral_max_amount" class="form-label text-muted-custom small fw-medium">
                                                 <i class="fas fa-arrow-up text-info"></i> <?php echo __('Maximum Amount'); ?>
                                             </label>
-                                            <input type="number" class="form-control form-control-custom" id="referral_max_amount" name="referral_max_amount" value="<?php echo e($referral_max_amount); ?>" step="0.01" min="0">
+                                            <input type="number" class="form-control form-control-custom" id="referral_max_amount" name="referral_max_amount" value="<?php echo e($referral_max_amount); ?>" step="any" min="0">
                                         </div>
                                     </div>
                                     <small class="form-text d-block mt-1" style="color: #a1a1aa;"><?php echo __('Set max to 0 for no upper limit'); ?></small>
