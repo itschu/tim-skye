@@ -885,6 +885,11 @@ require ROOT . '/includes/new-header.php';
                                     <span class="inline-flex items-center px-2.5 py-1 rounded-lg text-xs font-semibold border <?php echo e($status_class); ?>">
                                         <?php echo e(__(ucfirst($w['status']))); ?>
                                     </span>
+                                    <?php if ($status === 'rejected' && !empty($w['rejection_reason'])): ?>
+                                        <div class="mt-1 text-xs text-rose-400 max-w-xs">
+                                            <?php echo e($w['rejection_reason']); ?>
+                                        </div>
+                                    <?php endif; ?>
                                 </td>
                             </tr>
                         <?php endforeach; ?>
